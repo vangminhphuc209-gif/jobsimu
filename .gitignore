@@ -1,0 +1,21 @@
+# Configuration & Secrets
+config.php
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+error_log
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependencies & uploads
+vendor/
+node_modules/

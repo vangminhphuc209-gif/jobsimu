@@ -1,0 +1,5 @@
+document.querySelector('.mobile-toggle')?.addEventListener('click',e=>{const menu=document.querySelector('.nav-links');menu?.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',menu?.classList.contains('open')?'true':'false')});
+document.querySelectorAll('[data-confirm]').forEach(el=>el.addEventListener('click',e=>{if(!confirm(el.dataset.confirm))e.preventDefault()}));
+const search=document.querySelector('[data-career-search]');if(search)search.addEventListener('input',()=>{const q=search.value.toLowerCase();document.querySelectorAll('[data-career]').forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?'':'none')});
+window.showToast=(message)=>{const toast=document.getElementById('toast');if(!toast)return;toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2600)};
+document.querySelectorAll('[data-submit-loading]').forEach(form=>form.addEventListener('submit',()=>{document.getElementById('loadingOverlay')?.classList.add('active');form.querySelectorAll('button').forEach(b=>b.disabled=true)}));

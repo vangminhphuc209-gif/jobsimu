@@ -1,0 +1,54 @@
+CREATE TABLE IF NOT EXISTS users (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(190) NOT NULL UNIQUE,
+ password VARCHAR(255) NOT NULL, role ENUM('student','admin') NOT NULL DEFAULT 'student', grade VARCHAR(30) NULL,
+ school VARCHAR(150) NULL, avatar_color VARCHAR(20) NOT NULL DEFAULT '#5B7CFA', status ENUM('active','locked') NOT NULL DEFAULT 'active',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS questions (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, content VARCHAR(500) NOT NULL, riasec_type ENUM('R','I','A','S','E','C') NOT NULL,
+ sort_order INT NOT NULL DEFAULT 0, status ENUM('active','inactive') NOT NULL DEFAULT 'active', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE KEY uk_content (content(190))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS careers (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, title VARCHAR(150) NOT NULL, slug VARCHAR(180) NOT NULL UNIQUE, icon VARCHAR(20) NOT NULL DEFAULT '💼',
+ short_description VARCHAR(300) NOT NULL, description TEXT NOT NULL, work_environment TEXT NULL, skills TEXT NULL, subjects TEXT NULL,
+ education_path TEXT NULL, salary_range VARCHAR(120) NULL, outlook VARCHAR(200) NULL, simulation_url VARCHAR(500) NULL,
+ simulation_label VARCHAR(120) NOT NULL DEFAULT 'Trải nghiệm mô phỏng', simulation_enabled TINYINT(1) NOT NULL DEFAULT 1, riasec_weights JSON NOT NULL,
+ featured TINYINT(1) NOT NULL DEFAULT 0, status ENUM('published','draft') NOT NULL DEFAULT 'published',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS assessments (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, answers JSON NOT NULL, scores JSON NOT NULL,
+ result_code VARCHAR(6) NOT NULL, constraint_answers JSON NULL, ai_advice JSON NULL, ai_status ENUM('pending','completed','fallback','failed') NOT NULL DEFAULT 'pending',
+ ai_model VARCHAR(100) NULL, ai_error VARCHAR(500) NULL, ai_generated_at DATETIME NULL, completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_assessment_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, INDEX(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS assessment_matches (
+ assessment_id INT UNSIGNED NOT NULL, career_id INT UNSIGNED NOT NULL, match_percent TINYINT UNSIGNED NOT NULL,
+ rank_order TINYINT UNSIGNED NOT NULL, PRIMARY KEY(assessment_id,career_id),
+ CONSTRAINT fk_match_assessment FOREIGN KEY(assessment_id) REFERENCES assessments(id) ON DELETE CASCADE,
+ CONSTRAINT fk_match_career FOREIGN KEY(career_id) REFERENCES careers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS favorites (
+ user_id INT UNSIGNED NOT NULL, career_id INT UNSIGNED NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY(user_id,career_id), CONSTRAINT fk_favorite_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+ CONSTRAINT fk_favorite_career FOREIGN KEY(career_id) REFERENCES careers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS simulation_attempts (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, career_id INT UNSIGNED NOT NULL,
+ score TINYINT UNSIGNED NOT NULL, decisions JSON NOT NULL, skill_scores JSON NOT NULL, duration_seconds INT UNSIGNED NOT NULL DEFAULT 0,
+ reflection_feeling ENUM('excited','challenged','unsuited') NULL, reflection_note VARCHAR(300) NULL,
+ completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX(user_id), INDEX(career_id), INDEX(completed_at),
+ CONSTRAINT fk_sim_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+ CONSTRAINT fk_sim_career FOREIGN KEY(career_id) REFERENCES careers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS settings (setting_key VARCHAR(100) PRIMARY KEY, setting_value TEXT NULL, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS audit_logs (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,user_id INT UNSIGNED NULL,action VARCHAR(150) NOT NULL,entity_type VARCHAR(80) NULL,entity_id INT UNSIGNED NULL,ip_address VARCHAR(45) NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,INDEX(user_id),CONSTRAINT fk_audit_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS ai_logs (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,assessment_id INT UNSIGNED NOT NULL,user_id INT UNSIGNED NOT NULL,model VARCHAR(100) NULL,status ENUM('completed','fallback','failed') NOT NULL,latency_ms INT UNSIGNED NULL,http_status SMALLINT UNSIGNED NULL,error_message VARCHAR(500) NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,INDEX(assessment_id),INDEX(created_at),CONSTRAINT fk_ai_assessment FOREIGN KEY(assessment_id) REFERENCES assessments(id) ON DELETE CASCADE,CONSTRAINT fk_ai_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
