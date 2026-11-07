@@ -1,0 +1,100 @@
+{
+  "id": "CRISIS-03",
+  "context": {
+    "location": "Corridor",
+    "objective": "Xử lý phát hiện nguy cơ an toàn / xô xát tâm lý học sinh",
+    "timeWindow": {
+      "start": "10:30",
+      "end": "11:15"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-04",
+    "preconditions": {
+      "break_time_active": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Ở góc cuối hành lang tầng 2, Tuấn và một học sinh lớp khác đang tranh cãi gay gắt, xô đẩy nhau rơi sách vở; Minh đứng nép một góc run rẩy.",
+    "audioClue": ""
+  },
+  "hidden_info": "Tuấn đang đòi xem cuốn sổ vẽ của Minh nhưng Minh không đồng ý, dẫn tới xô xát giữa các nhóm học sinh giờ ra chơi.",
+  "actions": [
+    {
+      "id": "crisis_safety_listen_and_escalate_to_lan",
+      "type": "dialogue",
+      "label": "Tách các em an toàn, lắng nghe riêng và chuyển tuyến cho Cô Lan (Y tế/Tư vấn)",
+      "description": "Bình tĩnh can thiệp, tách học sinh ra không gian yên tĩnh, lắng nghe không phán xét, giải thích không thể giữ bí mật sự cố an toàn và đưa các em đến phòng Cô Lan.",
+      "timeCostMinutes": 15,
+      "immediateConsequence": {
+        "dialogueText": "Cô Lan tiếp nhận ân cần: 'Thầy/Cô đã xử lý đúng quy trình bảo vệ an toàn học sinh. Tôi sẽ hỗ trợ tâm lý chuyên sâu cho các em.'",
+        "stateMutations": {
+          "flag_safety_escalated_properly": true,
+          "metric_minh_trust": 3,
+          "metric_colleague_cooperation": 2
+        }
+      },
+      "delayedConsequenceId": "SAFETY_RESOLVED_SAFELY",
+      "evidenceTelemetry": {
+        "competency": "empathetic",
+        "dimensionLabel": "Năng lực Bảo vệ & An toàn Học đường",
+        "observationNote": "Thực hiện xuất sắc quy trình bảo vệ an toàn: Lắng nghe, bảo vệ, không hứa bí mật tùy tiện và chuyển tuyến chuyên môn đúng thẩm quyền."
+      }
+    },
+    {
+      "id": "crisis_reprimand_in_public",
+      "type": "physical",
+      "label": "Quát to giải tán đám đông và yêu cầu cả 3 đứng phạt góc hành lang",
+      "description": "Can thiệp cứng rắn ngay tại chỗ, bêu phạt các em trước mắt bạn bè qua lại để răn đe.",
+      "timeCostMinutes": 5,
+      "immediateConsequence": {
+        "dialogueText": "Đám đông tản ra, Minh cúi gằm mặt xấu hổ tột cùng, Tuấn ấm ức đá chân vào tường. Bầu không khí căng thẳng bao trùm.",
+        "stateMutations": {
+          "metric_minh_trust": -3,
+          "flag_humiliation_occurred": true
+        }
+      },
+      "delayedConsequenceId": "MINH_WITHDRAWN_SEVERE",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Hạn chế Phương pháp Sư phạm",
+        "observationNote": "Sử dụng biện pháp trừng phạt công khai gây tổn thương tâm lý và làm giảm lòng tin của học sinh."
+      }
+    },
+    {
+      "id": "crisis_mediate_privately_in_empty_room",
+      "type": "investigate",
+      "label": "Mời các em vào phòng học trống, cho các em tự nói rõ nguyên nhân và trả lại sổ",
+      "description": "Đóng vai trò trung gian hòa giải nội bộ, để Minh giải thích ý nghĩa cuốn sổ và Tuấn nhận lỗi đã giật đồ của bạn.",
+      "timeCostMinutes": 12,
+      "immediateConsequence": {
+        "dialogueText": "Tuấn gãi đầu xin lỗi: 'Tớ thấy cậu vẽ đẹp quá nên muốn xem thôi, tớ xin lỗi'. Minh nhận lại sổ và nguôi ngoai.",
+        "stateMutations": {
+          "flag_peer_mediation_success": true,
+          "metric_minh_trust": 2
+        }
+      },
+      "delayedConsequenceId": "PEER_BOND_RESTORED",
+      "evidenceTelemetry": {
+        "competency": "creative",
+        "dimensionLabel": "Năng lực Hòa giải Xung đột Đồng lứa",
+        "observationNote": "Khéo léo điều phối hòa giải nội bộ, giúp học sinh nhận thức trách nhiệm và tôn trọng ranh giới cá nhân của bạn."
+      }
+    }
+  ],
+  "trade_off": "Xử lý đúng quy trình bảo vệ học sinh tốn 15 phút khiến bạn bị trễ cuộc họp giao ban trưa, nhưng QA-06 cam kết hệ thống không phạt máy móc sự chậm trễ này vì an toàn học sinh là ưu tiên cao nhất.",
+  "immediate_feedback": "Trạng thái tâm lý của Minh và Tuấn lập tức thay đổi theo cách can thiệp.",
+  "delayed_consequences": "Hành vi sỉ nhục công khai (reprimand_in_public) sẽ kích hoạt cảnh báo vi phạm đạo đức sư phạm trong báo cáo hướng nghiệp cuối ngày.",
+  "anti_softlock": {
+    "fallbackActionId": "action_crisis_bell_ring",
+    "recoveryDescription": "Nếu quá 15 phút, bảo vệ trường tuần tra sẽ hỗ trợ đưa học sinh về phòng giám thị."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "empathetic",
+      "decisive",
+      "accurate"
+    ],
+    "rubricMapping": "Tiêu chí 4.1: Xử lý tình huống khủng hoảng tâm lý và an toàn học sinh."
+  }
+}

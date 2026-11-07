@@ -1,0 +1,101 @@
+{
+  "id": "PREP-01",
+  "context": {
+    "location": "StaffRoom",
+    "objective": "Chuẩn bị học liệu và xử lý cảnh báo máy chiếu lớp 9A",
+    "timeWindow": {
+      "start": "07:15",
+      "end": "07:30"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-02",
+    "preconditions": {
+      "staffroom_entered": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Cô Mai chỉ vào tài liệu trên bàn; đèn máy in nhấp nháy xanh sẵn sàng; ghi chú thiết bị ghi 'Máy chiếu 9A bóng đèn chập chờn'.",
+    "audioClue": "sfx_paper_flip"
+  },
+  "hidden_info": "Bóng đèn máy chiếu lớp 9A đã quá hạn sử dụng 200 giờ, có xác suất 80% sẽ tự ngắt tản nhiệt sau 20 phút giảng bài liên tục.",
+  "actions": [
+    {
+      "id": "prep_print_handouts",
+      "type": "physical",
+      "label": "In 32 bản phiếu học tập dự phòng tại máy in",
+      "description": "Dành 10 phút in ấn tài liệu để phát cho từng nhóm nếu máy chiếu gặp sự cố.",
+      "timeCostMinutes": 10,
+      "immediateConsequence": {
+        "dialogueText": "Cô Mai: 'Rất chu đáo! Lên lớp có tài liệu cầm tay thì dù mất điện học sinh vẫn có việc để làm.'",
+        "stateMutations": {
+          "inventory_add": "handouts_printed",
+          "metric_mentor_support": 1,
+          "flag_prep_backup_available": true
+        }
+      },
+      "delayedConsequenceId": "CRISIS-02_FALLBACK_SMOOTH",
+      "evidenceTelemetry": {
+        "competency": "accurate",
+        "dimensionLabel": "Năng lực Chuẩn xác & Quản trị Rủi ro",
+        "observationNote": "Chủ động chuẩn bị học liệu dự phòng bằng giấy trước khi lên lớp đối phó sự cố máy chiếu."
+      }
+    },
+    {
+      "id": "prep_trust_projector",
+      "type": "dialogue",
+      "label": "Tin tưởng vào slide trình chiếu, nhờ thầy Quân kiểm tra nhanh",
+      "description": "Chỉ kiểm tra lại slide trên laptop và nhắc thầy Quân để ý máy chiếu nếu có sự cố.",
+      "timeCostMinutes": 4,
+      "immediateConsequence": {
+        "dialogueText": "Cô Mai: 'Hy vọng sáng nay máy chiếu ngoan ngoãn. Thầy Quân cũng đang bận bên phòng máy tầng 3 đấy.'",
+        "stateMutations": {
+          "flag_prep_backup_available": false,
+          "flag_relied_on_tech": true
+        }
+      },
+      "delayedConsequenceId": "CRISIS-02_BLACKBOARD_STRESS",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Ra quyết định",
+        "observationNote": "Ưu tiên tiết kiệm thời gian chuẩn bị, chấp nhận rủi ro kỹ thuật thiết bị."
+      }
+    },
+    {
+      "id": "prep_chalkboard_plan",
+      "type": "investigate",
+      "label": "Thiết kế phương án thảo luận nhóm vẽ sơ đồ trên bảng",
+      "description": "Dành 8 phút phác thảo sơ đồ tư duy trên sổ giáo án, chuẩn bị phương án dùng bảng phấn thay vì trình chiếu.",
+      "timeCostMinutes": 8,
+      "immediateConsequence": {
+        "dialogueText": "Cô Mai: 'Cách này hay! Cho các em tự lên bảng vẽ vừa rèn kỹ năng nhóm lại không phụ thuộc vào thiết bị.'",
+        "stateMutations": {
+          "inventory_add": "chalk_diagram_plan",
+          "metric_mentor_support": 2,
+          "flag_board_strategy": true
+        }
+      },
+      "delayedConsequenceId": "CRISIS-02_BOARD_ACTIVE",
+      "evidenceTelemetry": {
+        "competency": "creative",
+        "dimensionLabel": "Năng lực Sáng tạo & Ứng biến",
+        "observationNote": "Thiết kế phương án dạy học tương tác bảng phấn độc lập với công nghệ chiếu."
+      }
+    }
+  ],
+  "trade_off": "In tài liệu mất 10 phút khiến bạn lên lớp sát giờ; tin vào máy chiếu giúp bạn thư thả nhưng có thể bị động hoàn toàn nếu máy ngắt; chuyển đổi giáo án đòi hỏi kỹ năng điều phối nhóm trên lớp cao hơn.",
+  "immediate_feedback": "Cô Mai đưa ra phản hồi chuyên môn trực tiếp; bảng tiến độ thời gian hiển thị trừ số phút tương ứng.",
+  "delayed_consequences": "Tại CRISIS-02 (08:15), khi máy chiếu lớp 9A phụt tắt, phương án chuẩn bị tại PREP-01 quyết định trực tiếp việc lớp học có tiếp tục trôi chảy hay rơi vào gián đoạn.",
+  "anti_softlock": {
+    "fallbackActionId": "action_prep_blackboard_fallback",
+    "recoveryDescription": "Nếu người chơi không chọn gì và hết giờ, giáo án mặc định chuyển sang dùng sách giáo khoa và bảng đen."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "accurate",
+      "creative",
+      "decisive"
+    ],
+    "rubricMapping": "Tiêu chí 1.2: Chuẩn bị đồ dùng dạy học và kế hoạch dự phòng sư phạm."
+  }
+}

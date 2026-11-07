@@ -1,0 +1,98 @@
+{
+  "id": "CLASS-01",
+  "context": {
+    "location": "Class9A",
+    "objective": "Tổ chức hoạt động nhóm tìm hiểu tác động của biến đổi khí hậu",
+    "timeWindow": {
+      "start": "07:45",
+      "end": "08:10"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-03",
+    "preconditions": {
+      "entered_class9a": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "32 học sinh chia làm 4 nhóm; Nhóm 1 (Linh) thảo luận sôi nổi; Nhóm 3 (Minh, Hà) im lặng cúi đầu; Nhóm 4 (Tuấn) quay bút đùa giỡn.",
+    "audioClue": "amb_classroom_murmur"
+  },
+  "hidden_info": "Nhóm 3 chưa phân công được người thuyết trình vì Minh tự ti về bài viết; Tuấn ở Nhóm 4 mất tập trung vì chưa hiểu rõ câu hỏi thảo luận.",
+  "actions": [
+    {
+      "id": "class_circulate_groups_assist_group3",
+      "type": "physical",
+      "label": "Đi xuống Nhóm 3, gợi mở để Minh đóng góp qua hình vẽ sơ đồ",
+      "description": "Di chuyển xuống bàn nhóm 3, khuyến khích Minh dùng khả năng vẽ để trực quan hóa sơ đồ hiệu ứng nhà kính cho nhóm.",
+      "timeCostMinutes": 6,
+      "immediateConsequence": {
+        "dialogueText": "Hà reo lên: 'Ý hay quá! Minh vẽ hình Trái Đất và lớp khí quyển, bọn mình sẽ ghi chú số liệu!' Minh ngẩng lên mỉm cười.",
+        "stateMutations": {
+          "metric_minh_trust": 2,
+          "flag_group3_active": true
+        }
+      },
+      "delayedConsequenceId": "FEEDBACK_MINH_CONFIDENT",
+      "evidenceTelemetry": {
+        "competency": "creative",
+        "dimensionLabel": "Năng lực Dạy học Phân hóa",
+        "observationNote": "Khơi dậy thế mạnh cá nhân của học sinh yếu thế để hòa nhập vào hoạt động nhóm."
+      }
+    },
+    {
+      "id": "class_podium_broadcast_clarification",
+      "type": "dialogue",
+      "label": "Đứng tại bục giảng, giải thích to lại yêu cầu cho cả lớp",
+      "description": "Ổn định trật tự chung từ trên bục giảng, nhắc nhở thời gian còn lại 10 phút.",
+      "timeCostMinutes": 3,
+      "immediateConsequence": {
+        "dialogueText": "Tuấn giật mình dừng quay bút, Linh nhắc nhóm mình tập trung viết nhanh hơn.",
+        "stateMutations": {
+          "flag_pacing_maintained": true
+        }
+      },
+      "delayedConsequenceId": "CLASS_PACING_ON_TRACK",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Quản lý Lớp học",
+        "observationNote": "Kiểm soát bao quát tiến độ chung của toàn thể học sinh trong lớp."
+      }
+    },
+    {
+      "id": "class_review_rubric_with_class_monitor",
+      "type": "investigate",
+      "label": "Gặp riêng Lớp trưởng Linh để kiểm tra tiến độ bảng tiêu chí chấm",
+      "description": "Hướng dẫn Linh cách ghi chép đánh giá chéo giữa các nhóm theo rubric công bằng.",
+      "timeCostMinutes": 4,
+      "immediateConsequence": {
+        "dialogueText": "Linh ghi chép cẩn thận: 'Vâng ạ, em sẽ chấm theo 3 mức rõ ràng như thầy/cô đã hướng dẫn.'",
+        "stateMutations": {
+          "flag_rubric_explained": true,
+          "metric_colleague_cooperation": 1
+        }
+      },
+      "delayedConsequenceId": "FEEDBACK_RUBRIC_CLEAR",
+      "evidenceTelemetry": {
+        "competency": "accurate",
+        "dimensionLabel": "Năng lực Đánh giá Khách quan",
+        "observationNote": "Chuẩn hóa tiêu chí đánh giá chéo của học sinh theo thang đo rõ ràng."
+      }
+    }
+  ],
+  "trade_off": "Xuống hỗ trợ nhóm 3 sẽ giải quyết bế tắc cho Minh nhưng ít thời gian để mắt tới nhóm 4 của Tuấn; ở trên bục bao quát thì giữ tiến độ nhưng nhóm yếu sẽ bỏ cuộc.",
+  "immediate_feedback": "Trạng thái không khí lớp học thay đổi rõ rệt giữa các nhóm học sinh.",
+  "delayed_consequences": "Quyết định tương tác tại CLASS-01 quyết định sự tham gia của học sinh khi Nam đặt câu hỏi ở CLASS-02.",
+  "anti_softlock": {
+    "fallbackActionId": "action_class_timer_bell",
+    "recoveryDescription": "Khi hết 15 phút thảo luận, chuông cảnh báo vang lên mời đại diện các nhóm báo cáo kết quả."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "creative",
+      "decisive",
+      "accurate"
+    ],
+    "rubricMapping": "Tiêu chí 2.1: Tổ chức hoạt động học tập tích cực và tương tác nhóm."
+  }
+}

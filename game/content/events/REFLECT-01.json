@@ -1,0 +1,99 @@
+{
+  "id": "REFLECT-01",
+  "context": {
+    "location": "StaffRoom",
+    "objective": "Tự phản tư sư phạm và xem báo cáo hướng nghiệp cuối Ngày 1",
+    "timeWindow": {
+      "start": "16:00",
+      "end": "16:45"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-07",
+    "preconditions": {
+      "day_events_concluded": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Ánh hoàng hôn vàng nhạt chiếu qua cửa sổ phòng giáo viên; trường dần vắng tiếng học sinh; cuốn sổ tay phản tư mở sẵn trên bàn.",
+    "audioClue": "sfx_school_bell"
+  },
+  "hidden_info": "Nhật ký phản tư ghi nhận cách người chơi nhìn nhận về các khó khăn trong ngày, đối chiếu với dữ liệu vi mô đã thu thập được.",
+  "actions": [
+    {
+      "id": "reflect_comprehensive_pedagogy",
+      "type": "investigate",
+      "label": "Ghi chép phản tư sâu sắc về phương pháp quản lý lớp và tâm lý học sinh",
+      "description": "Viết nhật ký tổng kết 3 điều tâm đắc: giải pháp dự phòng máy chiếu, kết nối với Minh và phối hợp cùng phụ huynh Chị Thu.",
+      "timeCostMinutes": 15,
+      "immediateConsequence": {
+        "dialogueText": "Cô Mai ghé bàn: 'Một ngày đầu tiên thật ý nghĩa! Thầy/cô có tiềm chất của một nhà giáo chân chính.'",
+        "stateMutations": {
+          "flag_deep_reflection_completed": true,
+          "metric_mentor_support": 3
+        }
+      },
+      "delayedConsequenceId": "REPORT_COMPLETE_RICH",
+      "evidenceTelemetry": {
+        "competency": "analytical",
+        "dimensionLabel": "Năng lực Tự Phản tư & Phát triển Chuyên môn",
+        "observationNote": "Thực hiện tự đánh giá sư phạm có hệ thống, đối chiếu hành vi thực tế với hiệu quả tiếp nhận của học trò."
+      }
+    },
+    {
+      "id": "reflect_quick_log_and_depart",
+      "type": "physical",
+      "label": "Tóm tắt ngắn gọn các công việc đã làm và ra về đúng giờ",
+      "description": "Ghi chú nhanh các đầu việc cần làm cho ngày mai (Ngày 2) và rời trường lúc 16:45.",
+      "timeCostMinutes": 5,
+      "immediateConsequence": {
+        "dialogueText": "Bạn đóng cặp tài liệu, chào các đồng nghiệp trong tổ để ra về.",
+        "stateMutations": {
+          "flag_standard_reflection": true
+        }
+      },
+      "delayedConsequenceId": "REPORT_STANDARD",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Cân bằng Đời sống Nghề nghiệp",
+        "observationNote": "Duy trì ranh giới thời gian làm việc và nghỉ ngơi hợp lý."
+      }
+    },
+    {
+      "id": "reflect_discuss_with_mentor_mai",
+      "type": "dialogue",
+      "label": "Dành 15 phút tâm sự cùng Cô Mai về những trăn trở nghề nghiệp",
+      "description": "Hỏi xin lời khuyên của Cô Mai về cách đồng hành lâu dài với những học sinh có hoàn cảnh đặc biệt như Minh.",
+      "timeCostMinutes": 15,
+      "immediateConsequence": {
+        "dialogueText": "Cô Mai mỉm cười ấm áp: 'Nghề giáo là hành trình dài, quan trọng nhất là ta không bỏ lại đứa trẻ nào phía sau.'",
+        "stateMutations": {
+          "metric_mentor_support": 3,
+          "metric_minh_trust": 2,
+          "flag_mentorship_deepened": true
+        }
+      },
+      "delayedConsequenceId": "REPORT_MENTORSHIP_MAX",
+      "evidenceTelemetry": {
+        "competency": "empathetic",
+        "dimensionLabel": "Năng lực Học hỏi & Cầu thị Chuyên môn",
+        "observationNote": "Chủ động tìm kiếm sự hướng dẫn từ đồng nghiệp giàu kinh nghiệm để nâng cao năng lực sư phạm."
+      }
+    }
+  ],
+  "trade_off": "Phản tư sâu hoặc trao đổi với Mentor giúp hoàn thiện năng lực nhưng ra về muộn hơn; rời trường sớm giúp tái tạo năng lượng nhưng ghi nhận ít điểm sáng phát triển cá nhân.",
+  "immediate_feedback": "Màn hình Báo cáo Hướng nghiệp Đa chiều (Career Report UI) tự động kích hoạt.",
+  "delayed_consequences": "Báo cáo cuối ngày được đồng bộ về server PHP qua API finish.php và lưu vào bảng game_reports.",
+  "anti_softlock": {
+    "fallbackActionId": "action_reflect_auto_save",
+    "recoveryDescription": "Hệ thống tự động lưu bản tóm tắt và mở màn hình báo cáo khi hết ngày."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "analytical",
+      "empathetic",
+      "decisive"
+    ],
+    "rubricMapping": "Tiêu chí 5.1: Tự đánh giá và phát triển đạo đức, năng lực nghề giáo."
+  }
+}

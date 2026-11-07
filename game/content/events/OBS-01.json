@@ -1,0 +1,95 @@
+{
+  "id": "OBS-01",
+  "context": {
+    "location": "Yard",
+    "objective": "Quan sát học sinh đầu ngày và nhận diện tín hiệu bất thường",
+    "timeWindow": {
+      "start": "06:45",
+      "end": "07:15"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-01",
+    "preconditions": {}
+  },
+  "sensory_clue": {
+    "visualClue": "Minh đứng một mình dưới gốc cây bàng gần cổng trường, vai đeo balo trễ, tay cầm cuốn sổ nhỏ chăm chú vẽ thay vì nô đùa với bạn.",
+    "audioClue": "amb_school_yard"
+  },
+  "hidden_info": "Minh phải thức khuya phụ mẹ đóng gói hàng, đang vẽ các sinh vật biển cho bài học nhưng lo lắng vì chưa ngủ đủ.",
+  "actions": [
+    {
+      "id": "obs_approach_minh_gently",
+      "type": "dialogue",
+      "label": "Đến gần chào hỏi thân thiện và khen ngợi hình vẽ",
+      "description": "Tiến lại chào Minh một cách nhẹ nhàng, không tra hỏi bài tập, hỏi về bức tranh em đang vẽ.",
+      "timeCostMinutes": 5,
+      "immediateConsequence": {
+        "dialogueText": "Minh giật mình khép nhẹ sổ, nhưng khi thấy bạn cười liền thở phào: 'Em chào thầy/cô... Em chỉ đang vẽ san hô thôi ạ.'",
+        "stateMutations": {
+          "metric_minh_trust": 2,
+          "flag_minh_drawing_discovered": true
+        }
+      },
+      "delayedConsequenceId": "CLASS-01_MINH_ENGAGED",
+      "evidenceTelemetry": {
+        "competency": "empathetic",
+        "dimensionLabel": "Năng lực Thấu cảm & Đồng hành",
+        "observationNote": "Chủ động tiếp cận học sinh có biểu hiện thu mình bằng thái độ tôn trọng và ấm áp."
+      }
+    },
+    {
+      "id": "obs_observe_from_distance",
+      "type": "investigate",
+      "label": "Đứng từ xa quan sát, ghi nhận vào sổ tay công tác",
+      "description": "Không làm phiền học sinh, quan sát hành vi và ghi chú để theo dõi trong tiết học.",
+      "timeCostMinutes": 3,
+      "immediateConsequence": {
+        "dialogueText": "Bạn ghi nhanh vào sổ: 'Minh - 9A: hay đứng một mình đầu giờ, có vẻ thiếu ngủ nhưng tập trung vẽ.'",
+        "stateMutations": {
+          "flag_minh_noted_in_journal": true
+        }
+      },
+      "delayedConsequenceId": "CLASS-01_MINH_WATCHED",
+      "evidenceTelemetry": {
+        "competency": "analytical",
+        "dimensionLabel": "Năng lực Phân tích Sư phạm",
+        "observationNote": "Thu thập dữ liệu quan sát hành vi học sinh khách quan trước giờ lên lớp."
+      }
+    },
+    {
+      "id": "obs_walk_past_punctual",
+      "type": "physical",
+      "label": "Gật đầu chào chung rồi tiến thẳng vào phòng giáo viên",
+      "description": "Ưu tiên giữ đúng lịch trình vào phòng giáo viên lúc 07:00, không dừng lại can thiệp cá nhân.",
+      "timeCostMinutes": 1,
+      "immediateConsequence": {
+        "dialogueText": "Bạn mỉm cười chào các em học sinh ở cổng rồi bước nhanh về phía sảnh chính.",
+        "stateMutations": {
+          "flag_punctual_arrival": true
+        }
+      },
+      "delayedConsequenceId": "CLASS-01_MINH_NEUTRAL",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Quản lý Thời gian",
+        "observationNote": "Tuân thủ nghiêm ngặt tiến độ thời gian theo quy định nhà trường."
+      }
+    }
+  ],
+  "trade_off": "Dừng lại nói chuyện với Minh sẽ xây dựng niềm tin cá nhân nhưng đến phòng giáo viên muộn 5 phút; đi thẳng đảm bảo đúng giờ nhưng bỏ lỡ manh mối tâm lý đầu ngày.",
+  "immediate_feedback": "Minh phản hồi theo mức độ tiếp cận; nhật ký ghi chú cập nhật thông tin.",
+  "delayed_consequences": "Mức độ tin tưởng (`minh_trust`) ban đầu ảnh hưởng trực tiếp đến việc Minh có dám phát biểu ý kiến trong tiết học hay tiếp tục im lặng.",
+  "anti_softlock": {
+    "fallbackActionId": "action_obs_default_yard",
+    "recoveryDescription": "Dù người chơi không tương tác, tiếng trống trường lúc 07:00 sẽ báo hiệu chuyển sang phòng giáo viên."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "empathetic",
+      "analytical",
+      "decisive"
+    ],
+    "rubricMapping": "Tiêu chí 1.1: Quan sát và phát hiện sớm nhu cầu hỗ trợ của học sinh."
+  }
+}

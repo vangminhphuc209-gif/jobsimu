@@ -1,0 +1,98 @@
+{
+  "id": "FEEDBACK-01",
+  "context": {
+    "location": "Class9A",
+    "objective": "Thu phiếu Exit ticket đánh giá mức độ hiểu bài thực tế của học sinh",
+    "timeWindow": {
+      "start": "08:25",
+      "end": "08:30"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-03",
+    "preconditions": {
+      "lesson_nearing_end": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Đồng hồ lớp chỉ 08:25; xấp phiếu Exit ticket nằm trên bàn giáo viên; học sinh đang hoàn tất ghi chép.",
+    "audioClue": "sfx_paper_flip"
+  },
+  "hidden_info": "Phiếu Exit ticket chứa câu hỏi kiểm tra: 'Nêu 1 hành động thực tế gia đình em có thể làm để giảm phát thải khí nhà kính'.",
+  "actions": [
+    {
+      "id": "feedback_collect_all_exit_tickets",
+      "type": "physical",
+      "label": "Nhờ Lớp trưởng Linh thu đủ 32 phiếu Exit ticket và xem nhanh 3 phiếu",
+      "description": "Thu toàn bộ phiếu để có dữ liệu đánh giá thực chất xem học sinh có hiểu bài hay không.",
+      "timeCostMinutes": 4,
+      "immediateConsequence": {
+        "dialogueText": "Linh thu đủ xấp phiếu đưa bạn. Bạn nhìn nhanh thấy Minh viết: 'Gia đình em sẽ tắt bớt 1 bóng đèn xưởng khi không dùng'.",
+        "stateMutations": {
+          "flag_exit_tickets_collected": true,
+          "inventory_add": "collected_exit_tickets"
+        }
+      },
+      "delayedConsequenceId": "REPORT_HAS_EMPIRICAL_EVIDENCE",
+      "evidenceTelemetry": {
+        "competency": "analytical",
+        "dimensionLabel": "Năng lực Đánh giá Quá trình",
+        "observationNote": "Thu thập bằng chứng đánh giá vi mô (Exit ticket) để xác thực mức độ đạt chuẩn đầu ra của học sinh."
+      }
+    },
+    {
+      "id": "feedback_verbal_spot_check",
+      "type": "dialogue",
+      "label": "Gọi ngẫu nhiên 2 học sinh phát biểu miệng thay vì thu phiếu",
+      "description": "Tiết kiệm thời gian, hỏi nhanh 2 câu hỏi củng cố trước khi chuông reo.",
+      "timeCostMinutes": 3,
+      "immediateConsequence": {
+        "dialogueText": "Tuấn và Linh phát biểu đúng trọng tâm. Tiết học kết thúc đúng tiếng trống trường.",
+        "stateMutations": {
+          "flag_verbal_check_done": true
+        }
+      },
+      "delayedConsequenceId": "REPORT_PARTIAL_DATA",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Đánh giá Nhanh",
+        "observationNote": "Kiểm tra mức độ hiểu bài thông qua phỏng vấn miệng chọn mẫu đại diện."
+      }
+    },
+    {
+      "id": "feedback_skip_and_dismiss_class",
+      "type": "physical",
+      "label": "Cho lớp nghỉ sớm 3 phút để các em chuẩn bị tiết sau",
+      "description": "Bỏ qua bước thu thập phản hồi, cho học sinh thu dọn sách vở ra chơi.",
+      "timeCostMinutes": 1,
+      "immediateConsequence": {
+        "dialogueText": "Cả lớp vui vẻ ùa ra sân trường chơi đùa. Bạn chưa thu được phiếu đánh giá nào.",
+        "stateMutations": {
+          "flag_exit_tickets_collected": false,
+          "flag_assessment_skipped": true
+        }
+      },
+      "delayedConsequenceId": "REPORT_INSUFFICIENT_EVIDENCE",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Quản trị Thời gian",
+        "observationNote": "Ưu tiên thời gian nghỉ ngơi của học sinh nhưng thiếu hụt dữ liệu đánh giá đầu ra bài học."
+      }
+    }
+  ],
+  "trade_off": "Thu phiếu mang lại dữ liệu khách quan 100% nhưng phải mang về chấm và chấm dứt tiết học sát nút; cho lớp nghỉ sớm thì học sinh thoải mái nhưng báo cáo hướng nghiệp cuối ngày sẽ cảnh báo 'Thiếu bằng chứng'.",
+  "immediate_feedback": "Xấp phiếu nằm trong túi tài liệu giáo viên hoặc để trống.",
+  "delayed_consequences": "Nếu chọn bỏ qua (feedback_skip), bài kiểm thử QA-05 yêu cầu báo cáo cuối ngày ghi nhận trạng thái 'Chưa đủ dữ liệu bằng chứng', cấm tự động chấm điểm cao.",
+  "anti_softlock": {
+    "fallbackActionId": "action_feedback_bell_dismiss",
+    "recoveryDescription": "Khi tiếng trống ra chơi 08:30 vang lên, học sinh tự động giải tán ra chơi."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "analytical",
+      "accurate",
+      "decisive"
+    ],
+    "rubricMapping": "Tiêu chí 3.1: Đánh giá thường xuyên và thu nhận phản hồi học tập."
+  }
+}

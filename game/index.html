@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JOBSIMU 3D — Người Thầy Sau Tiếng Trống Trường</title>
+    <style>
+      html, body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #111827;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #f3f4f6;
+      }
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+        display: block;
+      }
+      #ui-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+        padding: 16px;
+      }
+      .interactive {
+        pointer-events: auto;
+      }
+      .hud-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(17, 24, 39, 0.85);
+        backdrop-filter: blur(8px);
+        padding: 10px 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .clock-badge {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #60a5fa;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .quest-card {
+        background: rgba(17, 24, 39, 0.9);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 12px;
+        padding: 12px 18px;
+        max-width: 360px;
+        margin-top: 12px;
+      }
+      .quest-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #93c5fd;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .quest-desc {
+        font-size: 0.95rem;
+        color: #f9fafb;
+      }
+      #interaction-prompt {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 9999px;
+        font-weight: 600;
+        border: 2px solid #3b82f6;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      }
+      .key-badge {
+        background: #3b82f6;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-weight: 800;
+      }
+      .controls-hint {
+        background: rgba(17, 24, 39, 0.75);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+    
+    <div id="ui-overlay">
+      <div class="hud-top">
+        <div class="hud-header">
+          <div class="clock-badge">
+            <span id="clock-display">⏰ 06:45</span>
+            <span id="period-display" style="font-size: 0.9rem; color: #9ca3af;">(Chuẩn bị trước giờ lên lớp)</span>
+          </div>
+          <div class="controls-hint">
+            [WASD] Di chuyển | [Shift] Chạy | [E] Tương tác | [P] Menu
+          </div>
+        </div>
+        
+        <div class="quest-card" id="quest-container">
+          <div class="quest-title" id="quest-phase">Nhiệm vụ hiện tại</div>
+          <div class="quest-desc" id="quest-objective">Đến phòng hội đồng giáo viên và trao đổi với Cô Mai.</div>
+        </div>
+      </div>
+
+      <div id="interaction-prompt">
+        <span class="key-badge">E</span>
+        <span id="interaction-label">Tương tác</span>
+      </div>
+
+      <div class="hud-bottom interactive" id="bottom-ui-slot"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

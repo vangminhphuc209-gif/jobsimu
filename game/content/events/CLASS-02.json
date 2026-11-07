@@ -1,0 +1,97 @@
+{
+  "id": "CLASS-02",
+  "context": {
+    "location": "Class9A",
+    "objective": "Xử lý câu hỏi phản biện thực tế của học sinh Nam",
+    "timeWindow": {
+      "start": "08:05",
+      "end": "08:15"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-03",
+    "preconditions": {
+      "group_reports_started": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Nam giơ tay dứt khoát, đứng dậy cầm một bài báo in về số liệu phát thải than đá tại nhà máy nhiệt điện gần địa phương; cả lớp quay lại nhìn Nam.",
+    "audioClue": ""
+  },
+  "hidden_info": "Số liệu của Nam là đúng thực tế địa phương nhưng chưa được đưa vào sách giáo khoa chính khóa; nếu giáo viên gạt đi sẽ làm thui chột tư duy phản biện của học sinh.",
+  "actions": [
+    {
+      "id": "nam_acknowledge_and_integrate",
+      "type": "dialogue",
+      "label": "Biểu dương câu hỏi hay và kết nối ngay vào bài học thực tế",
+      "description": "Khen ngợi tư duy cập nhật thực tiễn của Nam, dành 3 phút phân tích ngắn sự đánh đổi giữa năng lượng và môi trường.",
+      "timeCostMinutes": 4,
+      "immediateConsequence": {
+        "dialogueText": "Nam mỉm cười gật gù thích thú. Cả lớp ồ lên hào hứng vì ví dụ gắn liền với địa phương các em sống.",
+        "stateMutations": {
+          "flag_critical_thinking_praised": true,
+          "metric_colleague_cooperation": 1
+        }
+      },
+      "delayedConsequenceId": "NAM_RESPECT_HIGH",
+      "evidenceTelemetry": {
+        "competency": "analytical",
+        "dimensionLabel": "Năng lực Tư duy Khoa học & Kết nối Thực tiễn",
+        "observationNote": "Khuyến khích học sinh phản biện bằng dữ liệu thực chứng và tích hợp vào nội dung sư phạm."
+      }
+    },
+    {
+      "id": "nam_defer_to_extra_curriculum",
+      "type": "investigate",
+      "label": "Ghi nhận lên bảng và hẹn thảo luận sâu trong tiết ngoại khóa",
+      "description": "Viết câu hỏi của Nam lên góc bảng 'Góc tò mò', giữ vững tiến độ bài học hôm nay và hẹn giải đáp vào chiều thứ Năm.",
+      "timeCostMinutes": 2,
+      "immediateConsequence": {
+        "dialogueText": "Bạn viết trang trọng lên bảng: 'Câu hỏi của Nam: Nhiệt điện than và năng lượng tái tạo địa phương'. Nam hài lòng ngồi xuống.",
+        "stateMutations": {
+          "flag_question_deferred_fairly": true
+        }
+      },
+      "delayedConsequenceId": "PACING_SAVED_NAM_CONTENT",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Quản trị Kế hoạch Bài dạy",
+        "observationNote": "Bảo đảm tiến độ thời lượng tiết học trong khi vẫn ghi nhận tôn trọng ý kiến học sinh."
+      }
+    },
+    {
+      "id": "nam_open_to_class_debate",
+      "type": "physical",
+      "label": "Tổ chức một phiên tranh luận mini 2 phút giữa các dãy bàn",
+      "description": "Để nhóm 1 (ủng hộ kinh tế) và nhóm 2 (bảo vệ môi trường) đưa ra luận điểm phản hồi câu hỏi của Nam.",
+      "timeCostMinutes": 5,
+      "immediateConsequence": {
+        "dialogueText": "Không khí lớp bùng nổ tranh luận tích cực; các học sinh tích cực vận dụng kiến thức bài vừa học.",
+        "stateMutations": {
+          "flag_active_debate_held": true
+        }
+      },
+      "delayedConsequenceId": "CLASS_HIGH_ENERGY",
+      "evidenceTelemetry": {
+        "competency": "creative",
+        "dimensionLabel": "Năng lực Tổ chức Tranh luận Sư phạm",
+        "observationNote": "Chuyển hóa tình huống thách thức thành cơ hội rèn luyện năng lực tranh biện cho học sinh."
+      }
+    }
+  ],
+  "trade_off": "Phân tích sâu thì lớp học rất hứng thú nhưng nguy cơ cháy giáo án không kịp thu phiếu kiểm tra; hẹn lại thì giữ tiến độ nhưng giảm bớt nhiệt huyết tranh luận tại chỗ.",
+  "immediate_feedback": "Phản ứng của Nam và mức độ tập trung của cả lớp thay đổi theo cách tiếp cận.",
+  "delayed_consequences": "Cách ứng xử với câu hỏi của Nam là dữ liệu đối chiếu quan trọng khi Cô Hạnh dự giờ hoặc đánh giá chuyên môn cuối ngày.",
+  "anti_softlock": {
+    "fallbackActionId": "action_nam_clock_reminder",
+    "recoveryDescription": "Nếu thời gian vượt quá 3 phút, giáo viên chủ động tóm tắt luận điểm và chuyển sang hoạt động tiếp theo."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "analytical",
+      "decisive",
+      "creative"
+    ],
+    "rubricMapping": "Tiêu chí 2.2: Kỹ năng xử lý tình huống phản biện và mở rộng tri thức ngoài sách giáo khoa."
+  }
+}

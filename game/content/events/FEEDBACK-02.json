@@ -1,0 +1,99 @@
+{
+  "id": "FEEDBACK-02",
+  "context": {
+    "location": "StaffRoom",
+    "objective": "Trao đổi tiến bộ học tập với phụ huynh Chị Thu (mẹ học sinh Minh)",
+    "timeWindow": {
+      "start": "15:00",
+      "end": "15:45"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-06",
+    "preconditions": {
+      "parent_meeting_scheduled": true
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Chị Thu mặc áo công nhân còn vương bụi, ngồi ở bàn tiếp phụ huynh với vẻ mặt đầy lo lắng, hai bàn tay đan chặt vào nhau.",
+    "audioClue": ""
+  },
+  "hidden_info": "Chị Thu rất sợ bị giáo viên phê bình và yêu cầu chuyển trường cho con; chị đang gồng gánh nuôi 2 con ăn học và luôn mặc cảm tự ti.",
+  "actions": [
+    {
+      "id": "parent_empathy_and_strength_focus",
+      "type": "dialogue",
+      "label": "Mời nước, lắng nghe khó khăn gia đình và chia sẻ các bức vẽ sáng tạo của Minh",
+      "description": "Bắt đầu bằng việc khen ngợi năng khiếu hội họa và sự tiến bộ của Minh trong tiết học hôm nay, lắng nghe tâm sự của mẹ mà không phán xét.",
+      "timeCostMinutes": 18,
+      "immediateConsequence": {
+        "dialogueText": "Chị Thu xúc động rơm rớm nước mắt: 'Thực sự cảm ơn thầy/cô... Tôi cứ tưởng cháu lại bị mắng. Tôi sẽ cố gắng sắp xếp để cháu ngủ sớm hơn.'",
+        "stateMutations": {
+          "metric_parent_confidence": 3,
+          "metric_minh_trust": 3,
+          "flag_family_alliance_formed": true
+        }
+      },
+      "delayedConsequenceId": "PARENT_ALLIANCE_STRONG",
+      "evidenceTelemetry": {
+        "competency": "empathetic",
+        "dimensionLabel": "Năng lực Phối hợp Gia đình & Nhà trường",
+        "observationNote": "Xây dựng mối quan hệ tin cậy với phụ huynh trên nền tảng thấu cảm và ghi nhận điểm mạnh của học sinh."
+      }
+    },
+    {
+      "id": "parent_academic_focus_and_rubric",
+      "type": "investigate",
+      "label": "Mở sổ điểm và đối chiếu bảng tiêu chí rubric khách quan",
+      "description": "Trình bày cụ thể các đầu điểm, bài tập chưa nộp và đưa ra kế hoạch phụ đạo có hạn định rõ ràng.",
+      "timeCostMinutes": 12,
+      "immediateConsequence": {
+        "dialogueText": "Chị Thu chăm chú nghe và ký vào biên bản kế hoạch phối hợp kèm theo lộ trình nộp bù bài tập.",
+        "stateMutations": {
+          "metric_parent_confidence": 1,
+          "flag_academic_rubric_shared": true
+        }
+      },
+      "delayedConsequenceId": "ACADEMIC_PLAN_SIGNED",
+      "evidenceTelemetry": {
+        "competency": "accurate",
+        "dimensionLabel": "Năng lực Tư vấn Học thuật Chuẩn mực",
+        "observationNote": "Minh bạch hóa tiêu chí đánh giá và thiết lập kế hoạch cải thiện học tập dựa trên dữ liệu cụ thể."
+      }
+    },
+    {
+      "id": "parent_quick_brief_due_to_meeting",
+      "type": "physical",
+      "label": "Trao đổi ngắn 5 phút để kịp giờ họp chuyên môn với Ban giám hiệu",
+      "description": "Tóm tắt nhanh tình hình và gửi tài liệu hướng dẫn để chị Thu về đọc thêm tại nhà.",
+      "timeCostMinutes": 5,
+      "immediateConsequence": {
+        "dialogueText": "Chị Thu nhận tài liệu, chào vội để bạn vào phòng họp.",
+        "stateMutations": {
+          "flag_brief_meeting_held": true
+        }
+      },
+      "delayedConsequenceId": "PARENT_NEUTRAL",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Cân bằng Thứ tự Ưu tiên",
+        "observationNote": "Duy trì lịch trình họp cơ quan trong bối cảnh lịch làm việc dày đặc."
+      }
+    }
+  ],
+  "trade_off": "Trò chuyện sâu sắc với phụ huynh tốn 18 phút tạo đồng thuận cao nhưng rút ngắn thời gian chuẩn bị họp chuyên môn; nói ngắn gọn giữ đúng giờ nhưng phụ huynh chưa giải tỏa hết âu lo.",
+  "immediate_feedback": "Thái độ và sự hợp tác của Chị Thu thay đổi rõ rệt.",
+  "delayed_consequences": "Quyết định tại FEEDBACK-02 hoàn tất tuyến truyện Arc C, kết nối vào báo cáo tổng kết ngày.",
+  "anti_softlock": {
+    "fallbackActionId": "action_parent_default_sign",
+    "recoveryDescription": "Chị Thu ký sổ liên lạc gia đình trước khi ra về."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "empathetic",
+      "accurate",
+      "decisive"
+    ],
+    "rubricMapping": "Tiêu chí 4.2: Kỹ năng giao tiếp và đồng hành cùng cha mẹ học sinh."
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "id": "CRISIS-02",
+  "context": {
+    "location": "Class9A",
+    "objective": "Ứng phó sự cố máy chiếu tắt đột ngột khi đang giảng bài",
+    "timeWindow": {
+      "start": "08:15",
+      "end": "08:25"
+    }
+  },
+  "trigger": {
+    "checkpointId": "CP-03",
+    "preconditions": {
+      "minutes_past": 30
+    }
+  },
+  "sensory_clue": {
+    "visualClue": "Đèn máy chiếu chớp đỏ liên tục rồi phụt tắt; màn chiếu tối đen; quạt tản nhiệt ré lên rồi im bặt.",
+    "audioClue": "sfx_projector_spark"
+  },
+  "hidden_info": "Máy chiếu bị quá nhiệt rơ-le nhiệt ngắt điện tự động, không thể bật lại trong ít nhất 15 phút tới.",
+  "actions": [
+    {
+      "id": "crisis_distribute_prepared_handouts",
+      "type": "physical",
+      "label": "Phát ngay 32 bản in phiếu học tập đã chuẩn bị sẵn từ phòng giáo viên",
+      "description": "Lấy xấp tài liệu đã in ở PREP-01 ra phát cho 4 nhóm, cho các em tiếp tục làm bài mà không mất nhịp.",
+      "timeCostMinutes": 2,
+      "requiredFlags": {
+        "flag_prep_backup_available": true
+      },
+      "immediateConsequence": {
+        "dialogueText": "Học sinh ồ lên thán phục: 'Thầy/cô chuẩn bị sẵn hết rồi kìa!' Tiết học tiếp tục trôi chảy không một phút gián đoạn.",
+        "stateMutations": {
+          "flag_crisis_handled_smoothly": true,
+          "metric_mentor_support": 2
+        }
+      },
+      "delayedConsequenceId": "CRISIS_HERO_PREP",
+      "evidenceTelemetry": {
+        "competency": "accurate",
+        "dimensionLabel": "Năng lực Quản trị Rủi ro Thiết bị",
+        "observationNote": "Học liệu dự phòng phát huy tác dụng xuất sắc, chuyển trạng thái khủng hoảng thành cơ hội học tập liền mạch."
+      }
+    },
+    {
+      "id": "crisis_transition_to_board_diagram",
+      "type": "creative",
+      "label": "Chuyển sang phác thảo sơ đồ tổng hợp trên bảng phấn",
+      "description": "Tận dụng bảng đen, mời Minh và Nam lên bảng cùng vẽ các nhánh nguyên nhân và hậu quả.",
+      "timeCostMinutes": 4,
+      "immediateConsequence": {
+        "dialogueText": "Minh tự tin cầm phấn vẽ sơ đồ Trái Đất rất đẹp; cả lớp tập trung theo dõi từng nét vẽ trên bảng.",
+        "stateMutations": {
+          "flag_crisis_turned_to_board": true,
+          "metric_minh_trust": 3
+        }
+      },
+      "delayedConsequenceId": "MINH_BOARD_PRAISE",
+      "evidenceTelemetry": {
+        "competency": "creative",
+        "dimensionLabel": "Năng lực Ứng biến Sư phạm",
+        "observationNote": "Chuyển đổi linh hoạt phương tiện dạy học, huy động năng khiếu học sinh để hoàn thành mục tiêu bài dạy."
+      }
+    },
+    {
+      "id": "crisis_improvise_verbal_qa",
+      "type": "dialogue",
+      "label": "Chuyển thành phiên hỏi đáp nhanh và chép miệng bài tập vào vở",
+      "description": "Đọc câu hỏi cho học sinh chép vào vở ghi khi không có bản in và máy chiếu hỏng.",
+      "timeCostMinutes": 6,
+      "immediateConsequence": {
+        "dialogueText": "Lớp học hơi xao nhác một chút vì phải chép bài, nhưng trật tự dần ổn định lại sau khi bạn điều phối.",
+        "stateMutations": {
+          "flag_verbal_fallback_used": true
+        }
+      },
+      "delayedConsequenceId": "CLASS_SLOWED_DOWN",
+      "evidenceTelemetry": {
+        "competency": "decisive",
+        "dimensionLabel": "Năng lực Quản lý Lớp học Ứng biến",
+        "observationNote": "Duy trì kỷ luật và nội dung bài giảng bằng phương pháp sư phạm truyền thống khi công nghệ gặp sự cố."
+      }
+    }
+  ],
+  "trade_off": "Có bản in dự phòng giúp bạn xử lý sự cố trong 2 phút; dùng bảng phấn rèn luyện sự sáng tạo của học sinh nhưng tốn 4 phút; chép bài miệng giải quyết được việc nhưng làm chậm nhịp tiết học.",
+  "immediate_feedback": "Trạng thái bảng và biểu cảm học sinh phản ánh trực tiếp phương án lựa chọn.",
+  "delayed_consequences": "Đây là mắt xích phân kỳ trung tâm của bài kiểm thử 3-Run Divergence Evaluation.",
+  "anti_softlock": {
+    "fallbackActionId": "action_crisis_default_textbook",
+    "recoveryDescription": "Nếu không chọn gì, học sinh tự mở sách giáo khoa trang 45 để làm bài tập cuối bài."
+  },
+  "evidence_telemetry": {
+    "competenciesAffected": [
+      "accurate",
+      "creative",
+      "decisive"
+    ],
+    "rubricMapping": "Tiêu chí 2.3: Ứng phó sự cố kỹ thuật trong giờ học."
+  }
+}
