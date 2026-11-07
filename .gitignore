@@ -4,9 +4,16 @@ config.php
 .env.*
 !.env.example
 
-# Logs
+# Database Backups & Dumps
+*.sql.bak
+*.dump
+*.sqlite
+
+# Logs & Traces
 *.log
 error_log
+*.trace
+*.heapsnapshot
 
 # OS & Editor files
 .DS_Store
@@ -16,6 +23,21 @@ Thumbs.db
 *.swp
 *.swo
 
-# Dependencies & uploads
+# Dependencies & Builds
 vendor/
 node_modules/
+game/node_modules/
+game/dist/
+dist/
+public_html/node_modules/
+public_html/dist/
+
+# Test Reports & Coverage
+coverage/
+playwright-report/
+test-results/
+
+# Git Worktrees
+.worktrees/
+wt-*/
+*-wt-*/
