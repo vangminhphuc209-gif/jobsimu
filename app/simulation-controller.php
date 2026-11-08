@@ -1,17 +1,7 @@
 <?php
 declare(strict_types=1);
 
-if ($page === 'simulations') {
-    $jobs = db()->query("SELECT * FROM careers WHERE status='published' ORDER BY featured DESC,title")->fetchAll();
-    $attempts=[];$recent=[];
-    if(user()){$s=db()->prepare('SELECT career_id,MAX(score) best_score,COUNT(*) attempt_count FROM simulation_attempts WHERE user_id=? GROUP BY career_id');$s->execute([user()['id']]);foreach($s->fetchAll() as $x)$attempts[$x['career_id']]=$x;$s=db()->prepare('SELECT sa.id,sa.score,sa.completed_at,c.title,c.icon FROM simulation_attempts sa JOIN careers c ON c.id=sa.career_id WHERE sa.user_id=? ORDER BY sa.completed_at DESC LIMIT 5');$s->execute([user()['id']]);$recent=$s->fetchAll();}
-    $pageTitle='Phòng mô phỏng nghề';require ROOT_PATH.'/app/header.php';?>
-    <section class="page-head"><div class="container"><span class="eyebrow">15 mô phỏng · 60 tình huống</span><h1>Phòng mô phỏng nghề nghiệp</h1><p>Ra quyết định như người trong nghề, nhận phản hồi tức thì và khám phá năng lực qua trải nghiệm.</p></div></section>
-    <div class="container"><div class="toolbar"><input class="search" data-career-search placeholder="🔎 Tìm trò chơi nghề nghiệp..."><span class="muted">Mỗi mô phỏng khoảng 4–6 phút</span></div>
-    <div class="grid-3"><?php foreach($jobs as $job):$game=simulation_for_career($job);if(!$game)continue;$done=$attempts[$job['id']]??null;?><a data-career class="card career-card" href="<?=url('index.php?page=simulation&id='.$job['id'])?>"><div class="flex items-start justify-between"><div class="career-icon"><?=e($job['icon'])?></div><?php if($done):?><span class="sim-done">✓ Tốt nhất <?=$done['best_score']?>%</span><?php else:?><span class="ai-badge">Mới</span><?php endif;?></div><h3><?=e($game['title'])?></h3><p><?=e($game['brief'])?></p><div class="meta"><span>🎭 <?=e($game['role'])?></span><b style="color:var(--primary)"><?=$done?'Chơi lại':'Bắt đầu'?> →</b></div></a><?php endforeach;?></div>
-    <?php if($recent):?><div class="mt-10 flex items-center justify-between"><h2>Lịch sử trải nghiệm của bạn</h2><span class="muted"><?=array_sum(array_column($attempts,'attempt_count'))?> lượt đã chơi</span></div><div class="card table-wrap"><table><thead><tr><th>Nghề</th><th>Điểm</th><th>Thời gian</th><th></th></tr></thead><tbody><?php foreach($recent as $x):?><tr><td><b><?=e($x['icon'].' '.$x['title'])?></b></td><td><b class="text-brand-600"><?=$x['score']?>/100</b></td><td><?=date('d/m/Y H:i',strtotime($x['completed_at']))?></td><td><a class="btn py-2" href="<?=url('index.php?page=simulation-result&id='.$x['id'])?>">Xem báo cáo</a></td></tr><?php endforeach;?></tbody></table></div><?php endif;?></div>
-    <?php require ROOT_PATH.'/app/footer.php';exit;
-}
+if ($page === 'simulations') require ROOT_PATH.'/app/simulation-hub.php';
 
 if ($page === 'career') {
     $id = (int)($_GET['id'] ?? 0);
