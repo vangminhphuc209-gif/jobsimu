@@ -1,106 +1,68 @@
-/**
- * game/src/player/CharacterController.ts
- * Character movement controller supporting WASD + Shift running with collision detection.
- */
-
 import { Scene } from '@babylonjs/core/scene';
-import { Vector3 } from '@babylonjs/core/Maths/math';
+import { Vector3, Color3 } from '@babylonjs/core/Maths/math';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import '@babylonjs/core/Collisions/collisionCoordinator';
 
+/** Feet are at y=0; collider is centered on the visible body. */
 export class CharacterController {
   private mesh: Mesh;
-  private scene: Scene;
-  private camera: ArcRotateCamera;
   private keys: Record<string, boolean> = {};
-
-  private walkSpeed: number = 4.5;
-  private runSpeed: number = 7.5;
-  private gravity: number = -9.81;
-
-  constructor(scene: Scene, camera: ArcRotateCamera, initialPosition = new Vector3(0, 1.0, 0)) {
-    this.scene = scene;
-    this.camera = camera;
-
-    // Stylized teacher placeholder avatar
-    this.mesh = MeshBuilder.CreateCapsule('playerTeacher', {
-      radius: 0.45,
-      height: 1.8,
-      subdivisions: 8
-    }, this.scene);
-
-    this.mesh.position = initialPosition.clone();
-    this.mesh.checkCollisions = true;
-    this.mesh.ellipsoid = new Vector3(0.45, 0.9, 0.45);
-    this.mesh.ellipsoidOffset = new Vector3(0, 0.9, 0);
-
-    const mat = new StandardMaterial('playerMat', this.scene);
-    mat.diffuseColor = new Color3(0.2, 0.45, 0.85); // Professional navy blue
-    mat.specularColor = new Color3(0.1, 0.1, 0.1);
-    this.mesh.material = mat;
-
-    this.setupInputListeners();
-    this.setupGameLoop();
-  }
-
-  public getMesh(): Mesh {
-    return this.mesh;
-  }
-
-  public getPosition(): Vector3 {
-    return this.mesh.position;
-  }
-
-  private setupInputListeners(): void {
-    window.addEventListener('keydown', (e) => {
+  private enabled = true;
+  private limbs: Mesh[] = [];
+  private stride = 0;
+  constructor(private scene: Scene, private camera: ArcRotateCamera | null, initialPosition = new Vector3(0, 1, 0)) {
+    this.mesh = MeshBuilder.CreateBox('playerTeacher', { width: .6, height: 1.8, depth: .4 }, scene);
+    this.mesh.visibility = 0;
+    this.mesh.position.copyFrom(initialPosition);
+    this.mesh.ellipsoid = new Vector3(.33, .9, .33);
+    this.mesh.ellipsoidOffset = Vector3.Zero();
+    const material = (name: string, hex: string) => {
+      const m = new StandardMaterial(name, scene); m.diffuseColor = Color3.FromHexString(hex); m.specularColor = Color3.Black(); return m;
+    };
+    const shirt = material('teacherShirt', '#eef3ee'), pants = material('teacherTrousers', '#243e55');
+    const skin = material('teacherSkin', '#d7a47e'), hair = material('teacherHair', '#302c29');
+    const part = (name: string, width: number, height: number, depth: number, x: number, y: number, z: number, mat: StandardMaterial) => {
+      const p = MeshBuilder.CreateBox(name, { width, height, depth }, scene); p.parent = this.mesh; p.position.set(x,y,z); p.material=mat; return p;
+    };
+    part('teacherTorso', .55,.65,.3,0,.1,0,shirt);
+    const head = MeshBuilder.CreateSphere('teacherHead', {diameter:.4, segments:10}, scene); head.parent=this.mesh; head.position.y=.66; head.material=skin;
+    part('teacherHair',.37,.14,.35,0,.82,-.02,hair);
+    part('teacherTie',.07,.4,.025,0,.16,.165,pants);
+    for(const side of [-1,1]) {
+      this.limbs.push(part('teacherLeg'+side,.2,.75,.22,side*.15,-.53,0,pants));
+      this.limbs.push(part('teacherArm'+side,.16,.64,.2,side*.38,.02,0,shirt));
+      part('teacherShoe'+side,.22,.13,.35,side*.15,-.85,.05,hair);
+    }
+    window.addEventListener('keydown', e => {
+      if (!this.enabled || /INPUT|TEXTAREA|SELECT/.test((e.target as HTMLElement)?.tagName)) return;
+      if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
       this.keys[e.key.toLowerCase()] = true;
     });
-
-    window.addEventListener('keyup', (e) => {
-      this.keys[e.key.toLowerCase()] = false;
-    });
+    window.addEventListener('keyup', e => { this.keys[e.key.toLowerCase()] = false; });
+    window.addEventListener('blur', () => { this.keys = {}; });
+    scene.onBeforeRenderObservable.add(() => this.updateMovement(Math.min(scene.getEngine().getDeltaTime()/1000,.05)));
   }
-
-  private setupGameLoop(): void {
-    this.scene.onBeforeRenderObservable.add(() => {
-      const delta = this.scene.getEngine().getDeltaTime() / 1000.0;
-      this.updateMovement(delta);
-    });
-  }
-
+  public setCamera(camera: ArcRotateCamera): void { this.camera = camera; }
+  public setEnabled(enabled: boolean): void { this.enabled=enabled; this.keys={}; }
+  public getMesh(): Mesh { return this.mesh; }
+  public getPosition(): Vector3 { return this.mesh.position; }
   private updateMovement(delta: number): void {
-    let forward = 0;
-    let side = 0;
-
-    if (this.keys['w'] || this.keys['arrowup']) forward += 1;
-    if (this.keys['s'] || this.keys['arrowdown']) forward -= 1;
-    if (this.keys['d'] || this.keys['arrowright']) side += 1;
-    if (this.keys['a'] || this.keys['arrowleft']) side -= 1;
-
-    if (forward === 0 && side === 0) {
-      // Apply passive gravity
-      this.mesh.moveWithCollisions(new Vector3(0, this.gravity * delta, 0));
-      return;
+    if(!this.enabled || !this.camera) return;
+    const forward = Number(!!(this.keys.w || this.keys.arrowup))-Number(!!(this.keys.s || this.keys.arrowdown));
+    const side = Number(!!(this.keys.d || this.keys.arrowright))-Number(!!(this.keys.a || this.keys.arrowleft));
+    const direction = this.camera.target.subtract(this.camera.position); direction.y=0; direction.normalize();
+    const right = new Vector3(direction.z,0,-direction.x);
+    const move = direction.scale(forward).add(right.scale(side));
+    const moving = move.lengthSquared()>0;
+    if(moving) {
+      move.normalize().scaleInPlace((this.keys.shift?7:4.5)*delta);
+      this.mesh.rotation.y=Math.atan2(move.x,move.z); this.stride += delta*(this.keys.shift?12:8);
     }
-
-    const isRunning = this.keys['shift'];
-    const speed = isRunning ? this.runSpeed : this.walkSpeed;
-
-    // Camera relative angles
-    const cameraAlpha = this.camera.alpha;
-    const moveAngle = Math.atan2(side, forward) - cameraAlpha - Math.PI / 2;
-
-    const moveX = Math.sin(moveAngle) * speed * delta;
-    const moveZ = Math.cos(moveAngle) * speed * delta;
-    const moveY = this.gravity * delta;
-
-    const moveVector = new Vector3(moveX, moveY, moveZ);
-    this.mesh.moveWithCollisions(moveVector);
-
-    // Rotate player mesh toward movement direction
-    this.mesh.rotation.y = moveAngle;
+    move.y=-9.81*delta; this.mesh.moveWithCollisions(move);
+    this.limbs.forEach((limb,i)=>{limb.rotation.x=moving?Math.sin(this.stride+(i<2?0:Math.PI))*.35:0;});
+    if(this.mesh.position.y < -5) this.mesh.position.set(-12,1.1,3);
   }
 }

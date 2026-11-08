@@ -3,6 +3,8 @@
  * Third-person orbital follow camera with collision prevention against walls.
  */
 
+import '@babylonjs/core/Cameras/Inputs/arcRotateCameraPointersInput';
+import '@babylonjs/core/Cameras/Inputs/arcRotateCameraMouseWheelInput';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
@@ -16,13 +18,17 @@ export class ThirdPersonCamera {
       'thirdPersonCamera',
       -Math.PI / 2,
       Math.PI / 3,
-      8.0,
+      5.5,
       new Vector3(0, 1.6, 0),
       scene
     );
 
     this.camera.lowerRadiusLimit = 2.0;
-    this.camera.upperRadiusLimit = 15.0;
+    this.camera.upperRadiusLimit = 9.0;
+    this.camera.inputs.removeByType("ArcRotateCameraKeyboardMoveInput");
+    this.camera.panningSensibility = 0;
+    this.camera.wheelPrecision = 40;
+    this.camera.minZ = .15;
     this.camera.lowerBetaLimit = 0.2;
     this.camera.upperBetaLimit = Math.PI / 2 - 0.05; // Prevent camera from flipping under floor
     this.camera.checkCollisions = true;

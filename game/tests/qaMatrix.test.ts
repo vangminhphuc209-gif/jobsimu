@@ -19,7 +19,7 @@ describe('QA Matrix Tests (QA-01 to QA-12)', () => {
 
     const useHandoutAction = crisis02.actions.find(a => a.id === 'crisis_distribute_prepared_handouts');
     expect(useHandoutAction).toBeDefined();
-    expect(useHandoutAction?.requiredFlags.flag_prep_backup_available).toBe(true);
+    expect(useHandoutAction?.requiredFlags?.flag_prep_backup_available).toBe(true);
   });
 
   it('QA-05: Sets insufficient evidence note when feedback assessment is skipped', () => {

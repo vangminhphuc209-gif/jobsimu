@@ -8,6 +8,7 @@
  * Implements mesh instancing for desks/chairs and strict collision barriers.
  */
 
+import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3, Color3 } from '@babylonjs/core/Maths/math';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -20,7 +21,33 @@ export class SchoolWorld {
   private shadowGen: ShadowGenerator | null;
 
   // Key interactable prop meshes
+  private lessonPapers: Mesh[] = [];
+  private boardBars: Mesh[] = [];
+  private observedMaterial!: StandardMaterial;
+  private groupMaterial!: StandardMaterial;
+  private idleGroupMaterial!: StandardMaterial;
+  public blackboardMesh!: Mesh;
+  public groupMeshes: Mesh[] = [];
+  public reflectionDeskMesh!: Mesh;
+  public projectorControlMesh!: Mesh;
   public projectorMesh!: Mesh;
+  public getZone(position: Vector3): string {
+    if(position.x < -4 && position.z > -3) return 'Phòng giáo viên';
+    if(position.x > 5 && position.z > 1) return 'Lớp 9A';
+    return position.z < -5 ? 'Sân trường' : 'Hành lang';
+  }
+  public setProjectorWorking(working: boolean): void {
+    const mat = this.projectorLightMesh.material as StandardMaterial;
+    mat.emissiveColor = working ? new Color3(.1,1,.4) : new Color3(1,.15,.05);
+  }
+  private label(text: string, position: Vector3, width = 3): Mesh {
+    const sign = MeshBuilder.CreatePlane('sign-'+text,{width,height:width/4,sideOrientation:Mesh.DOUBLESIDE},this.scene);
+    sign.position.copyFrom(position);
+    const texture = new DynamicTexture('label-'+text,{width:768,height:192},this.scene,false);
+    texture.drawText(text,null,122,'bold 48px sans-serif','#ffffff','#245957',true);
+    const mat = new StandardMaterial('labelMat-'+text,this.scene);mat.diffuseTexture=texture;mat.emissiveColor=Color3.White();mat.backFaceCulling=false;sign.material=mat;
+    return sign;
+  }
   public projectorLightMesh!: Mesh;
   public printerMesh!: Mesh;
   public exitTicketStackMesh!: Mesh;
@@ -34,6 +61,8 @@ export class SchoolWorld {
     this.buildCorridor();
     this.buildClass9A();
     this.buildBoundaryColliders();
+    this.decorate();
+    this.buildLessonVisuals();
   }
 
   /**
@@ -42,8 +71,8 @@ export class SchoolWorld {
    */
   private buildYard(): void {
     // Yard Ground
-    const ground = MeshBuilder.CreateGround('yardGround', { width: 50, height: 40 }, this.scene);
-    ground.position = new Vector3(-10, 0, -25);
+    const ground = MeshBuilder.CreateGround('yardGround', { width: 69, height: 79 }, this.scene);
+    ground.position = new Vector3(-5, 0, -10);
     ground.checkCollisions = true;
 
     const yardMat = new StandardMaterial('yardMat', this.scene);
@@ -70,7 +99,7 @@ export class SchoolWorld {
    */
   private buildStaffRoom(): void {
     const floor = MeshBuilder.CreateBox('staffFloor', { width: 16, height: 0.2, depth: 16 }, this.scene);
-    floor.position = new Vector3(-12, 0.1, 5);
+    floor.position = new Vector3(-12, -0.1, 5);
     floor.checkCollisions = true;
     const tileMat = new StandardMaterial('staffTileMat', this.scene);
     tileMat.diffuseColor = new Color3(0.85, 0.82, 0.75); // Polished floor tiles
@@ -91,6 +120,7 @@ export class SchoolWorld {
     const printerMat = new StandardMaterial('printerMat', this.scene);
     printerMat.diffuseColor = new Color3(0.9, 0.9, 0.92);
     this.printerMesh.material = printerMat;
+    this.label('MÁY IN · PHIẾU DỰ PHÒNG',new Vector3(-6,2,11.6),3);
 
     // Teacher Desks
     const teacherDesk = MeshBuilder.CreateBox('mentorDesk', { width: 2.2, height: 0.8, depth: 1.2 }, this.scene);
@@ -99,6 +129,8 @@ export class SchoolWorld {
     const woodMat = new StandardMaterial('woodMat', this.scene);
     woodMat.diffuseColor = new Color3(0.5, 0.32, 0.18);
     teacherDesk.material = woodMat;
+    this.reflectionDeskMesh=teacherDesk;
+    this.label('PHÒNG GIÁO VIÊN',new Vector3(-12,3.3,12.7),6);
   }
 
   /**
@@ -106,8 +138,8 @@ export class SchoolWorld {
    * Position: X: -4 to 4, Z: -5 to 25
    */
   private buildCorridor(): void {
-    const corridorFloor = MeshBuilder.CreateBox('corridorFloor', { width: 6, height: 0.2, depth: 32 }, this.scene);
-    corridorFloor.position = new Vector3(0, 0.1, 10);
+    const corridorFloor = MeshBuilder.CreateBox('corridorFloor', { width: 10, height: 0.2, depth: 32 }, this.scene);
+    corridorFloor.position = new Vector3(0, -0.1, 10);
     corridorFloor.checkCollisions = true;
 
     const corridorMat = new StandardMaterial('corridorMat', this.scene);
@@ -115,7 +147,8 @@ export class SchoolWorld {
     corridorFloor.material = corridorMat;
 
     // Outer railing towards the school yard
-    this.createWall('corridorRailing', new Vector3(3, 0.7, 10), 0.3, 1.4, 32);
+    // The east side is the classroom entrance: never seal it with a railing.
+    this.label('9A →',new Vector3(0,2.3,18),2);
   }
 
   /**
@@ -125,7 +158,7 @@ export class SchoolWorld {
   private buildClass9A(): void {
     // Classroom Floor
     const classFloor = MeshBuilder.CreateBox('classFloor', { width: 16, height: 0.2, depth: 18 }, this.scene);
-    classFloor.position = new Vector3(13, 0.1, 10);
+    classFloor.position = new Vector3(13, -0.1, 10);
     classFloor.checkCollisions = true;
     const classMat = new StandardMaterial('classFloorMat', this.scene);
     classMat.diffuseColor = new Color3(0.8, 0.75, 0.65);
@@ -145,6 +178,8 @@ export class SchoolWorld {
     const boardMat = new StandardMaterial('boardMat', this.scene);
     boardMat.diffuseColor = new Color3(0.1, 0.25, 0.15); // Classic green board
     blackboard.material = boardMat;
+    this.blackboardMesh = blackboard;
+    this.label('BIẾN ĐỔI KHÍ HẬU',new Vector3(13,2.3,1.32),5).rotation.y=Math.PI;
 
     // Teacher Desk & Podium
     const teacherDesk = MeshBuilder.CreateBox('classTeacherDesk', { width: 2.0, height: 0.85, depth: 1.0 }, this.scene);
@@ -158,6 +193,8 @@ export class SchoolWorld {
     const projMat = new StandardMaterial('projMat', this.scene);
     projMat.diffuseColor = new Color3(0.8, 0.8, 0.8);
     this.projectorMesh.material = projMat;
+    this.projectorControlMesh=MeshBuilder.CreateBox('projectorControl',{width:.3,height:.1,depth:.45},this.scene);
+    this.projectorControlMesh.position.set(10.6,1,3.5);this.projectorControlMesh.material=projMat;
 
     // Projector Warning Indicator Light (Yellow blinking / Red)
     this.projectorLightMesh = MeshBuilder.CreateSphere('projIndicator', { diameter: 0.15 }, this.scene);
@@ -186,6 +223,10 @@ export class SchoolWorld {
     deskMat.diffuseColor = new Color3(0.7, 0.5, 0.3);
     baseDesk.material = deskMat;
 
+    const chair=MeshBuilder.CreateBox('chairTemplate',{width:.6,height:.12,depth:.6},this.scene);
+    chair.isVisible=false;chair.material=deskMat;
+    const back=MeshBuilder.CreateBox('chairBackTemplate',{width:.6,height:.65,depth:.12},this.scene);
+    back.isVisible=false;back.material=deskMat;
     // 4 columns x 4 rows = 16 double desks for 32 students
     const startX = 8.5;
     const startZ = 7.0;
@@ -194,9 +235,18 @@ export class SchoolWorld {
 
     for (let col = 0; col < 4; col++) {
       for (let row = 0; row < 4; row++) {
+        for(const side of [-.6,.6]) {
+          const seat=chair.createInstance(`chair_${col}_${row}_${side}`);seat.position.set(startX+col*spacingX+side,.5,startZ+row*spacingZ+.85);
+          const rest=back.createInstance(`chairBack_${col}_${row}_${side}`);rest.position.set(seat.position.x,.8,seat.position.z+.27);
+        }
         const instance = baseDesk.createInstance(`studentDesk_${col}_${row}`);
         instance.position = new Vector3(startX + col * spacingX, 0.45, startZ + row * spacingZ);
         instance.checkCollisions = true;
+        if(row===0) {
+          const marker=MeshBuilder.CreateBox('groupWork'+col,{width:.6,height:.03,depth:.45},this.scene);
+          marker.position.set(startX+col*spacingX,.84,startZ); marker.material=deskMat;
+          this.groupMeshes.push(marker);
+        }
       }
     }
   }
@@ -211,6 +261,63 @@ export class SchoolWorld {
     return wall;
   }
 
+  /** Visible consequences share the saved gameplay state; never keep a second progression model. */
+  public setLessonVisuals(strategy: 'handouts' | 'groups' | 'board' | null, boardUsed: boolean, ticketsCollected: boolean, observedGroups: number[]): void {
+    this.lessonPapers.forEach(paper => paper.setEnabled(strategy === 'handouts'));
+    this.boardBars.forEach(bar => bar.setEnabled(boardUsed));
+    this.exitTicketStackMesh.setEnabled(!ticketsCollected);
+    this.groupMeshes.forEach((mesh,index) => {
+      mesh.material = observedGroups.includes(index) ? this.observedMaterial : strategy === 'groups' ? this.groupMaterial : this.idleGroupMaterial;
+    });
+  }
+  private buildLessonVisuals(): void {
+    const mat = (name: string, color: string) => {
+      const m=new StandardMaterial(name,this.scene);m.diffuseColor=Color3.FromHexString(color);m.specularColor=Color3.Black();return m;
+    };
+    const paperMaterial=mat('lessonPaper','#fff9e8');
+    this.observedMaterial=mat('groupObserved','#6cbe9c');
+    this.groupMaterial=mat('groupDiscussion','#e8b654');
+    this.idleGroupMaterial=mat('groupIdle','#f6f0d9');
+    const paper=MeshBuilder.CreateBox('lessonPaperTemplate',{width:.65,height:.025,depth:.45},this.scene);
+    paper.material=paperMaterial;paper.isVisible=false;
+    for(let col=0;col<4;col++) for(let row=0;row<4;row++) {
+      // Clones permit independently toggling each desk's handout, while sharing geometry/material.
+      const sheet=paper.clone(`lessonHandout_${col}_${row}`)!;
+      sheet.isVisible=true;sheet.position.set(8.5+col*3,.85,7+row*3);
+      sheet.setEnabled(false);this.lessonPapers.push(sheet);
+    }
+    const chalk=mat('chalkGraph','#f1e6ac');
+    for(let i=0;i<5;i++) {
+      const height=.25+i*.15;
+      const bar=MeshBuilder.CreateBox('boardClimateGraph'+i,{width:.35,height,depth:.03},this.scene);
+      bar.position.set(11.8+i*.6,1.45+height/2,1.4);bar.material=chalk;bar.setEnabled(false);this.boardBars.push(bar);
+    }
+    this.groupMeshes.forEach(mesh=>mesh.material=this.idleGroupMaterial);
+  }
+  private decorate(): void {
+    const leafMat=new StandardMaterial('leafMat',this.scene); leafMat.diffuseColor=Color3.FromHexString('#4f8761');
+    const trunkMat=new StandardMaterial('trunkMat',this.scene);trunkMat.diffuseColor=Color3.FromHexString('#926849');
+    const trunk=MeshBuilder.CreateCylinder('treeTrunk',{height:3,diameter:.5,tessellation:7},this.scene);trunk.isVisible=false;trunk.material=trunkMat;
+    const crown=MeshBuilder.CreateSphere('treeCrown',{diameter:5,segments:4},this.scene);crown.isVisible=false;crown.material=leafMat;
+    [[-29,-30],[-29,-13],[8,-32],[8,-15]].forEach(([x,z],i)=>{
+      const t=trunk.createInstance('treeTrunk'+i);t.position.set(x,1.5,z);t.checkCollisions=true;
+      const c=crown.createInstance('treeCrown'+i);c.position.set(x,4.6,z);
+    });
+    const bench=MeshBuilder.CreateBox('benchTemplate',{width:3,height:.5,depth:1},this.scene);bench.isVisible=false;bench.material=trunkMat;
+    [-24,2].forEach((x,i)=>{const b=bench.createInstance('yardBench'+i);b.position.set(x,.3,-16);b.checkCollisions=true;});
+    this.label('THCS TUỆ ĐỨC',new Vector3(-10,3,-43.5),12).rotation.y=Math.PI;
+    this.label('SÂN TRƯỜNG',new Vector3(-15,1.8,-7),4);
+    const flag=MeshBuilder.CreateBox('schoolFlag',{width:2.4,height:1.5,depth:.03},this.scene);flag.position.set(-8.7,8.8,-25);
+    const red=new StandardMaterial('flagRed',this.scene);red.diffuseColor=Color3.FromHexString('#bf3f3f');flag.material=red;
+    for(const x of [8,13,18]) {
+      const window=MeshBuilder.CreateBox('window',{width:.05,height:2,depth:3},this.scene);window.position.set(20.76,2.7,x);
+      const glass=new StandardMaterial('glass'+x,this.scene);glass.diffuseColor=Color3.FromHexString('#a2d2d8');glass.emissiveColor=new Color3(.12,.2,.22);window.material=glass;
+    }
+    for(const mesh of this.scene.meshes) {
+      mesh.receiveShadows=true;
+      if(mesh.name.startsWith('tree') || mesh.name.startsWith('studentDesk')) this.shadowGen?.addShadowCaster(mesh);
+    }
+  }
   private buildBoundaryColliders(): void {
     // Invisible perimeter walls to prevent falling off map
     const bounds = [
