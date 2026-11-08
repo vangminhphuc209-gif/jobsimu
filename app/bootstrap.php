@@ -9,7 +9,7 @@ if (is_file($envFile) && is_readable($envFile)) {
     if ($lines !== false) {
         foreach ($lines as $line) {
             $line = trim($line);
-            if ($line === '' || str_starts_with($line, '#')) continue;
+            if ($line === '' || strpos($line, '#') === 0) continue;
             if (strpos($line, '=') !== false) {
                 [$key, $value] = explode('=', $line, 2);
                 $key = trim($key);
