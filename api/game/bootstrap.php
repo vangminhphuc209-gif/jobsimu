@@ -7,6 +7,24 @@ declare(strict_types=1);
  * Enforces session authentication, CSRF validation, and anti-tamper rules.
  */
 
+// The playable browser slice currently saves only on this device. The legacy
+// persistence code below has not yet implemented ownership checks, an authoritative
+// action reducer, or atomic retries. Fail closed BEFORE legacy bootstrap/database
+// initialization; do not expose these endpoints by adding an environment toggle.
+// Remove this gate only with the replacement protocol and integration tests.
+http_response_code(503);
+header('Content-Type: application/json; charset=utf-8');
+header('X-Content-Type-Options: nosniff');
+header('Cache-Control: no-store');
+echo json_encode([
+    'success' => false,
+    'error' => [
+        'code' => 'GAME_SYNC_UNAVAILABLE',
+        'message' => 'Chế độ 3D hiện lưu trên thiết bị này; đồng bộ máy chủ chưa được hỗ trợ.',
+    ],
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+exit;
+
 define('GAME_API', true);
 require_once dirname(__DIR__, 2) . '/app/bootstrap.php';
 require_once dirname(__DIR__, 2) . '/app/functions.php';

@@ -3,6 +3,7 @@ import path from 'path';
 
 export default defineConfig({
   root: '.',
+  base: './',
   publicDir: 'public',
   build: {
     outDir: 'dist',
@@ -12,6 +13,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    allowedHosts: ['terminal.local'],
     proxy: {
       '/api': {
         target: 'http://localhost:8000',

@@ -1,3 +1,5 @@
+import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
+import '@babylonjs/core/Collisions/collisionCoordinator';
 /**
  * game/src/core/GameEngine.ts
  * Core 3D engine initializer using Babylon.js.
@@ -37,7 +39,7 @@ export class GameEngine {
     });
 
     this.scene = new Scene(this.engine);
-    this.scene.clearColor = new Color4(0.08, 0.1, 0.16, 1.0);
+    this.scene.clearColor = new Color4(0.72, 0.85, 0.92, 1.0);
     this.scene.collisionsEnabled = true;
 
     this.setupLighting();
@@ -87,14 +89,15 @@ export class GameEngine {
       case 'Low':
         this.engine.setHardwareScalingLevel(1.5);
         if (this.shadowGenerator) {
-          this.shadowGenerator.getShadowMap()?.dispose();
-          this.shadowGenerator = null;
+          this.scene.shadowsEnabled = false;
         }
         break;
       case 'Medium':
+        this.scene.shadowsEnabled = true;
         this.engine.setHardwareScalingLevel(1.0);
         break;
       case 'High':
+        this.scene.shadowsEnabled = true;
         this.engine.setHardwareScalingLevel(0.85); // High DPI crisp rendering
         break;
     }

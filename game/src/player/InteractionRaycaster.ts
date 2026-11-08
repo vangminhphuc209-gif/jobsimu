@@ -3,6 +3,7 @@
  * Proximity and raycast interactor for [E] trigger activations.
  */
 
+import { Ray } from '@babylonjs/core/Culling/ray';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
@@ -18,6 +19,8 @@ export interface InteractableTarget {
 }
 
 export class InteractionRaycaster {
+  private enabled = true;
+  public setEnabled(enabled: boolean): void { this.enabled = enabled; if (!enabled) this.clearActiveTarget(); }
   private scene: Scene;
   private playerMesh: AbstractMesh;
   private targets: Map<string, InteractableTarget> = new Map();
@@ -57,13 +60,14 @@ export class InteractionRaycaster {
 
     // Handle 'E' key press
     window.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 'e' && this.currentActiveTarget) {
+      if (this.enabled && !e.repeat && !/INPUT|TEXTAREA|SELECT/.test((e.target as HTMLElement)?.tagName) && e.key.toLowerCase() === 'e' && this.currentActiveTarget) {
         this.currentActiveTarget.onInteract();
       }
     });
   }
 
   private checkProximity(): void {
+    if (!this.enabled) return;
     const playerPos = this.playerMesh.position;
     let closestTarget: InteractableTarget | null = null;
     let closestDist = Infinity;
@@ -71,7 +75,12 @@ export class InteractionRaycaster {
     for (const target of this.targets.values()) {
       const maxDist = target.interactionDistance || 2.5;
       const dist = Vector3.Distance(playerPos, target.mesh.position);
-      if (dist <= maxDist && dist < closestDist) {
+      if (dist > maxDist || dist >= closestDist) continue;
+      const origin = playerPos.add(new Vector3(0, .35, 0));
+      const direction = target.mesh.getAbsolutePosition().subtract(origin);
+      const obstruction = this.scene.pickWithRay(new Ray(origin, direction.normalize(), dist),
+        mesh => mesh.checkCollisions && mesh !== target.mesh && mesh !== this.playerMesh && /Wall|Railing/.test(mesh.name));
+      if (dist <= maxDist && dist < closestDist && !obstruction?.hit) {
         closestDist = dist;
         closestTarget = target;
       }

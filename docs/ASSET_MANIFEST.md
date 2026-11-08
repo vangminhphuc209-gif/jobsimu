@@ -73,3 +73,11 @@ Toàn bộ tài nguyên 3D và Audio trong dự án tuân thủ:
 - Tự thiết kế và xuất từ Blender / Procedural Babylon.js primitives cho giai đoạn blockout.
 - Tài nguyên cộng đồng (nếu tích hợp bổ sung) phải thuộc giấy phép **CC0 (Public Domain)** hoặc **MIT / Apache 2.0 / CC-BY** với ghi nhận tác giả đầy đủ.
 - Không sử dụng các model vi phạm bản quyền thương mại của bên thứ ba.
+
+## Assets dựng bằng mã trong bản một tiết học
+
+- Tác giả: mã nguồn dự án JOBSIMU, bổ sung trong nhánh `feat/playable-teacher-3d`.
+- Nguồn: `game/src/world/SchoolWorld.ts`, `game/src/player/CharacterController.ts`, `game/src/npc/NPCController.ts`.
+- Nội dung: mesh nhân vật nhiều bộ phận, bàn ghế instancing, cây, biển chữ, phiếu, biểu đồ bảng.
+- Không nhập model/texture/âm thanh của bên thứ ba; giấy phép phân phối theo dự án (repository chưa khai báo license tổng thể). Không tự gán CC0 cho mã hoặc assets.
+- Chưa phải model rig/GLB cuối cùng; cần kiểm tra hình ảnh và hiệu năng GPU thực.
