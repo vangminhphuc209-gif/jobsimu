@@ -32,7 +32,7 @@ function admissions_p22_notice_seed(): int {
       ['KQH',2026,'military-prescreening','military','requirement',
        'Hệ quân sự: phải qua sơ tuyển theo Bộ Quốc phòng',
        'Thí sinh đăng ký xét tuyển đại học, cao đẳng hệ quân sự năm 2026 phải qua sơ tuyển và đáp ứng tiêu chuẩn Bộ Quốc phòng. Học viện có thể có điều kiện bổ sung theo đối tượng tuyển sinh; kiểm tra quyết định chính thức.',
-       null,null,'https://mod.gov.vn/!ut/p/z1/zZLfT8IwEMf_Gh4v7VbW7XWoyCAwgyCsL6b7AauydkAB9a-3Q59cYBo0sUl77eV7vbtPixiaIyb5Xiy5FkrylTlHjD52_dHY61g-Dt2gi4P-zYAMQ2zhaxfNvgjCXiWw6cAJqB1YDmLficcnho-b4h8QQyyRutQ5igqVtvCWg7GwFTo7HrTePn9uYF1y2cJ7LiE2M1clyJxr2GeQ5BmkyrhAbxSkXIBcKuNVxu6UgL3INEheQGK8Si6NpFqEzCHZgVHtVFKFcFEVVCYiRZGXOhnFZAExsTNoJwsbOLE84Jx6TrqwCfXsGsBah-w8nz5iy5WKP95KPK3XzDdAlNTZi0bz_0FkVjE516VTE9T_UROIyIB0T6aYUDQzFR_QVKpNYWjd__Cdek0ZSPvCDA0NuL97Pb47Eib-cBJYOKTWn1ZPLsVfFtNp4ZFXYDEd9946I7i9ir3DZFEcjf8Ouou1-A!!/dz/d5/L2dBISEvZ0FBIS9nQSEh/?1dmy=&current=true&urile=wcm%3Apath%3A%2Fmod%2Fsa-mod-site%2Fsa-ttsk%2Fsa-tt-qpan%2Fve-to-chuc-chi-tieu-tuyen-sinh-dai-hoc-cao-dang-quan-su-he-chinh-quy-cac-truong-quan-doi-nam-2026'],
+       null,null,'https://mod.gov.vn/wcm/connect/mod/sa-mod-site/sa-ttsk/sa-tt-qpan/them-phuong-thuc-xet-tuyen-moi-cho-ky-tuyen-sinh-quan-su-nam-2026'],
       ['KQH',2026,'prescreen-window','military','historical_deadline',
        'Mốc sơ tuyển quân sự 2026',
        'Sơ tuyển theo thông tin năm 2026 diễn ra từ 10/02/2026 đến 15/04/2026; chỉ dùng tham khảo lịch sử, không suy ra lịch 2027.',
