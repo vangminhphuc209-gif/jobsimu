@@ -1,0 +1,42 @@
+name: Admissions P0-P2 checks
+on:
+  pull_request:
+    paths:
+      - 'app/career-admissions.php'
+      - 'app/admissions-*.php'
+      - 'app/university-*.php'
+      - 'tests/admissions-p2-smoke.php'
+      - '.github/workflows/admissions.yml'
+      - 'app/bootstrap.php'
+      - 'index.php'
+      - 'admin.php'
+  push:
+    branches: [main]
+    paths:
+      - 'app/career-admissions.php'
+      - 'app/admissions-*.php'
+      - 'app/university-*.php'
+      - 'tests/admissions-p2-smoke.php'
+      - '.github/workflows/admissions.yml'
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP with SQLite
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, mbstring
+          coverage: none
+      - name: PHP syntax
+        run: |
+          set -e
+          for file in app/career-admissions.php app/admissions-p2.php app/admissions-admin.php app/university-explorer.php app/university-compare.php app/bootstrap.php index.php admin.php tests/admissions-p2-smoke.php; do
+            php -l "$file"
+          done
+      - name: Admissions integration smoke
+        run: php -d zend.assertions=1 -d assert.exception=1 tests/admissions-p2-smoke.php
