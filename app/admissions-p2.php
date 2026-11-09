@@ -108,13 +108,21 @@ function admissions_p2_read_csv(string $path): array {
 function admissions_p2_apply_row(array $row,int $batchId): void {
     $db=db();
     $s=$db->prepare('SELECT id FROM institutions WHERE code=?');$s->execute([$row['institution_code']]);$schoolId=$s->fetchColumn();
-    if(!$schoolId){
+    if($schoolId){
+      $s=$db->prepare('SELECT name FROM institutions WHERE id=?');$s->execute([$schoolId]);
+      if(mb_strtolower(trim((string)$s->fetchColumn()))!==mb_strtolower($row['institution_name']))
+        throw new InvalidArgumentException('Mã trường đã tồn tại với tên khác: '.$row['institution_code']);
+    }else{
       $s=$db->prepare('INSERT INTO institutions(code,name,province,website) VALUES(?,?,?,?)');
       $s->execute([$row['institution_code'],$row['institution_name'],$row['province']?:null,$row['website']?:null]);
       $schoolId=$db->lastInsertId();
     }
     $s=$db->prepare('SELECT id FROM majors WHERE code=?');$s->execute([$row['major_code']]);$majorId=$s->fetchColumn();
-    if(!$majorId){
+    if($majorId){
+      $s=$db->prepare('SELECT name FROM majors WHERE id=?');$s->execute([$majorId]);
+      if(mb_strtolower(trim((string)$s->fetchColumn()))!==mb_strtolower($row['major_name']))
+        throw new InvalidArgumentException('Mã ngành đã tồn tại với tên khác: '.$row['major_code']);
+    }else{
       $s=$db->prepare('INSERT INTO majors(code,name,description) VALUES(?,?,NULL)');
       $s->execute([$row['major_code'],$row['major_name']]);$majorId=$db->lastInsertId();
     }
