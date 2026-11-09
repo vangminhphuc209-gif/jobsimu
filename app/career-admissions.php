@@ -22,6 +22,25 @@ function admission_catalog_seed(): void {
     foreach ($groups as $i => $name) {
         $g->execute(['nhom-' . ($i + 1),$name,$i + 1,'https://hocvienhuongnghiep.com/tu-dien-huong-nghiep/']);
     }
+    // Starter career expansion: general educational descriptions only, no fabricated salary claims.
+    $newCareers=[
+      ['Chuyên viên an ninh mạng','chuyen-vien-an-ninh-mang','🔐','Bảo vệ hệ thống và dữ liệu số.','Giám sát, đánh giá rủi ro và xử lý sự cố an ninh thông tin.','Phòng vận hành an ninh, doanh nghiệp, cơ quan.','Mạng máy tính, bảo mật, điều tra kỹ thuật, đạo đức nghề nghiệp.','Toán, Tin học, Tiếng Anh','An toàn thông tin, CNTT hoặc chuyên ngành liên quan.',3,['R'=>65,'I'=>95,'A'=>30,'S'=>40,'E'=>45,'C'=>90]],
+      ['Kỹ sư dữ liệu','ky-su-du-lieu','🗄️','Thiết kế các hệ thống thu thập và xử lý dữ liệu.','Xây dựng luồng dữ liệu, kho dữ liệu và kiểm tra chất lượng.','Công ty công nghệ, ngân hàng, sản xuất.','SQL, Python, dữ liệu lớn, tư duy hệ thống.','Toán, Tin học, Tiếng Anh','Khoa học dữ liệu, CNTT, Khoa học máy tính.',3,['R'=>55,'I'=>90,'A'=>25,'S'=>35,'E'=>45,'C'=>92]],
+      ['Chuyên viên logistics','chuyen-vien-logistics','🚚','Điều phối hàng hóa và chuỗi cung ứng.','Lập kế hoạch kho vận, vận chuyển và tối ưu giao nhận.','Kho, cảng, doanh nghiệp vận tải và thương mại.','Lập kế hoạch, giao tiếp, dữ liệu, ngoại ngữ.','Toán, Tiếng Anh, Tin học','Logistics và quản lý chuỗi cung ứng.',23,['R'=>65,'I'=>55,'A'=>25,'S'=>55,'E'=>70,'C'=>88]],
+      ['Kỹ sư nông nghiệp','ky-su-nong-nghiep','🌾','Áp dụng khoa học kỹ thuật vào sản xuất nông nghiệp.','Theo dõi cây trồng, vật nuôi và cải thiện quy trình sản xuất.','Trang trại, phòng nghiên cứu, doanh nghiệp nông nghiệp.','Sinh học, công nghệ, quan sát, thực hành.','Sinh học, Hóa học, Toán','Nông học, công nghệ nông nghiệp hoặc ngành liên quan.',17,['R'=>90,'I'=>80,'A'=>35,'S'=>45,'E'=>45,'C'=>65]],
+      ['Bác sĩ thú y','bac-si-thu-y','🐾','Khám và chăm sóc sức khỏe động vật.','Khám bệnh, phòng bệnh và tư vấn chăm sóc động vật.','Phòng khám thú y, trang trại, cơ sở nghiên cứu.','Sinh học, quan sát, trách nhiệm, giao tiếp.','Sinh học, Hóa học, Toán','Thú y và các yêu cầu hành nghề liên quan.',21,['R'=>75,'I'=>85,'A'=>20,'S'=>75,'E'=>35,'C'=>80]],
+      ['Chuyên viên phân tích dữ liệu','chuyen-vien-phan-tich-du-lieu','📈','Phân tích số liệu để hỗ trợ quyết định.','Làm sạch dữ liệu, trực quan hóa và trình bày phát hiện.','Doanh nghiệp, cơ quan, phòng nghiên cứu.','Thống kê, SQL, trực quan hóa, giao tiếp.','Toán, Tin học, Tiếng Anh','Thống kê, khoa học dữ liệu, kinh tế lượng.',22,['R'=>30,'I'=>93,'A'=>50,'S'=>45,'E'=>50,'C'=>92]],
+      ['Kỹ thuật viên môi trường','ky-thuat-vien-moi-truong','♻️','Đo đạc và giám sát các chỉ số môi trường.','Lấy mẫu, phân tích và hỗ trợ vận hành hệ thống xử lý.','Trạm quan trắc, nhà máy, hiện trường.','Thí nghiệm, an toàn, quan sát, lập báo cáo.','Hóa học, Sinh học, Toán','Công nghệ môi trường, kỹ thuật môi trường.',14,['R'=>85,'I'=>75,'A'=>20,'S'=>45,'E'=>30,'C'=>85]],
+      ['Chuyên viên quản trị du lịch','chuyen-vien-quan-tri-du-lich','🧳','Thiết kế và tổ chức dịch vụ du lịch.','Điều hành dịch vụ, lịch trình và trải nghiệm khách hàng.','Doanh nghiệp du lịch, khách sạn, điểm đến.','Giao tiếp, ngoại ngữ, tổ chức, xử lý tình huống.','Địa lý, Ngữ văn, Tiếng Anh','Du lịch, quản trị dịch vụ và lữ hành.',5,['R'=>45,'I'=>35,'A'=>65,'S'=>90,'E'=>80,'C'=>65]]
+    ];
+    $newCareerInsert=$db->prepare("INSERT INTO careers(title,slug,icon,short_description,description,work_environment,skills,subjects,education_path,career_group_id,riasec_weights,simulation_enabled,featured,status) VALUES(?,?,?,?,?,?,?,?,?,?,?,0,0,'published')");
+    foreach($newCareers as $entry){
+      $st=$db->prepare('SELECT 1 FROM careers WHERE slug=?');$st->execute([$entry[1]]);
+      if(!$st->fetchColumn())$newCareerInsert->execute([
+        $entry[0],$entry[1],$entry[2],$entry[3],$entry[4],$entry[5],$entry[6],$entry[7],$entry[8],$entry[9],
+        json_encode($entry[10],JSON_UNESCAPED_UNICODE)
+      ]);
+    }
     // Existing careers remain untouched; this mapping only sets a missing group.
     $mapping = [
         'lap-trinh-vien'=>3,'ky-su-tri-tue-nhan-tao'=>3,'bac-si'=>24,
@@ -90,6 +109,30 @@ function admission_catalog_seed(): void {
       $s=$db->prepare('SELECT 1 FROM institutions WHERE code=?');$s->execute([$school[0]]);
       if(!$s->fetchColumn())$ins->execute($school);
     }
+    // One verified example program. Source reports program-level cutoffs,
+    // NOT different cutoffs for each of A00/A01/K01.
+    $src='https://soict.hust.edu.vn/diem-chuan-tham-khao.html';
+    $st=$db->prepare('SELECT id FROM institutions WHERE code=?');$st->execute(['BKA']);$bka=$st->fetchColumn();
+    $st=$db->prepare('SELECT id FROM majors WHERE code=?');$st->execute(['7480101']);$cs=$st->fetchColumn();
+    if($bka && $cs){
+      $st=$db->prepare('SELECT id FROM programs WHERE institution_id=? AND major_id=? AND name=?');
+      $st->execute([$bka,$cs,'Khoa học máy tính (IT1)']);$pid=$st->fetchColumn();
+      if(!$pid){
+        $st=$db->prepare('INSERT INTO programs(institution_id,major_id,name,program_code,degree_level,official_url) VALUES(?,?,?,?,?,?)');
+        $st->execute([$bka,$cs,'Khoa học máy tính (IT1)','IT1','Đại học',$src]);$pid=$db->lastInsertId();
+      }
+      $r=$db->prepare('SELECT 1 FROM admission_records WHERE program_id=? AND admission_year=? AND method=? AND combination=? AND candidate_group=?');
+      $ins=$db->prepare('INSERT INTO admission_records(program_id,admission_year,method,combination,candidate_group,cutoff_score,score_scale,source_url,verified_at) VALUES(?,?,?,?,?,?,?,?,?)');
+      foreach([
+        ['Điểm thi THPT','30 điểm',[2023=>29.42,2024=>28.53,2025=>29.19]],
+        ['Đánh giá tư duy','100 điểm',[2023=>83.9,2024=>83.82,2025=>83.39]]
+      ] as $series){
+        foreach($series[2] as $year=>$score){
+          $r->execute([$pid,$year,$series[0],'','']);
+          if(!$r->fetchColumn())$ins->execute([$pid,$year,$series[0],'','',$score,$series[1],$src,'2026-11-09 00:00:00']);
+        }
+      }
+    }
 }
 function run_admissions_migrations(): void {
     $db=db(); $mysql=$db->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';
@@ -101,7 +144,7 @@ function run_admissions_migrations(): void {
       "CREATE TABLE IF NOT EXISTS career_groups(id $id,slug VARCHAR(80) NOT NULL UNIQUE,name VARCHAR(180) NOT NULL,sort_order INTEGER NOT NULL DEFAULT 0,source_url VARCHAR(500) NULL)$suffix",
       "CREATE TABLE IF NOT EXISTS majors(id $id,code VARCHAR(30) NOT NULL UNIQUE,name VARCHAR(200) NOT NULL,description TEXT NULL)$suffix",
       "CREATE TABLE IF NOT EXISTS institutions(id $id,code VARCHAR(40) NOT NULL UNIQUE,name VARCHAR(220) NOT NULL,province VARCHAR(120) NULL,website VARCHAR(500) NULL,admissions_url VARCHAR(500) NULL,type VARCHAR(80) NULL)$suffix",
-      "CREATE TABLE IF NOT EXISTS programs(id $id,institution_id $num NOT NULL,major_id $num NOT NULL,name VARCHAR(220) NOT NULL,program_code VARCHAR(80) NULL,degree_level VARCHAR(80) NULL,duration_semesters INTEGER NULL,credits_required INTEGER NULL,official_url VARCHAR(500) NULL,UNIQUE(institution_id,major_id,name),FOREIGN KEY(institution_id) REFERENCES institutions(id),FOREIGN KEY(major_id) REFERENCES majors(id))$suffix",
+      "CREATE TABLE IF NOT EXISTS programs(id $id,institution_id $num NOT NULL,major_id $num NOT NULL,name VARCHAR(180) NOT NULL,program_code VARCHAR(80) NULL,degree_level VARCHAR(80) NULL,duration_semesters INTEGER NULL,credits_required INTEGER NULL,official_url VARCHAR(500) NULL,UNIQUE(institution_id,major_id,name),FOREIGN KEY(institution_id) REFERENCES institutions(id),FOREIGN KEY(major_id) REFERENCES majors(id))$suffix",
       "CREATE TABLE IF NOT EXISTS career_major_paths(career_id $num NOT NULL,major_id $num NOT NULL,PRIMARY KEY(career_id,major_id),FOREIGN KEY(career_id) REFERENCES careers(id) ON DELETE CASCADE,FOREIGN KEY(major_id) REFERENCES majors(id) ON DELETE CASCADE)$suffix",
       "CREATE TABLE IF NOT EXISTS admission_records(id $id,program_id $num NOT NULL,admission_year INTEGER NOT NULL,method VARCHAR(140) NOT NULL,combination VARCHAR(50) NOT NULL DEFAULT '',candidate_group VARCHAR(100) NOT NULL DEFAULT '',cutoff_score DECIMAL(8,3) NULL,score_scale VARCHAR(50) NULL,source_url VARCHAR(500) NOT NULL,verified_at DATETIME NULL,UNIQUE(program_id,admission_year,method,combination,candidate_group),FOREIGN KEY(program_id) REFERENCES programs(id) ON DELETE CASCADE)$suffix",
       "CREATE TABLE IF NOT EXISTS tuition_records(id $id,program_id $num NOT NULL,academic_year VARCHAR(20) NOT NULL,charge_basis VARCHAR(40) NOT NULL,amount_vnd BIGINT NULL,source_url VARCHAR(500) NOT NULL,verified_at DATETIME NULL,UNIQUE(program_id,academic_year,charge_basis),FOREIGN KEY(program_id) REFERENCES programs(id) ON DELETE CASCADE)$suffix",
