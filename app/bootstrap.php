@@ -70,3 +70,6 @@ require_once ROOT_PATH . '/app/career-admissions.php';
 run_admissions_migrations();
 require_once ROOT_PATH . '/app/admissions-p2.php';
 admissions_p2_migrate();
+require_once ROOT_PATH . '/app/admissions-p22.php';
+admissions_p22_migrate();
+admissions_p22_tuition_seed();
