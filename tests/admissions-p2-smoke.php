@@ -18,17 +18,22 @@ $pdo->exec("CREATE TABLE careers (
 function db(): PDO {global $pdo;return $pdo;}
 require __DIR__.'/../app/career-admissions.php';
 require __DIR__.'/../app/admissions-p2.php';
+require __DIR__.'/../app/admissions-p22.php';
 function eq($expected,$actual,string $message): void {
     if($expected!==$actual)throw new RuntimeException($message.'; expected '.var_export($expected,true).', got '.var_export($actual,true));
 }
 run_admissions_migrations();
 admissions_p2_migrate();
+admissions_p22_migrate();
+eq(8,admissions_p22_tuition_seed(),'8 sourced tuition bands');
 eq(24,(int)$pdo->query('SELECT COUNT(*) FROM career_groups')->fetchColumn(),'24 groups');
 eq(8,(int)$pdo->query('SELECT COUNT(*) FROM careers')->fetchColumn(),'8 new careers');
 eq(5,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'5 starter institutions');
 eq(1,(int)$pdo->query('SELECT COUNT(*) FROM programs')->fetchColumn(),'one sourced starter program');
 run_admissions_migrations();
 admissions_p2_migrate();
+admissions_p22_migrate();
+eq(0,admissions_p22_tuition_seed(),'tuition bands idempotent');
 eq(8,(int)$pdo->query('SELECT COUNT(*) FROM careers')->fetchColumn(),'idempotent careers');
 eq(5,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'idempotent institutions');
 eq(6,(int)$pdo->query('SELECT COUNT(*) FROM admission_records')->fetchColumn(),'idempotent sourced cutoffs');
@@ -69,4 +74,18 @@ $fp=fopen($tmp,'wb');fwrite($fp,"\xEF\xBB\xBF".implode(',',admissions_p2_require
 fputcsv($fp,array_values($template));fclose($fp);
 eq(1,count(admissions_p2_read_csv($tmp)),'BOM csv import');
 unlink($tmp);
-echo "OK: P0 reentrant migration, P2 staging, review, sources, tuition and CSV checks passed.\n";
+$curated=admissions_p2_read_csv(__DIR__.'/../docs/admissions-p22-official-cutoffs.csv');
+eq(40,count($curated),'curated official cutoffs count');
+$batchPayload=json_encode($curated,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+$batchStmt=$pdo->prepare("INSERT INTO admission_import_batches(submitted_by,status,file_name,item_count,payload,created_at) VALUES(1,'pending','curated.csv',40,?,?)");
+$batchStmt->execute([$batchPayload,date('Y-m-d H:i:s')]);
+$curatedBatch=(int)$pdo->lastInsertId();
+eq(40,admissions_p2_approve_batch($curatedBatch,1),'curated batch approval');
+eq(2,(int)$pdo->query("SELECT COUNT(*) FROM institutions WHERE code IN ('BKA','SPH')")->fetchColumn(),'both universities exist');
+eq(40,(int)$pdo->query("SELECT COUNT(*) FROM admission_source_documents WHERE batch_id=$curatedBatch")->fetchColumn(),'all curated rows retain sources');
+$bands=$pdo->query("SELECT * FROM institution_tuition_bands WHERE program_group='Chương trình chuẩn' ORDER BY academic_year")->fetchAll();
+eq(2,count($bands),'two years of standard tuition ranges');
+$delta=admissions_p22_band_change($bands[0],$bands[1]);
+eq(16.67,$delta['min_percent'],'historical lower bound growth');
+eq(16.67,$delta['max_percent'],'historical upper bound growth');
+echo "OK: P0 migrations and P2.1/P2.2 admissions smoke passed.\\n";

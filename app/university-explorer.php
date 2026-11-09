@@ -37,6 +37,11 @@ if($programId) {
     ] as $key=>$sql){$s=db()->prepare($sql);$s->execute([$programId]);$$key=$s->fetchAll();}
   } else http_response_code(404);
 }
+$tuitionBands=[];
+if($school){
+  $stmt=db()->prepare('SELECT * FROM institution_tuition_bands WHERE institution_id=? ORDER BY program_group,academic_year');
+  $stmt->execute([(int)$school['id']]);$tuitionBands=$stmt->fetchAll();
+}
 $sql='SELECT i.*,COUNT(DISTINCT p.id) AS program_count FROM institutions i LEFT JOIN programs p ON p.institution_id=i.id';
 $where=[];$args=[];
 if($q!==''){$where[]='(i.name LIKE ? OR i.code LIKE ? OR EXISTS(SELECT 1 FROM programs p2 JOIN majors m2 ON m2.id=p2.major_id WHERE p2.institution_id=i.id AND m2.name LIKE ?))';$term='%'.$q.'%';array_push($args,$term,$term,$term);}
@@ -66,6 +71,20 @@ require __DIR__.'/header.php';
   <section class="card" style="margin-top:24px"><span class="eyebrow">Hồ sơ cơ sở đào tạo</span><h2><?=e($school['name'])?></h2>
     <p>Mã trường: <strong><?=e($school['code'])?></strong> · <?=e($school['province']?:'Chưa rõ địa điểm')?></p>
     <?php $home=safe_external_url($school['website']);if($home):?><p><a href="<?=e($home)?>" rel="noopener noreferrer" target="_blank">Website chính thức của trường ↗</a></p><?php endif;?>
+    <?php if($tuitionBands):?>
+    <h3>Học phí tham khảo theo nhóm chương trình (không phải học phí chính xác từng ngành)</h3>
+    <p class="muted">Mức dưới đây là khoảng tiền theo học kỳ công bố bởi trường. Học phí thực tế phụ thuộc vào chương trình, khóa và khối lượng học tập; không dùng để cam kết chi phí hàng năm.</p>
+    <div style="overflow-x:auto"><table style="width:100%"><thead><tr><th>Năm học</th><th>Nhóm chương trình</th><th>Khoảng/học kỳ</th><th>Biến động giới hạn dưới/trên</th><th>Nguồn</th></tr></thead><tbody>
+    <?php $previousBands=[];foreach($tuitionBands as $band):
+      $key=$band['program_group'].'|'.$band['charge_basis'];
+      $change=isset($previousBands[$key])?admissions_p22_band_change($previousBands[$key],$band):null;
+      $previousBands[$key]=$band;
+    ?><tr><td><?=e($band['academic_year'])?></td><td><?=e($band['program_group'])?></td>
+    <td><?=number_format((float)$band['minimum_vnd'],0,',','.')?> – <?=number_format((float)$band['maximum_vnd'],0,',','.')?> ₫ / học kỳ</td>
+    <td><?=($change===null)?'Chưa đủ dữ liệu so sánh':e(number_format($change['min_percent'],2,',','.').'% / '.number_format($change['max_percent'],2,',','.').'%')?></td>
+    <td><a href="<?=e(safe_external_url($band['source_url']))?>" rel="noopener noreferrer" target="_blank">Công bố của trường ↗</a></td></tr><?php endforeach;?></tbody></table></div>
+    <p class="muted">Biến động là mức tăng giữa cận dưới và cận trên của khoảng học phí ở hai năm liên tiếp, không phải tỷ lệ tăng áp dụng cho mọi sinh viên.</p>
+    <?php endif;?>
     <h3>Chương trình đào tạo đã được liên kết</h3>
     <?php if(!$schoolPrograms):?><p class="muted">Chưa có chương trình được xác minh cho trường này. Đây là hồ sơ trường, không có nghĩa trường không đào tạo ngành nào.</p><?php endif;?>
     <div class="grid-3"><?php foreach($schoolPrograms as $sp):?><a class="card" href="<?=url('index.php?page=university-explorer&school='.(int)$schoolId.'&program='.(int)$sp['id'])?>"><b><?=e($sp['name'])?></b><p><?=e($sp['major_name'])?> (<?=e($sp['major_code'])?>)</p><span>Chi tiết tuyển sinh →</span></a><?php endforeach;?></div>
