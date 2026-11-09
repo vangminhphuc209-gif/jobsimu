@@ -74,6 +74,15 @@ $fp=fopen($tmp,'wb');fwrite($fp,"\xEF\xBB\xBF".implode(',',admissions_p2_require
 fputcsv($fp,array_values($template));fclose($fp);
 eq(1,count(admissions_p2_read_csv($tmp)),'BOM csv import');
 unlink($tmp);
+$curated=admissions_p2_read_csv(__DIR__.'/../docs/admissions-p22-official-cutoffs.csv');
+eq(40,count($curated),'curated official cutoffs count');
+$batchPayload=json_encode($curated,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+$batchStmt=$pdo->prepare("INSERT INTO admission_import_batches(submitted_by,status,file_name,item_count,payload,created_at) VALUES(1,'pending','curated.csv',40,?,?)");
+$batchStmt->execute([$batchPayload,date('Y-m-d H:i:s')]);
+$curatedBatch=(int)$pdo->lastInsertId();
+eq(40,admissions_p2_approve_batch($curatedBatch,1),'curated batch approval');
+eq(2,(int)$pdo->query("SELECT COUNT(*) FROM institutions WHERE code IN ('BKA','SPH')")->fetchColumn(),'both universities exist');
+eq(40,(int)$pdo->query("SELECT COUNT(*) FROM admission_source_documents WHERE batch_id=$curatedBatch")->fetchColumn(),'all curated rows retain sources');
 $bands=$pdo->query("SELECT * FROM institution_tuition_bands WHERE program_group='Chương trình chuẩn' ORDER BY academic_year")->fetchAll();
 eq(2,count($bands),'two years of standard tuition ranges');
 $delta=admissions_p22_band_change($bands[0],$bands[1]);
