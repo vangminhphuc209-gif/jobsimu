@@ -66,3 +66,5 @@ try {
 
 require_once ROOT_PATH . '/app/functions.php';
 run_migrations();
+require_once ROOT_PATH . '/app/career-admissions.php';
+run_admissions_migrations();
