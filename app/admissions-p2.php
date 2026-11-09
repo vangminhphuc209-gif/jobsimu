@@ -19,12 +19,6 @@ function admissions_p2_migrate(): void {
       created_at DATETIME NOT NULL, reviewed_at DATETIME NULL,
       reviewed_by INTEGER NULL
     )$suffix");
-    $db->exec("CREATE TABLE IF NOT EXISTS admission_sources (
-      id $id, source_url VARCHAR(500) NOT NULL, title VARCHAR(250) NOT NULL,
-      publisher VARCHAR(180) NULL, source_year INTEGER NULL,
-      checked_at DATETIME NOT NULL, batch_id INTEGER NULL,
-      INDEX_PLACEHOLDER
-    )$suffix" === '' ? '' : ""); // no-op placeholder; table created below portably
     $db->exec("CREATE TABLE IF NOT EXISTS admission_source_documents (
       id $id, batch_id INTEGER NULL, source_url VARCHAR(500) NOT NULL,
       source_title VARCHAR(250) NOT NULL, source_year INTEGER NULL,
