@@ -31,14 +31,14 @@ eq(4,admissions_p22_notice_seed(),'four historical notices before NEU import');
 eq(8,admissions_p22_tuition_seed(),'8 sourced tuition bands');
 eq(24,(int)$pdo->query('SELECT COUNT(*) FROM career_groups')->fetchColumn(),'24 groups');
 eq(8,(int)$pdo->query('SELECT COUNT(*) FROM careers')->fetchColumn(),'8 new careers');
-eq(5,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'5 starter institutions');
+eq(6,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'six institutions including military academy');
 eq(1,(int)$pdo->query('SELECT COUNT(*) FROM programs')->fetchColumn(),'one sourced starter program');
 run_admissions_migrations();
 admissions_p2_migrate();
 admissions_p22_migrate();
 eq(0,admissions_p22_tuition_seed(),'tuition bands idempotent');
 eq(8,(int)$pdo->query('SELECT COUNT(*) FROM careers')->fetchColumn(),'idempotent careers');
-eq(5,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'idempotent institutions');
+eq(6,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'idempotent institutions');
 eq(6,(int)$pdo->query('SELECT COUNT(*) FROM admission_records')->fetchColumn(),'idempotent sourced cutoffs');
 $template=array_fill_keys(admissions_p2_required_headers(),'');
 $template=array_merge($template,[
