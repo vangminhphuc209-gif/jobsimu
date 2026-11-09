@@ -37,6 +37,11 @@ if($programId) {
     ] as $key=>$sql){$s=db()->prepare($sql);$s->execute([$programId]);$$key=$s->fetchAll();}
   } else http_response_code(404);
 }
+$schoolNotices=[];
+if($school){
+  $noticeStmt=db()->prepare('SELECT * FROM institution_admission_notices WHERE institution_id=? ORDER BY admission_year DESC,track,notice_key');
+  $noticeStmt->execute([(int)$school['id']]);$schoolNotices=$noticeStmt->fetchAll();
+}
 $tuitionBands=[];
 if($school){
   $stmt=db()->prepare('SELECT * FROM institution_tuition_bands WHERE institution_id=? ORDER BY program_group,academic_year');
@@ -84,6 +89,18 @@ require __DIR__.'/header.php';
     <td><?=($change===null)?'Chưa đủ dữ liệu so sánh':e(number_format($change['min_percent'],2,',','.').'% / '.number_format($change['max_percent'],2,',','.').'%')?></td>
     <td><a href="<?=e(safe_external_url($band['source_url']))?>" rel="noopener noreferrer" target="_blank">Công bố của trường ↗</a></td></tr><?php endforeach;?></tbody></table></div>
     <p class="muted">Biến động là mức tăng giữa cận dưới và cận trên của khoảng học phí ở hai năm liên tiếp, không phải tỷ lệ tăng áp dụng cho mọi sinh viên.</p>
+    <?php endif;?>
+    <?php if($schoolNotices):?>
+    <h3>Thông báo tuyển sinh và điều kiện đặc thù theo từng năm</h3>
+    <p class="muted">Các thông báo dưới đây là dữ liệu lịch sử. Hệ quân sự, hệ dân sự và tuyển sinh Công an áp dụng những điều kiện khác nhau; hãy kiểm tra quy định đúng năm và hệ.</p>
+    <?php foreach($schoolNotices as $notice):?>
+      <div class="card" style="margin-bottom:12px">
+        <strong><?=e($notice['title'])?> (<?=(int)$notice['admission_year']?>)</strong>
+        <p><span class="tag"><?=e($notice['track'])?></span> <?=e($notice['description'])?></p>
+        <?php if($notice['starts_on']||$notice['ends_on']):?><small class="muted">Mốc lịch sử: <?=e($notice['starts_on']?:'Chưa xác định')?> – <?=e($notice['ends_on']?:'Chưa xác định')?></small><?php endif;?>
+        <p><a href="<?=e(safe_external_url($notice['source_url']))?>" rel="noopener noreferrer" target="_blank">Xem thông báo gốc ↗</a></p>
+      </div>
+    <?php endforeach;?>
     <?php endif;?>
     <h3>Chương trình đào tạo đã được liên kết</h3>
     <?php if(!$schoolPrograms):?><p class="muted">Chưa có chương trình được xác minh cho trường này. Đây là hồ sơ trường, không có nghĩa trường không đào tạo ngành nào.</p><?php endif;?>
