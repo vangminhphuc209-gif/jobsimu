@@ -68,6 +68,7 @@ $schoolCount=(int)db()->query('SELECT COUNT(*) FROM institutions')->fetchColumn(
     <h2>1. Tải CSV để kiểm tra trước khi duyệt</h2>
     <p>CSV UTF-8 có dòng tiêu đề. Mỗi dòng là <code>cutoff</code> hoặc <code>tuition</code>; tối đa 500 dòng, 2MB. Không tải dữ liệu thiếu nguồn hoặc số liệu chưa kiểm chứng.</p>
     <p><a href="<?=url('docs/admissions-p2-import.md')?>">Hướng dẫn định dạng & quy trình nhập dữ liệu</a></p>
+    <p><a href="<?=url('docs/admissions-p22-official-cutoffs.csv')?>" download>CSV 40 điểm chuẩn đã đối chiếu từ HUST và HNUE (2023–2025) — xem và xác minh trước khi duyệt ↗</a></p>
     <form method="post" enctype="multipart/form-data">
       <?=csrf_field()?><input type="hidden" name="intent" value="upload">
       <div class="form-group"><label for="admissions_csv">Chọn tệp CSV</label><input class="input" id="admissions_csv" type="file" name="admissions_csv" accept=".csv,text/csv" required></div>
