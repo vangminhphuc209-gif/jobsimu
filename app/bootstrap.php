@@ -73,3 +73,7 @@ admissions_p2_migrate();
 require_once ROOT_PATH . '/app/admissions-p22.php';
 admissions_p22_migrate();
 admissions_p22_tuition_seed();
+
+require_once ROOT_PATH . '/app/admissions-p22-notices.php';
+admissions_p22_notice_migrate();
+admissions_p22_notice_seed();

@@ -19,23 +19,26 @@ function db(): PDO {global $pdo;return $pdo;}
 require __DIR__.'/../app/career-admissions.php';
 require __DIR__.'/../app/admissions-p2.php';
 require __DIR__.'/../app/admissions-p22.php';
+require __DIR__.'/../app/admissions-p22-notices.php';
 function eq($expected,$actual,string $message): void {
     if($expected!==$actual)throw new RuntimeException($message.'; expected '.var_export($expected,true).', got '.var_export($actual,true));
 }
 run_admissions_migrations();
 admissions_p2_migrate();
 admissions_p22_migrate();
+admissions_p22_notice_migrate();
+eq(4,admissions_p22_notice_seed(),'four historical notices before NEU import');
 eq(8,admissions_p22_tuition_seed(),'8 sourced tuition bands');
 eq(24,(int)$pdo->query('SELECT COUNT(*) FROM career_groups')->fetchColumn(),'24 groups');
 eq(8,(int)$pdo->query('SELECT COUNT(*) FROM careers')->fetchColumn(),'8 new careers');
-eq(5,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'5 starter institutions');
+eq(6,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'six institutions including military academy');
 eq(1,(int)$pdo->query('SELECT COUNT(*) FROM programs')->fetchColumn(),'one sourced starter program');
 run_admissions_migrations();
 admissions_p2_migrate();
 admissions_p22_migrate();
 eq(0,admissions_p22_tuition_seed(),'tuition bands idempotent');
 eq(8,(int)$pdo->query('SELECT COUNT(*) FROM careers')->fetchColumn(),'idempotent careers');
-eq(5,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'idempotent institutions');
+eq(6,(int)$pdo->query('SELECT COUNT(*) FROM institutions')->fetchColumn(),'idempotent institutions');
 eq(6,(int)$pdo->query('SELECT COUNT(*) FROM admission_records')->fetchColumn(),'idempotent sourced cutoffs');
 $template=array_fill_keys(admissions_p2_required_headers(),'');
 $template=array_merge($template,[
@@ -88,4 +91,18 @@ eq(2,count($bands),'two years of standard tuition ranges');
 $delta=admissions_p22_band_change($bands[0],$bands[1]);
 eq(16.67,$delta['min_percent'],'historical lower bound growth');
 eq(16.67,$delta['max_percent'],'historical upper bound growth');
-echo "OK: P0 migrations and P2.1/P2.2 admissions smoke passed.\\n";
+$expanded=admissions_p2_read_csv(__DIR__.'/../docs/admissions-p22-expansion-2025-2026.csv');
+eq(40,count($expanded),'expanded medical, economics and police rows');
+$payloadExpanded=json_encode($expanded,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+$expandedInsert=$pdo->prepare("INSERT INTO admission_import_batches(submitted_by,status,file_name,item_count,payload,created_at) VALUES(1,'pending','expanded.csv',40,?,?)");
+$expandedInsert->execute([$payloadExpanded,date('Y-m-d H:i:s')]);
+$expandedId=(int)$pdo->lastInsertId();
+eq(40,admissions_p2_approve_batch($expandedId,1),'expanded batch approves');
+eq(1,(int)$pdo->query("SELECT COUNT(*) FROM institutions WHERE code='KHA'")->fetchColumn(),'NEU inserted');
+eq(1,(int)$pdo->query("SELECT COUNT(*) FROM institutions WHERE code='YHB'")->fetchColumn(),'HMU seeded institution preserved');
+eq(10,(int)$pdo->query("SELECT COUNT(*) FROM admission_records ar JOIN programs p ON p.id=ar.program_id JOIN institutions i ON i.id=p.institution_id WHERE i.code='CSH'")->fetchColumn(),'police cutoff candidate groups preserved');
+eq(1,admissions_p22_notice_seed(),'NEU notice follows later approved institution');
+eq(0,admissions_p22_notice_seed(),'notices idempotent');
+eq(5,(int)$pdo->query("SELECT COUNT(*) FROM institution_admission_notices")->fetchColumn(),'five grounded institution notices');
+eq(40,(int)$pdo->query("SELECT COUNT(*) FROM admission_source_documents WHERE batch_id=$expandedId")->fetchColumn(),'40 expansion row sources');
+echo "OK: P0 migration and P2 admissions 2025-2026 expanded smoke passed.\\n";

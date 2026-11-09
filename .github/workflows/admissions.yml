@@ -35,7 +35,7 @@ jobs:
       - name: PHP syntax
         run: |
           set -e
-          for file in app/career-admissions.php app/admissions-p2.php app/admissions-p22.php app/admissions-admin.php app/university-explorer.php app/university-compare.php app/bootstrap.php index.php admin.php tests/admissions-p2-smoke.php; do
+          for file in app/career-admissions.php app/admissions-p2.php app/admissions-p22.php app/admissions-p22-notices.php app/admissions-admin.php app/university-explorer.php app/university-compare.php app/bootstrap.php index.php admin.php tests/admissions-p2-smoke.php; do
             php -l "$file"
           done
       - name: Admissions integration smoke
