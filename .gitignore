@@ -41,3 +41,8 @@ test-results/
 .worktrees/
 wt-*/
 *-wt-*/
+
+# Local Archives
+zip/
+*.zip
+

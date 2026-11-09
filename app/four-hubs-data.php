@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/** Additive migration. Propagate failures so callers must not mark version 2.2.0 ready. */
+/** Additive migration for v2.2.0 + v3.0.0. Propagate failures so callers must not mark version 3.0.0 ready. */
 function run_four_hub_migrations(): void
 {
     $driver = db()->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -17,13 +17,18 @@ function run_four_hub_migrations(): void
     }
     try {
         if ($driver === 'mysql') {
-            $sql = file_get_contents(ROOT_PATH . '/database/migrations/2026_11_four_hubs_upgrade.sql');
-            if ($sql === false) throw new RuntimeException('Four-hub migration file is missing.');
-            foreach (explode(';', $sql) as $statement) {
-                if (trim($statement) !== '') db()->exec($statement);
+            foreach (['2026_11_four_hubs_upgrade.sql', '2026_12_scientific_psychometrics_v3.sql'] as $migrationFile) {
+                $path = ROOT_PATH . '/database/migrations/' . $migrationFile;
+                if (!is_file($path)) throw new RuntimeException('Migration file is missing: ' . $migrationFile);
+                $sql = file_get_contents($path);
+                if ($sql === false) throw new RuntimeException('Cannot read migration file: ' . $migrationFile);
+                foreach (explode(';', $sql) as $statement) {
+                    if (trim($statement) !== '') db()->exec($statement);
+                }
             }
         } else {
             foreach (four_hub_sqlite_schema() as $statement) db()->exec($statement);
+            four_hub_sqlite_upgrade_columns();
         }
         four_hub_seed_content();
     } finally {
@@ -34,18 +39,55 @@ function run_four_hub_migrations(): void
     }
 }
 
-/** SQLite is for local development; production uses the reviewed MySQL migration. */
+/** SQLite is for local development and automated test suites; production uses the reviewed MySQL migrations. */
 function four_hub_sqlite_schema(): array
 {
     return [
         "CREATE TABLE IF NOT EXISTS knowledge_articles (id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(200) NOT NULL,slug VARCHAR(220) NOT NULL UNIQUE,category TEXT NOT NULL DEFAULT 'admissions' CHECK(category IN ('admissions','trend','guide')),summary VARCHAR(400) NOT NULL,content TEXT NOT NULL,source_name VARCHAR(120),source_url VARCHAR(500),related_career_slug VARCHAR(180),featured INTEGER NOT NULL DEFAULT 0,status TEXT NOT NULL DEFAULT 'published' CHECK(status IN ('published','draft')),created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
         'CREATE INDEX IF NOT EXISTS idx_articles_category_status ON knowledge_articles(category,status)',
         "CREATE TABLE IF NOT EXISTS external_portals (id INTEGER PRIMARY KEY AUTOINCREMENT,title VARCHAR(150) NOT NULL,organization VARCHAR(150) NOT NULL,icon VARCHAR(20) NOT NULL DEFAULT '🌐',description VARCHAR(300) NOT NULL,target_url VARCHAR(500) NOT NULL,category TEXT NOT NULL DEFAULT 'career_directory' CHECK(category IN ('official_admissions','career_directory','scholarship','skills')),sort_order INTEGER NOT NULL DEFAULT 0,status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active','inactive')),created_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-        "CREATE TABLE IF NOT EXISTS user_psychometrics (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL,test_type TEXT NOT NULL CHECK(test_type IN ('mbti','eq')),answers_json TEXT NOT NULL,scores_json TEXT NOT NULL,result_code VARCHAR(32) NOT NULL,summary_label VARCHAR(150) NOT NULL,completed_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS user_psychometrics (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL,test_type TEXT NOT NULL CHECK(test_type IN ('mbti','eq','big5','caas','teique')),answers_json TEXT NOT NULL,scores_json TEXT NOT NULL,result_code VARCHAR(32) NOT NULL,summary_label VARCHAR(150) NOT NULL,duration_seconds INTEGER NOT NULL DEFAULT 0,validity_flag TEXT NOT NULL DEFAULT 'valid' CHECK(validity_flag IN ('valid','rushed','flatline','inconsistent')),completed_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
         'CREATE INDEX IF NOT EXISTS idx_psych_user_type ON user_psychometrics(user_id,test_type,completed_at)',
         "CREATE TABLE IF NOT EXISTS ai_chat_messages (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL,role TEXT NOT NULL CHECK(role IN ('user','assistant')),message TEXT NOT NULL,context_snapshot TEXT,model VARCHAR(100),latency_ms INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
         'CREATE INDEX IF NOT EXISTS idx_chat_user_time ON ai_chat_messages(user_id,created_at)',
+        "CREATE TABLE IF NOT EXISTS soka_mirror_requests (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL,invite_token VARCHAR(64) NOT NULL UNIQUE,rater_relation TEXT NOT NULL DEFAULT 'peer' CHECK(rater_relation IN ('peer','teacher','parent','mentor')),status TEXT NOT NULL DEFAULT 'open' CHECK(status IN ('open','closed')),created_at TEXT DEFAULT CURRENT_TIMESTAMP,expires_at TEXT NULL,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
+        'CREATE INDEX IF NOT EXISTS idx_soka_user ON soka_mirror_requests(user_id)',
+        "CREATE TABLE IF NOT EXISTS soka_mirror_responses (id INTEGER PRIMARY KEY AUTOINCREMENT,request_id INTEGER NOT NULL,user_id INTEGER NOT NULL,rater_role TEXT NOT NULL DEFAULT 'peer' CHECK(rater_role IN ('peer','teacher','parent','mentor')),ratings_json TEXT NOT NULL,strength_note VARCHAR(300) NULL,blindspot_note VARCHAR(300) NULL,submitted_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(request_id) REFERENCES soka_mirror_requests(id) ON DELETE CASCADE,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
+        'CREATE INDEX IF NOT EXISTS idx_soka_resp_user ON soka_mirror_responses(user_id,submitted_at)',
     ];
+}
+
+function four_hub_sqlite_upgrade_columns(): void
+{
+    $tablesToColumns = [
+        'assessments' => [
+            'efficacy_scores' => 'TEXT NULL',
+            'ipsative_z_scores' => 'TEXT NULL',
+            'validity_metrics' => 'TEXT NULL',
+            'discrepancy_report' => 'TEXT NULL',
+        ],
+        'user_psychometrics' => [
+            'duration_seconds' => 'INTEGER NOT NULL DEFAULT 0',
+            'validity_flag' => "TEXT NOT NULL DEFAULT 'valid'",
+        ],
+        'simulation_attempts' => [
+            'process_telemetry' => 'TEXT NULL',
+            'tradeoff_profile' => 'TEXT NULL',
+        ],
+    ];
+    foreach ($tablesToColumns as $table => $cols) {
+        $exists = (int)db()->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=" . db()->quote($table))->fetchColumn();
+        if (!$exists) continue;
+        $existingCols = [];
+        foreach (db()->query("PRAGMA table_info($table)")->fetchAll() as $colInfo) {
+            $existingCols[] = $colInfo['name'];
+        }
+        foreach ($cols as $colName => $colDef) {
+            if (!in_array($colName, $existingCols, true)) {
+                db()->exec("ALTER TABLE $table ADD COLUMN $colName $colDef");
+            }
+        }
+    }
 }
 
 function four_hub_seed_content(): void
@@ -74,7 +116,7 @@ function four_hub_seed_content(): void
     }
 }
 
-/** Latest saved result for each questionnaire, including decoded answers and scores. */
+/** Latest saved result for each questionnaire, including decoded answers, scores, and validity flags. */
 function four_hub_latest_psychometrics(int $userId): array
 {
     $stmt = db()->prepare('SELECT p.* FROM user_psychometrics p WHERE p.user_id=? AND NOT EXISTS (SELECT 1 FROM user_psychometrics newer WHERE newer.user_id=p.user_id AND newer.test_type=p.test_type AND (newer.completed_at>p.completed_at OR (newer.completed_at=p.completed_at AND newer.id>p.id)))');
