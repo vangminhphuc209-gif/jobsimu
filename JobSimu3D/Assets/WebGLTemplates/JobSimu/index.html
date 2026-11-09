@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>JobSimu · Một tiết dạy đầu tiên</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#142b31;color:#f6eddb;font-family:system-ui,sans-serif;overflow:hidden}
+    #unity-canvas{display:block;width:100%;height:100%;outline:none}#loading{position:fixed;inset:0;display:grid;place-content:center;background:#142b31;gap:18px;text-align:center}
+    #loading[hidden]{display:none}h1{font-size:30px;margin:0}progress{width:min(70vw,420px);height:12px;accent-color:#e7bb72}p{max-width:520px;padding:0 20px}
+  </style>
+</head>
+<body>
+  <canvas id="unity-canvas" width="1280" height="720" tabindex="0" aria-label="JobSimu: mô phỏng nghề giáo viên, dùng bàn phím và chuột"></canvas>
+  <div id="loading" role="status" aria-live="polite"><h1>JOBSIMU</h1><p id="status">Đang mở cổng trường…</p><progress id="progress" max="1" value="0"></progress><p>Lưu trên thiết bị này · WASD / Chuột / E</p></div>
+  <script src="Build/{{{ LOADER_FILENAME }}}"></script>
+  <script>
+    const canvas=document.getElementById('unity-canvas');
+    createUnityInstance(canvas,{
+      dataUrl:'Build/{{{ DATA_FILENAME }}}',frameworkUrl:'Build/{{{ FRAMEWORK_FILENAME }}}',codeUrl:'Build/{{{ CODE_FILENAME }}}',
+      streamingAssetsUrl:'StreamingAssets',companyName:{{{ JSON.stringify(COMPANY_NAME) }}},productName:{{{ JSON.stringify(PRODUCT_NAME) }}},productVersion:{{{ JSON.stringify(PRODUCT_VERSION) }}},
+      devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5),autoSyncPersistentDataPath:true
+    },value=>{document.getElementById('progress').value=value;document.getElementById('status').textContent='Đang chuẩn bị trường học · '+Math.round(value*100)+'%';})
+      .then(instance=>{window.jobSimu=instance;document.getElementById('loading').hidden=true;canvas.focus();console.info('JOBSIMU_WEB_READY');})
+      .catch(error=>{document.getElementById('status').textContent='Không mở được trò chơi. Hãy tải lại trang hoặc thử trình duyệt khác.';window.jobSimuLoadError=String(error);console.error(error);});
+  </script>
+</body>
+</html>

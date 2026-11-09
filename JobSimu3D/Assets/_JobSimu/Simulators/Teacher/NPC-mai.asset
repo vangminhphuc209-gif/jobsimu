@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167ad26359d09b66e87f59ddfbd88735, type: 3}
+  m_Name: NPC-mai
+  m_EditorClassIdentifier: JobSimu.Runtime::JobSimu.NPC.NpcProfile
+  id: mai
+  displayName: "C\xF4 Mai"
+  role: "Gi\xE1o vi\xEAn h\u01B0\u1EDBng d\u1EABn"
+  introduction: "C\xF4 s\u1EBD c\xF9ng b\u1EA1n chu\u1EA9n b\u1ECB v\xE0 nh\xECn l\u1EA1i ti\u1EBFt d\u1EA1y. H\u1ECDc sinh c\u1EA7n \u0111\u01B0\u1EE3c trao \u0111\u1ED5i v\xE0 ki\u1EC3m tra hi\u1EC3u b\xE0i."
+  schedule:
+  - minute: 405
+    waypoint: 0
+    seated: 0
+  - minute: 450
+    waypoint: 1
+    seated: 0
+  - minute: 570
+    waypoint: 0
+    seated: 0
+  speed: 0.7

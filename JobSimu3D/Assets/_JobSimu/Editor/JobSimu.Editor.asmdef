@@ -1,0 +1,6 @@
+{
+  "name": "JobSimu.Editor",
+  "rootNamespace": "JobSimu.Editor",
+  "references": ["JobSimu.Runtime", "Unity.InputSystem", "Unity.RenderPipelines.Universal.Runtime"],
+  "includePlatforms": ["Editor"]
+}

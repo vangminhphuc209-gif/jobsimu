@@ -46,3 +46,7 @@ wt-*/
 zip/
 *.zip
 
+# Python Bytecode
+__pycache__/
+*.py[cod]
+

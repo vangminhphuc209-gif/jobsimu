@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167ad26359d09b66e87f59ddfbd88735, type: 3}
+  m_Name: NPC-linh
+  m_EditorClassIdentifier: JobSimu.Runtime::JobSimu.NPC.NpcProfile
+  id: linh
+  displayName: Linh
+  role: "H\u1ECDc sinh l\u1EDBp 10A1"
+  introduction: "Em mu\u1ED1n xem m\u1ED9t v\xED d\u1EE5 c\u1EE5 th\u1EC3 tr\u01B0\u1EDBc khi t\u1EF1 gi\u1EA3i th\xEDch. M\xECnh c\xF3 th\u1EC3 c\xF9ng so s\xE1nh t\u1EEBng b\u01B0\u1EDBc kh\xF4ng?"
+  schedule:
+  - minute: 405
+    waypoint: 0
+    seated: 0
+  - minute: 450
+    waypoint: 1
+    seated: 1
+  - minute: 570
+    waypoint: 0
+    seated: 0
+  speed: 0.7

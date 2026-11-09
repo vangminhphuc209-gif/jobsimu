@@ -1,0 +1,21 @@
+# Unity local caches and generated build output
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Bb]uild/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/.vs/
+*.csproj
+*.sln
+*.slnx
+*.pidb
+*.user
+*.userprefs
+*.unitypackage
+sysinfo.txt
+node_modules/
+/Tools/WebSmoke/results/

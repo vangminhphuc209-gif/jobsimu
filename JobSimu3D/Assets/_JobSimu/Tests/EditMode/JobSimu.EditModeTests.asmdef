@@ -1,0 +1,6 @@
+{
+  "name": "JobSimu.EditModeTests",
+  "references": ["JobSimu.Runtime", "JobSimu.Editor", "Unity.InputSystem"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

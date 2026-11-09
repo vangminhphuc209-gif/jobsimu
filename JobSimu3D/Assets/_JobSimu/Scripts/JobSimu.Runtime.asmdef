@@ -1,0 +1,5 @@
+{
+  "name": "JobSimu.Runtime",
+  "rootNamespace": "JobSimu",
+  "references": ["Unity.InputSystem", "Unity.RenderPipelines.Universal.Runtime"]
+}
