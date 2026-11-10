@@ -21,7 +21,8 @@ namespace JobSimu.UI
         private string prompt = "", response = "";
         private bool actionChosen;
         private Vector2 scroll;
-        private GUIStyle body, title, button, small;
+        private GUIStyle body, title, button, small, textArea;
+        private Font uiFont;
         private ScreenPage returnPage;
         private void Awake() => Settings = SimulationSettings.Load();
         public override void SetPrompt(string value) => prompt = value;
@@ -70,13 +71,17 @@ namespace JobSimu.UI
             if (runtime.Session == null || Settings == null) return;
             if (body == null)
             {
-                body = new GUIStyle(GUI.skin.label) { wordWrap = true, richText = false };
+                uiFont = Resources.Load<Font>("JobSimuUI");
+                body = new GUIStyle(GUI.skin.label) { font = uiFont, wordWrap = true, richText = false };
                 title = new GUIStyle(body) { fontStyle = FontStyle.Bold };
                 small = new GUIStyle(body);
-                button = new GUIStyle(GUI.skin.button) { wordWrap = true, richText = false, alignment = TextAnchor.MiddleLeft, padding = new RectOffset(18, 12, 8, 8) };
+                textArea = new GUIStyle(GUI.skin.textArea) { font = uiFont, fontSize = 18, wordWrap = true };
+                button = new GUIStyle(GUI.skin.button) { font = uiFont, wordWrap = true, richText = false, alignment = TextAnchor.MiddleLeft, padding = new RectOffset(18, 12, 8, 8) };
             }
             body.fontSize = Mathf.RoundToInt(19 * Settings.textScale); title.fontSize = 27;
             small.fontSize = 16; button.fontSize = Mathf.RoundToInt(18 * Settings.textScale);
+            Font previousFont = GUI.skin.font;
+            GUI.skin.font = uiFont;
             GUI.contentColor = Color.white;
             GUI.backgroundColor = Settings.highContrast ? Color.black : new Color(.14f, .23f, .25f);
             Matrix4x4 previous = GUI.matrix;
@@ -85,7 +90,7 @@ namespace JobSimu.UI
             if (Page == ScreenPage.MainMenu || Page == ScreenPage.ConfirmNew) DrawMain();
             else
             {
-                GUI.Box(new Rect(20, 18, 880, 112), GUIContent.none);
+                Backdrop(new Rect(20, 18, 880, 112));
                 GUI.Label(new Rect(38, 25, 840, 38), "JOBSIMU  /  " + runtime.Session.Minute / 60 + ":" + (runtime.Session.Minute % 60).ToString("00"), title);
                 GUI.Label(new Rect(38, 68, 840, 58), runtime.Session.Objective, body);
                 if (Page == ScreenPage.Gameplay) DrawGameplay();
@@ -96,16 +101,24 @@ namespace JobSimu.UI
                 else if (Page == ScreenPage.Results) DrawResults();
             }
             GUI.matrix = previous;
+            GUI.skin.font = previousFont;
         }
         private bool Button(float x, float y, float w, float h, string label) => GUI.Button(new Rect(x, y, w, h), label, button);
+        private void Backdrop(Rect rect)
+        {
+            Color previousColor = GUI.color;
+            GUI.color = Settings.highContrast ? Color.black : new Color(.055f, .105f, .125f, 1);
+            GUI.DrawTexture(rect, Texture2D.whiteTexture);
+            GUI.color = previousColor;
+        }
         private void Panel(string caption)
         {
-            GUI.Box(new Rect(150, 145, 980, 520), GUIContent.none);
+            Backdrop(new Rect(150, 145, 980, 520));
             GUI.Label(new Rect(175, 160, 930, 40), caption, title);
         }
         private void DrawMain()
         {
-            GUI.Box(new Rect(270, 110, 740, 510), GUIContent.none);
+            Backdrop(new Rect(270, 110, 740, 510));
             GUI.Label(new Rect(310, 140, 660, 45), "JOBSIMU · MỘT TIẾT DẠY ĐẦU TIÊN", title);
             GUI.Label(new Rect(310, 202, 660, 88), "Đến trường, chuẩn bị học liệu, lắng nghe học sinh và kiểm tra việc học. Các lựa chọn để lại hệ quả và bằng chứng riêng.", body);
             if (Page == ScreenPage.ConfirmNew)
@@ -130,13 +143,13 @@ namespace JobSimu.UI
             GUI.Label(new Rect(20, 670, 1240, 40), "WASD · Đi   Shift · Chạy   Chuột · Nhìn   E · Tương tác   J · Nhật ký   Esc · Tạm dừng", small);
             if (Cursor.lockState != CursorLockMode.Locked)
             {
-                GUI.Box(new Rect(390, 320, 500, 62), GUIContent.none);
+                Backdrop(new Rect(390, 320, 500, 62));
                 GUI.Label(new Rect(410, 335, 460, 40), "Nhấp vào cảnh để điều khiển nhân vật", body);
             }
             else
             {
                 GUI.Label(new Rect(632, 346, 25, 28), "+", body);
-                if (!string.IsNullOrEmpty(prompt)) { GUI.Box(new Rect(350, 395, 580, 50), GUIContent.none); GUI.Label(new Rect(370, 407, 540, 38), prompt, body); }
+                if (!string.IsNullOrEmpty(prompt)) { Backdrop(new Rect(350, 395, 580, 50)); GUI.Label(new Rect(370, 407, 540, 38), prompt, body); }
             }
         }
         private void DrawDialogue()
@@ -196,7 +209,7 @@ namespace JobSimu.UI
             scroll = GUILayout.BeginScrollView(scroll); GUILayout.Label(runtime.Session.Report(), body);
             GUILayout.EndScrollView(); GUILayout.EndArea();
             GUI.Label(new Rect(175, 465, 930, 30), "Bạn sẽ giữ lại hoặc thay đổi điều gì ở tiết sau? (tối đa 500 ký tự)", small);
-            runtime.Reflection = GUI.TextArea(new Rect(175, 500, 930, 70), runtime.Reflection, 500);
+            runtime.Reflection = GUI.TextArea(new Rect(175, 500, 930, 70), runtime.Reflection, 500, textArea);
             if (Button(175, 585, 450, 48, "Lưu phản tư trên thiết bị")) runtime.Save();
             if (Button(645, 585, 460, 48, "Tiếp tục khám phá · P để xem lại")) { runtime.Save(); SetPage(ScreenPage.Gameplay); }
             GUI.Label(new Rect(175, 638, 930, 24), runtime.SaveStatus, small);

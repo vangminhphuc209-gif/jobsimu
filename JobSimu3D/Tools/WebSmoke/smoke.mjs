@@ -20,6 +20,7 @@ page.on('console', message => {
   if (/Exception:|Error:|Assertion failed|Shader error/.test(text)) errors.push(text);
 });
 let serial = 0;
+let mouseX = 0, mouseY = 0;
 async function snapshot() {
   const tag = `probe-${serial++}`;
   await page.evaluate(tag => window.jobSimu.SendMessage('Shared Simulation', 'Dump', tag), tag);
@@ -33,11 +34,18 @@ async function snapshot() {
 }
 async function load() {
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await page.waitForFunction(() => window.jobSimu || window.jobSimuLoadError, { timeout: 240000 });
+  await page.waitForFunction(() => window.jobSimu || window.jobSimuLoadError, null, { timeout: 240000 });
   assert.equal(await page.evaluate(() => window.jobSimuLoadError || ''), '');
-  await page.waitForTimeout(2000);
+  await waitReady();
 }
-async function click(x, y) { await page.mouse.click(x, y); await page.waitForTimeout(250); }
+async function waitReady() {
+  for (let attempt = 0; attempt < 120; attempt++) {
+    if ((await snapshot()).ready) return;
+    await page.waitForTimeout(250);
+  }
+  throw new Error('Unity splash did not finish');
+}
+async function click(x, y) { await page.mouse.click(x, y); mouseX = x; mouseY = y; await page.waitForTimeout(250); }
 async function key(key, ms = 100) { await page.keyboard.down(key); await page.waitForTimeout(ms); await page.keyboard.up(key); await page.waitForTimeout(120); }
 async function lock() { const state = await snapshot(); if (!state.locked) await click(640, 360); }
 const signed = angle => ((angle + 540) % 360) - 180;
@@ -51,7 +59,8 @@ async function aim(target) {
     const yawDelta = signed(yaw - state.angles.y), pitchDelta = signed(pitch - state.angles.x);
     if (Math.abs(yawDelta) < 1 && Math.abs(pitchDelta) < 1) return;
     // Real pointer-lock mouse movement, not injected game state.
-    await page.mouse.move(640 + yawDelta / .09, 360 + pitchDelta / .09);
+    mouseX += yawDelta / .09; mouseY += pitchDelta / .09;
+    await page.mouse.move(mouseX, mouseY);
     await page.waitForTimeout(120);
   }
 }
@@ -77,15 +86,17 @@ async function interact(id, expectedStep) {
   state = await snapshot();
   assert.equal(state.station, id, `Raycast did not reach ${id}`);
   assert.equal(state.page, 'Dialogue');
+  if (id === 'printer') await page.screenshot({ path: path.join(output, '02-preparation.png') });
   await click(630, 350);
   state = await snapshot();
   assert.equal(state.step, expectedStep);
   if (!state.complete) { await click(630, 620); await lock(); }
   checks.push(`world action ${id} -> ${expectedStep}`);
+  console.log(checks.at(-1));
 }
 async function door(x, z) { await aim({ x, y: 1.2, z }); await key('e'); await page.waitForTimeout(1300); }
 
-let outcome = 'failed';
+let outcome = 'failed', failure = '';
 try {
   await load();
   assert.equal((await snapshot()).page, 'MainMenu');
@@ -106,18 +117,25 @@ try {
   await walk(-15.8, 16); await walk(-15.8, 5.5); await walk(0, 5.5); await walk(0, -7); await walk(-3, -10);
   await interact('mai', 'complete');
   assert.equal((await snapshot()).page, 'Results');
-  await page.screenshot({ path: path.join(output, '02-results.png') });
+  await page.screenshot({ path: path.join(output, '03-results.png') });
   await click(400, 530); await page.keyboard.type('Lan sau toi se kiem tra tung nhom.'); await click(400, 607);
   await page.waitForTimeout(3000); const completed = await snapshot(); assert.ok(completed.reflectionLength > 10);
-  await page.reload({ waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => window.jobSimu, { timeout: 240000 }); await page.waitForTimeout(1500);
+  await page.reload({ waitUntil: 'domcontentloaded' }); await page.waitForFunction(() => window.jobSimu, null, { timeout: 240000 }); await waitReady();
   await click(620, 383); const resumed = await snapshot(); assert.equal(resumed.complete, true); assert.equal(resumed.reflectionLength, completed.reflectionLength);
+  assert.equal(resumed.page, 'Results');
+  assert.deepEqual(resumed.flags, completed.flags);
+  assert.equal(resumed.evidence, completed.evidence);
+  await page.screenshot({ path: path.join(output, '04-resumed.png') });
   checks.push('IndexedDB save survives browser reload');
   assert.deepEqual(errors, []);
   outcome = 'passed';
+} catch (error) {
+  failure = error.stack;
+  process.exitCode = 1;
 } finally {
-  const report = { outcome, url, checks, errors, snapshots, browser: await browser.version(), rendering: 'headless Chrome / SwiftShader; not target hardware FPS' };
+  const report = { outcome, failure, url, checks, errors, snapshots, browser: await browser.version(), rendering: 'headless Chrome / SwiftShader; not target hardware FPS' };
   await fs.writeFile(path.join(output, 'report.json'), JSON.stringify(report, null, 2));
   await page.screenshot({ path: path.join(output, 'last-frame.png') }).catch(() => {});
   await browser.close();
-  console.log(JSON.stringify({ outcome, checks, errors, report: path.join(output, 'report.json') }, null, 2));
+  console.log(JSON.stringify({ outcome, failure, checks, errors, report: path.join(output, 'report.json') }, null, 2));
 }

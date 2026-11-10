@@ -10,27 +10,30 @@ namespace JobSimu.Core
     public sealed class BrowserDiagnostics : MonoBehaviour
     {
         public SimulationRuntime runtime;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private readonly float[] frameTimes = new float[120];
         private int cursor, samples;
-        private void Update() { frameTimes[cursor++ % frameTimes.Length] = Time.unscaledDeltaTime; samples = Mathf.Min(samples + 1, frameTimes.Length); }
+        private void Update()
+        {
+            if (!Debug.isDebugBuild) return;
+            frameTimes[cursor++ % frameTimes.Length] = Time.unscaledDeltaTime;
+            samples = Mathf.Min(samples + 1, frameTimes.Length);
+        }
         [Serializable] private sealed class StationInfo { public string id; public Vector3 position; }
         [Serializable] private sealed class Snapshot
         {
             public string tag, step, page, station, saveStatus;
             public Vector3 player, camera, angles;
-            public bool locked, complete;
+            public bool ready, locked, complete;
             public int evidence, reflectionLength;
             public float sampledFps, allocatedMemoryMB;
             public string[] flags;
             public StationInfo[] stations;
         }
-#endif
         public void Dump(string tag)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            if (runtime.Session == null) return;
+            if (!Debug.isDebugBuild || runtime.Session == null) return;
             var snapshot = new Snapshot {
+                ready = UnityEngine.Rendering.SplashScreen.isFinished,
                 tag = tag, step = runtime.Session.StepId, page = runtime.ui.Page.ToString(),
                 station = runtime.ui.CurrentStation != null ? runtime.ui.CurrentStation.stationId : "",
                 saveStatus = runtime.SaveStatus, player = runtime.player.transform.position,
@@ -43,7 +46,6 @@ namespace JobSimu.Core
                 stations = FindObjectsByType<DialogueStation>().Select(s => new StationInfo { id = s.stationId, position = s.GetComponent<Collider>().bounds.center }).ToArray()
             };
             Debug.Log("JOBSIMU_SNAPSHOT " + JsonUtility.ToJson(snapshot));
-#endif
         }
     }
 }

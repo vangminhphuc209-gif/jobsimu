@@ -59,6 +59,10 @@ npm test --prefix Tools/WebSmoke
 
 Server chỉ bind `127.0.0.1`, phục vụ thư mục build, gửi MIME WebAssembly và không cache. Đây là URL HTTP cục bộ, không phải triển khai production. Playwright dùng Google Chrome cài trên Linux. `BrowserDiagnostics.Dump` là probe chỉ đọc trong Development Build để kiểm tra vị trí, tiến trình và số liệu frame; không có API dịch chuyển hay thực thi hành động từ JavaScript.
 
+Lần build đầu phát hiện Web Build Support cài dở: thiếu `UnityEditor.WebGL.Extensions.dll`, thư viện player và các tệp build khác. Đã tải gói Linux chính thức đúng **6000.6.8f1 / 237b6593792b**, kiểm tra MD5 `1245745881e397c44b024f8401777510`, khôi phục 7.507 tệp thiếu và một tệp sai kích thước. Bản sao tệp cũ và danh sách khôi phục nằm trong `Logs/webgl-install-backup/` và `Logs/webgl-module-repair.json`. Đây là sửa bộ công cụ trên máy, không sửa package cache của dự án. Trên máy khác, cài đủ module **Web Build Support** qua Unity Hub trước khi build. [Bản phát hành Unity tương ứng](https://unity.com/releases/editor/whats-new/6000.6.8f1).
+
+Giao diện và bảng chữ trong thế giới dùng phông **DejaVu Sans** nhúng tại `Resources/JobSimuUI.ttf`, vì bản Web không có font fallback tiếng Việt của hệ điều hành như Editor. Giấy phép Bitstream Vera và phần mở rộng public-domain được giữ trong `Resources/DejaVu-LICENSE.txt` và sao chép thành `ThirdPartyNotices.txt` khi build. Các panel có nền đặc để chữ không lẫn với cảnh 3D.
+
 Template `Assets/WebGLTemplates/JobSimu/index.html` có trạng thái tải, lỗi khởi động và `autoSyncPersistentDataPath` để đồng bộ bộ nhớ filesystem Web với IndexedDB. Build QA không nén để chạy với server đơn giản; tối ưu Brotli/Gzip và cache/header production là bước riêng.
 
 ## Lưu và tích hợp PHP
@@ -75,7 +79,7 @@ Không sửa website PHP, database hoặc hosting; bản Vite hiện có tiếp 
 
 - Một tiết học, không mô phỏng đầy đủ lịch cả ngày hoặc nhiều ngày; NPC chỉ có lịch/waypoint cục bộ.
 - Chưa có nội dung y khoa/pháp lý, không có mô phỏng bí mật cá nhân hay tình huống nhạy cảm.
-- Học sinh và môi trường vẫn là blockout. Âm thanh là cue tổng hợp, không phải ambience thu thực tế. Chưa có model ngoài hay asset phải mua giấy phép.
+- Học sinh và môi trường vẫn là blockout. Âm thanh là cue tổng hợp, không phải ambience thu thực tế. Chưa có model ngoài hay asset phải mua giấy phép; phông DejaVu Sans được phân phối theo giấy phép kèm theo.
 - IMGUI dùng được trong desktop Web, nhưng chưa phải giao diện screen-reader hoàn chỉnh. Chưa hỗ trợ điều khiển cảm ứng/gamepad.
 - Mục tiêu 60/30 FPS chưa phải cam kết: cần đo build tối ưu trên hai thiết bị mục tiêu được xác định. Số liệu headless/software rendering không đại diện máy chơi thật.
 - Dữ liệu trình duyệt có thể bị xóa hoặc bị chặn; UI báo lưu cục bộ, không hứa đồng bộ tài khoản.

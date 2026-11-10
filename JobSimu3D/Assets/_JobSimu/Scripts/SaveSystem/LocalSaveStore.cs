@@ -9,13 +9,14 @@ namespace JobSimu.SaveSystem
 {
     [Serializable] public sealed class SaveEnvelope
     {
-        public int schemaVersion = 1;
+        public int schemaVersion;
         public string scenarioId, contentVersion, reflection;
         public List<SessionRecord> records;
     }
     public static class SaveCodec
     {
         public static string Encode(ScenarioSession session, string reflection) => JsonUtility.ToJson(new SaveEnvelope {
+            schemaVersion = 1,
             scenarioId = session.Definition.id, contentVersion = session.Definition.contentVersion,
             reflection = (reflection ?? "").Substring(0, Math.Min(500, (reflection ?? "").Length)),
             records = session.Records.Select(r => new SessionRecord { actionId = r.actionId, minutes = r.minutes }).ToList()

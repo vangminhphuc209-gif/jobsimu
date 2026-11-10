@@ -13,6 +13,13 @@ namespace JobSimu.Core
         private void OnEnable()
         {
             label = GetComponent<TextMesh>();
+            // Bundle Vietnamese glyphs for Web, where OS font fallback is unavailable.
+            // Runtime only: opening legacy scenes must not change their serialized assets.
+            if (Application.isPlaying)
+            {
+                Font bundledFont = Resources.Load<Font>("JobSimuUI");
+                if (bundledFont != null) label.font = bundledFont;
+            }
             meshRenderer = GetComponent<MeshRenderer>();
             properties = new MaterialPropertyBlock();
             Font.textureRebuilt += RefreshAtlas;

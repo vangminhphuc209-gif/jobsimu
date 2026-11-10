@@ -50,6 +50,7 @@ namespace JobSimu.Tests
             Assert.That(reflection, Does.Contain("từng nhóm"));
         }
         [TestCase("{\"schemaVersion\":99}")]
+        [TestCase("{\"scenarioId\":\"teacher.first-lesson\",\"contentVersion\":\"1\",\"records\":[]}")]
         [TestCase("{\"schemaVersion\":1,\"scenarioId\":\"teacher.first-lesson\",\"contentVersion\":\"1\",\"records\":[{\"actionId\":\"reflect.finish\"}]}")]
         [TestCase("{\"schemaVersion\":1,\"scenarioId\":\"teacher.first-lesson\",\"contentVersion\":\"1\",\"records\":[{\"actionId\":\"@clock\",\"minutes\":-3}]}")]
         [TestCase("{broken")]
