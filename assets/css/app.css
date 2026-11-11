@@ -30,3 +30,34 @@
 @media(max-width:1100px){.hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav .name{display:none}.hub-hero-layout{gap:28px}.nav-inner{flex-wrap:wrap}}
 @media(max-width:700px){.hub-hero{padding:36px 0}.hub-hero-layout,.hub-spotlight{grid-template-columns:1fr}.hub-grid{grid-template-columns:1fr}.hub-spotlight{padding:24px}.hub-school-mark{display:none}.hub-section-heading{align-items:flex-start;flex-direction:column}.hub-skills{grid-template-columns:1fr 1fr}.hub-game-frame{min-height:420px}.hub-compass{padding:20px}}
 @media print{@page{size:A4;margin:14mm}body{background:#fff!important;color:#111!important;font-size:10pt}.nav,.footer,.no-print,#toast,body>main>.page-head{display:none!important}main{padding:0!important}.container{width:100%!important;max-width:none!important;padding:0!important}.roadmap-print{border:0!important;box-shadow:none!important;margin:0!important;padding:0!important}.roadmap-print h2{font-size:18pt}.roadmap-steps>li{break-inside:avoid;padding:10px 14px;margin:10px 0;background:#f5f5f5!important;border-color:#555!important}.roadmap-steps h3{font-size:12pt}.roadmap-steps p{margin:5px 0}.roadmap-print{print-color-adjust:exact;-webkit-print-color-adjust:exact}a{color:inherit!important}}
+/* Training Majors Explorer & Verification Queue */
+.majors-stats-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.875rem;margin-top:1.5rem}
+.majors-stat-box{background:#fff;border:1px solid #e2e8f0;border-radius:1rem;padding:1rem 1.25rem}
+.majors-stat-box strong{display:block;font-size:1.5rem;font-weight:900;color:#1e1b4b}
+.majors-stat-box span{font-size:.82rem;color:#64748b}
+.majors-filter-card{margin-top:1.5rem;margin-bottom:1.5rem}
+.majors-filter-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr .9fr;gap:.875rem;align-items:end}
+.majors-filter-grid .form-group{margin:0;min-width:0}
+.majors-filter-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1rem;align-items:center}
+.major-card{display:flex;flex-direction:column;gap:.65rem;height:100%}
+.major-card h3{margin:.15rem 0;font-size:1.15rem;line-height:1.35}
+.major-card-footer{margin-top:auto;padding-top:.75rem;border-top:1px solid #f1f5f9;display:flex;flex-direction:column;gap:.55rem}
+.status-pill{display:inline-flex;flex-wrap:wrap;align-items:center;gap:.3rem;border-radius:9999px;padding:.25rem .65rem;font-size:.74rem;font-weight:700;line-height:1.25;max-width:100%}
+.status-pill-ok{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.status-pill-warn{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.status-pill-error{background:#fff1f2;color:#9f1239;border:1px solid #fecdd3}
+.status-pill-info{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}
+.hnv-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1rem}
+.hnv-meta-item{background:#f8fafc;border:1px solid #e2e8f0;border-radius:.875rem;padding:.875rem 1rem;min-width:0}
+.hnv-meta-item small{display:block;font-size:.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem}
+.hnv-url-break,code{overflow-wrap:anywhere;word-break:break-word}
+.hnv-year-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0 1rem}
+.hnv-year-pill{display:inline-flex;align-items:center;padding:.4rem .8rem;border-radius:9999px;border:1px solid #cbd5e1;background:#fff;font-size:.82rem;font-weight:700;color:#334155}
+.hnv-year-pill.active{background:#4f46e5;border-color:#4f46e5;color:#fff}
+.hnv-school-cards{display:none}
+.pagination{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5rem;margin:2rem 0}
+.pagination .btn{min-width:42px;min-height:42px;padding:.5rem .85rem}
+.pagination .btn.active{background:#4f46e5;color:#fff}
+@media(max-width:960px){.majors-filter-grid{grid-template-columns:1fr 1fr}.majors-stats-bar{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.majors-filter-grid,.hnv-meta-grid,.majors-stats-bar{grid-template-columns:1fr}.majors-filter-actions .btn{width:100%}.hnv-school-table-wrap{display:none}.hnv-school-cards{display:grid;gap:.875rem}}
+

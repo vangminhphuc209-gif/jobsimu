@@ -25,7 +25,9 @@ if (is_file($envFile) && is_readable($envFile)) {
 }
 
 $configFile = ROOT_PATH . '/config.php';
-if (!is_file($configFile)) {
+if (getenv('JOBSIMU_FORCE_ENV_DB') === '1' && is_file(ROOT_PATH . '/config.example.php')) {
+    $configFile = ROOT_PATH . '/config.example.php';
+} elseif (!is_file($configFile)) {
     if (is_file(ROOT_PATH . '/config.example.php') && getenv('DB_NAME')) {
         $configFile = ROOT_PATH . '/config.example.php';
     } elseif (basename($_SERVER['SCRIPT_NAME'] ?? '') !== 'setup.php') {
@@ -77,3 +79,6 @@ admissions_p22_tuition_seed();
 require_once ROOT_PATH . '/app/admissions-p22-notices.php';
 admissions_p22_notice_migrate();
 admissions_p22_notice_seed();
+
+require_once ROOT_PATH . '/app/training-majors.php';
+training_majors_migrate();

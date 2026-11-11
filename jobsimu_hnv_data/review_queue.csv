@@ -1,0 +1,219 @@
+﻿major_id,name,issues,source_url
+hnv-giao-duc-mam-non,Giáo dục Mầm non,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-dinh-huong-nghe-nghiep-nganh-su-pham-mam-non
+hnv-giao-duc-tieu-hoc,Giáo dục Tiểu học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-giao-duc-tieu-hoc
+hnv-giao-duc-cong-dan,Giáo dục Công dân,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-giao-duc-cong-dan
+hnv-giao-duc-chinh-tri,Giáo dục Chính trị,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-giao-duc-chinh-tri
+hnv-su-pham-tin-hoc,Sư phạm Tin học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-su-pham-tin-hoc
+hnv-su-pham-ky-thuat-cong-nghiep,Sư phạm Kỹ thuật công nghiệp,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-su-pham-ky-thuat-cong-nghiep
+hnv-su-pham-lich-su,Sư phạm Lịch sử,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-su-pham-lich-su
+hnv-su-pham-tieng-bana,Sư phạm Tiếng Bana,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-ede,Sư phạm Tiếng Êđê,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-khmer,Sư phạm Tiếng Khmer,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-su-pham-tieng-khmer
+hnv-su-pham-tieng-h-mong,Sư phạm Tiếng H'mong,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-cham,Sư phạm Tiếng Chăm,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-m-nong,Sư phạm Tiếng M'nông,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-xe-dang,Sư phạm Tiếng Xê đăng,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-nga,Sư phạm Tiếng Nga,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-tieng-duc,Sư phạm Tiếng Đức,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-su-pham-nghe-thuat,Sư phạm nghệ thuật,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ly-luan-lich-su-va-phe-binh-my-thuat,"Lý luận, lịch sử và phê bình mỹ thuật","[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-ly-luan-lich-su-va-phe-binh-my-thuat
+hnv-my-thuat-do-thi,Mỹ thuật đô thị,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-my-thua-t-do-thi
+hnv-nhac-jazz,Nhạc Jazz,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-nhac-jazz
+hnv-quay-phim,Quay phim,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quay-phim
+hnv-dien-vien-mua,Diễn viên múa,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-dien-vien-mua
+hnv-bien-dao-mua,Biên đạo múa,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-bien-dao-mua
+hnv-thiet-ke-cong-nghiep,Thiết kế công nghiệp,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-thiet-ke-cong-nghiep-la-gi
+hnv-thiet-ke-do-hoa,Thiết kế đồ họa,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-thiet-ke-do-hoa
+hnv-thiet-ke-thoi-trang,Thiết kế thời trang,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-thiet-ke-thoi-trang
+hnv-tieng-viet-va-van-hoa-viet-nam,Tiếng Việt và văn hoá Việt Nam,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-tieng-viet-va-van-hoa-viet-nam
+hnv-han-nom,Hán Nôm,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-han-nom
+hnv-ngon-ngu-jrai,Ngôn ngữ Jrai,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ngon-ngu-h-mong,Ngôn ngữ H'mong,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ngon-ngu-cham,Ngôn ngữ Chăm,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-sang-tac-van-hoc,Sáng tác văn học,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ngon-ngu-trung-quoc,Ngôn ngữ Trung Quốc,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ngon-ngu-trung-quoc-tieng-trung-quoc
+hnv-ngon-ngu-nhat,Ngôn ngữ Nhật,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ngon-ngu-nhat
+hnv-ngon-ngu-han-quoc,Ngôn ngữ Hàn Quốc,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ngon-ngu-han-quoc
+hnv-ngon-ngu-arap,Ngôn ngữ Ảrập,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-ngon-ngu-arap
+hnv-ton-giao-hoc,Tôn giáo học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-ton-giao-hoc
+hnv-van-hoc,Văn học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-van-hoc
+hnv-van-hoa-hoc,Văn hoá học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-van-hoa-hoc
+hnv-quan-ly-van-hoa,Quản lý văn hoá,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-ly-van-hoa
+hnv-gia-dinh-hoc,Gia đình học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-gia-dinh-hoc
+hnv-kinh-te-dau-tu,Kinh tế đầu tư,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-kinh-te-dau-tu
+hnv-kinh-te-quoc-te,Kinh tế quốc tế,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-kinh-te-quoc-te
+hnv-chinh-tri-hoc,Chính trị học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-chinh-tri-hoc
+hnv-xay-dung-dang-va-chinh-quyen-nha-nuoc,Xây dựng Đảng và chính quyền nhà nước,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-xay-dung-dang-va-chinh-quyen-nha-nuoc
+hnv-quan-ly-nha-nuoc,Quản lý nhà nước,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-ly-nha-nuoc
+hnv-quan-he-quoc-te,Quan hệ quốc tế,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-he-quoc-te
+hnv-xa-hoi-hoc,Xã hội học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-xa-hoi-hoc
+hnv-nhan-hoc,Nhân học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-nhan-hoc
+hnv-tam-ly-hoc,Tâm lý học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-tam-ly-hoc
+hnv-tam-ly-hoc-giao-duc,Tâm lý học giáo dục,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-tam-ly-hoc-giao-duc
+hnv-quoc-te-hoc,Quốc tế học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quoc-te-hoc
+hnv-chau-a-hoc,Châu Á học,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-thai-binh-duong-hoc,Thái Bình Dương học,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-dong-phuong-hoc,Đông phương học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dong-phuong-hoc
+hnv-trung-quoc-hoc,Trung Quốc học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-trung-quoc-hoc
+hnv-nhat-ban-hoc,Nhật Bản học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-nhat-ban-hoc
+hnv-han-quoc-hoc,Hàn Quốc học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-han-quoc-hoc
+hnv-dong-nam-a-hoc,Đông Nam Á học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dong-nam-a-hoc
+hnv-viet-nam-hoc,Việt Nam học,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-viet-nam-hoc
+hnv-bao-chi,Báo chí,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-bao-chi
+hnv-truyen-thong-da-phuong-tien,Truyền thông đa phương tiện,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-truyen-thong-da-phuong-tien
+hnv-cong-nghe-truyen-thong,Công nghệ truyền thông,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-truyen-thong
+hnv-truyen-thong-quoc-te,Truyền thông quốc tế,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-truyen-thong-quoc-te
+hnv-quan-he-cong-chung,Quan hệ công chúng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-he-cong-chung
+hnv-thong-tin-thu-vien,Thông tin - thư viện,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-thong-tin-thu-vien
+hnv-luu-tru-hoc,Lưu trữ học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-luu-tru-hoc
+hnv-xuat-ban,Xuất bản,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-xuat-ban
+hnv-quan-tri-kinh-doanh,Quản trị kinh doanh,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-tri-kinh-doanh
+hnv-marketing,Marketing,"[""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-marketing-la-gi-lam-gi
+hnv-bat-dong-san,Bất động sản,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-bat-dong-san
+hnv-kinh-doanh-quoc-te,Kinh doanh quốc tế,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-kinh-doanh-quoc-te-la-gi-lam-gi
+hnv-kinh-doanh-thuong-mai,Kinh doanh thương mại,"[""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-dinh-huong-nganh-kinh-doanh-thuong-mai-la-gi-lam-gi
+hnv-thuong-mai-dien-tu,Thương mại điện tử,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-thuong-mai-dien-tu
+hnv-kinh-doanh-thoi-trang-va-det-may,Kinh doanh thời trang và dệt may,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-kinh-doanh-thoi-trang-va-det-may
+hnv-tai-chinh-ngan-hang,Tài chính – Ngân hàng,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-tai-chinh-ngan-hang
+hnv-bao-hiem,Bảo hiểm,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-bao-hiem
+hnv-ke-toan,Kế toán,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ke-toan
+hnv-kiem-toan,Kiểm toán,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-ve-nganh-kiem-toan-la-gi-lam-gi
+hnv-quan-tri-nhan-luc,Quản trị nhân lực,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-quan-tri-nhan-luc-la-gi-lam-gi
+hnv-he-thong-thong-tin-quan-ly,Hệ thống thông tin quản lý,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-he-thong-thong-tin-quan-ly-la-gi-lam-gi
+hnv-quan-tri-van-phong,Quản trị văn phòng,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-tri-van-phong-la-gi-lam-gi-va-co-hoi-nghe-nghiep-ra-sao
+hnv-quan-he-lao-dong,Quan hệ lao động,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-he-lao-dong
+hnv-quan-ly-du-an,Quản lý dự án,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-ly-du-an
+hnv-luat,Luật,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-luat
+hnv-luat-kinh-te,Luật kinh tế,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-luat-kinh-te
+hnv-luat-quoc-te,Luật quốc tế,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-luat-quoc-te
+hnv-thien-van-hoc,Thiên văn học,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-vat-ly-nguyen-tu-va-hat-nhan,Vật lý nguyên tử và hạt nhân,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-co-hoc,Cơ học,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ban-do-hoc,Bản đồ học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-ban-do-hoc
+hnv-dia-ly-tu-nhienky-thuat,Địa lý tự nhiên kỹ thuật,"[""EMPTY_ARTICLE_BODY"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-dia-ly-tu-nhien-ky-thuat
+hnv-khoa-hoc-moi-truong,Khoa học môi trường,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-khoa-hoc-moi-truong
+hnv-khoa-hoc-tinh-toan,Khoa học tính toán,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-toan-ung-dung,Toán ứng dụng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-toan-ung-dung
+hnv-toan-co,Toán cơ,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-toan-tin,Toán tin,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-toan-tin
+hnv-khoa-hoc-may-tinh,Khoa học máy tính,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-khoa-hoc-may-tinh
+hnv-ky-thuat-phan-mem,Kỹ thuật phần mềm,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-phan-mem
+hnv-he-thong-thong-tin,Hệ thống thông tin,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-he-thong-thong-tin
+hnv-ky-thuat-may-tinh,Kỹ thuật máy tính,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-may-tinh
+hnv-cong-nghe-ky-thuat-may-tinh,Công nghệ kỹ thuật máy tính,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-may-tinh
+hnv-cong-nghe-thong-tin,Công nghệ thông tin,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-thong-tin
+hnv-an-toan-thong-tin,An toàn thông tin,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-an-toan-thong-tin
+hnv-cong-nghe-ky-thuat-kien-truc,Công nghệ kỹ thuật kiến trúc,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-cong-nghe-ky-thuat-cong-trinh-xay-dung,Công nghệ kỹ thuật công trình xây dựng,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-ky-thuat-cong-trinh-xay-dung
+hnv-cong-nghe-ky-thuat-giao-thong,Công nghệ kỹ thuật giao thông,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-giao-thong-van-tai
+hnv-cong-nghe-ky-thuat-co-khi,Công nghệ kỹ thuật cơ khí,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-co-khi
+hnv-cong-nghe-che-tao-may,Công nghệ chế tạo máy,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-che-tao-may
+hnv-cong-nghe-ky-thuat-co-dien-tu,Công nghệ kỹ thuật cơ điện tử,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-co-dien-tu
+hnv-cong-nghe-ky-thuat-o-to,Công nghệ kỹ thuật ô tô,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-ky-thuat-o-to
+hnv-cong-nghe-ky-thuat-nhiet,Công nghệ kỹ thuật nhiệt,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-nhiet
+hnv-cong-nghe-ky-thuat-dien-dien-tu,"Công nghệ kỹ thuật điện, điện tử","[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dien-dien-tu-la-gi-lam-gi
+hnv-cong-nghe-ky-thuat-dien-tu-vien-thong,Công nghệ kỹ thuật điện tử - viễn thông,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dien-tu-vien-thong
+hnv-cong-nghe-ky-thuat-dieu-khien-va-tu-dong-hoa,Công nghệ kỹ thuật điều khiển và tự động hóa,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-dieu-khien-va-tu-dong-hoa
+hnv-cong-nghe-ky-thuat-hoa-hoc,Công nghệ kỹ thuật hoá học,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-ky-thuat-hoa-hoc
+hnv-cong-nghe-vat-lieu,Công nghệ vật liệu,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-vat-lieu
+hnv-cong-nghe-ky-thuat-moi-truong,Công nghệ kỹ thuật môi trường,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-moi-truong
+hnv-cong-nghe-ky-thuat-hat-nhan,Công nghệ kỹ thuật hạt nhân,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-hat-nhan
+hnv-quan-ly-cong-nghiep,Quản lý công nghiệp,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-quan-ly-cong-nghiep
+hnv-logistics-va-quan-ly-chuoi-cung-ung,Logistics và Quản lý chuỗi cung ứng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-logistics-va-quan-ly-chuoi-cung-ung
+hnv-ky-thuat-co-khi,Kỹ thuật cơ khí,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-co-khi
+hnv-ky-thuat-co-dien-tu,Kỹ thuật cơ điện tử,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-co-dien-tu
+hnv-ky-thuat-nhiet,Kỹ thuật nhiệt,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-nhiet
+hnv-ky-thuat-co-khi-dong-luc,Kỹ thuật cơ khí động lực,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-co-khi-dong-luc-cong-nghe-o-to
+hnv-ky-thuat-cong-nghiep,Kỹ thuật công nghiệp,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-ky-thuat-cong-nghiep-la-gi-lam-gi
+hnv-ky-thuat-hang-khong,Kỹ thuật hàng không,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-hang-khong
+hnv-ky-thuat-o-to,Kỹ thuật ô tô,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ky-thuat-ra-da-dan-duong,Kỹ thuật ra đa- dẫn đường,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ky-thuat-thuy-am,Kỹ thuật thuỷ âm,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ky-thuat-dien-tu-vien-thong,Kỹ thuật điện tử - viễn thông,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dien-tu-vien-thong
+hnv-ky-thuat-dieu-khien-va-tu-dong-hoa,Kỹ thuật điều khiển và tự động hoá,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-dieu-khien-va-tu-dong-hoa
+hnv-ky-thuat-hoa-hoc,Kỹ thuật hoá học,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-ky-thuat-hoa-hoc
+hnv-ky-thuat-vat-lieu-kim-loai,Kỹ thuật vật liệu kim loại,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ky-thuat-det,Kỹ thuật dệt,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-det
+hnv-ky-thuat-moi-truong,Kỹ thuật môi trường,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-nghe-moi-truong
+hnv-ky-thuat-hat-nhan,Kỹ thuật hạt nhân,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-hat-nhan
+hnv-ky-thuat-dia-vat-ly,Kỹ thuật địa vật lý,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-dia-vat-ly
+hnv-ky-thuat-mo,Kỹ thuật mỏ,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-ky-thuat-mo
+hnv-ky-thuat-tham-do-va-khao-sat,Kỹ thuật thăm dò và khảo sát,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ky-thuat-tuyen-khoang,Kỹ thuật tuyển khoáng,"[""DETAIL_FETCH_NOT_SUCCESSFUL"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-tuyen-khoang
+hnv-ky-thuat-bien,Kỹ thuật biển,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-cong-nghe-sau-thu-hoach,Công nghệ sau thu hoạch,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-sau-thu-hoach
+hnv-cong-nghe-che-bien-thuy-san,Công nghệ chế biến thuỷ sản,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-che-bien-thuy-san
+hnv-dam-bao-chat-luong-va-an-toan-thuc-pham,Đảm bảo chất lượng và an toàn thực phẩm,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dam-bao-chat-luong-va-an-toan-thuc-pham
+hnv-cong-nghe-det-may,"Công nghệ dệt, may","[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-may-lam-gi-hoc-gi
+hnv-cong-nghe-da-giay,Công nghệ da giày,"[""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-da-giay
+hnv-kien-truc-canh-quan,Kiến trúc cảnh quan,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-kien-truc-canh-quan-la-gi
+hnv-kien-truc-noi-that,Kiến trúc nội thất,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-kien-truc-noi-that
+hnv-kien-truc-do-thi,Kiến trúc đô thị,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-thiet-ke-noi-that,Thiết kế nội thất,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-thiet-ke-noi-that
+hnv-bao-ton-di-san-kien-truc-do-thi,Bảo tồn di sản kiến trúc - đô thị,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-do-thi-hoc,Đô thị học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-do-thi-hoc
+hnv-ky-thuat-xay-dung,Kỹ thuật xây dựng,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-ngnah-ky-thuat-xay-dung-la-gi-lam-gi
+hnv-ky-thuat-xay-dung-cong-trinh-bien,Kỹ thuật xây dựng công trình biển,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-xay-dung-cong-trinh-bien
+hnv-ky-thuat-xay-dung-cong-trinh-giao-thong,Kỹ thuật xây dựng công trình giao thông,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-ky-thuat-xay-dung-cong-trinh-giao-thong
+hnv-ky-thuat-co-so-ha-tang,Kỹ thuật cơ sở hạ tầng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-co-so-ha-tang
+hnv-ky-thuat-tai-nguyen-nuoc,Kỹ thuật tài nguyên nước,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-cong-nghe-ky-thuat-tai-nguyen-nuoc
+hnv-quan-ly-xay-dung,Quản lý xây dựng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-nganh-quan-ly-xay-dung
+hnv-chan-nuoi,Chăn nuôi,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-chan-nuoi
+hnv-nong-hoc,Nông học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-nong-hoc
+hnv-khoa-hoc-cay-trong,Khoa học cây trồng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-khoa-hoc-cay-trong
+hnv-bao-ve-thuc-vat,Bảo vệ thực vật,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-bao-ve-thuc-vat
+hnv-phat-trien-nong-thon,Phát triển nông thôn,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-khoa-hoc-thuy-san,Khoa học thủy sản,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-thu-y,Thú y,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-thu-y
+hnv-y-hoc-du-phong,Y học dự phòng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-y-hoc-du-phong
+hnv-y-hoc-co-truyen,Y học cổ truyền,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-y-hoc-co-truyen
+hnv-hoa-duoc,Hoá dược,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-hoa-duoc
+hnv-ho-sinh,Hộ sinh,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-ho-sinh
+hnv-dinh-duong,Dinh dưỡng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-dinh-duong
+hnv-rang-ham-mat,Răng - Hàm - Mặt,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-rang-ham-mat
+hnv-ky-thuat-hinh-anh-y-hoc,Kỹ thuật hình ảnh y học,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-hinh-anh-y-hoc
+hnv-ky-thuat-phuc-hoi-chuc-nang,Kỹ thuật phục hồi chức năng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-phuc-hoi-chuc-nang
+hnv-y-te-cong-cong,Y tế công cộng,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-y-te-cong-cong
+hnv-to-chuc-va-quan-ly-y-te,Tổ chức và quản lý y tế,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-quan-ly-benh-vien,Quản lý bệnh viện,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-cong-tac-xa-hoi,Công tác xã hội,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-cong-tac-xa-hoi
+hnv-ho-tro-giao-duc-nguoi-khuyet-tat,Hỗ trợ giáo dục người khuyết tật,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-du-lich,Du lịch,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-du-lich
+hnv-quan-tri-dich-vu-du-lich-va-lu-hanh,Quản trị dịch vụ du lịch và lữ hành,"[""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/huong-nghiep-nganh-quan-tri-dich-vu-du-lich-va-lu-hanh
+hnv-quan-tri-khach-san,Quản trị khách sạn,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-quan-tri-khach-san-la-gi-lam-gi
+hnv-quan-tri-nha-hang-va-dich-vu-an-uong,Quản trị nhà hàng và dịch vụ ăn uống,"[""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/tim-hieu-nganh-quan-tri-nha-hang-va-dich-vu-an-uong
+hnv-kinh-te-gia-dinh,Kinh tế gia đình,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-quan-ly-tai-nguyen-va-moi-truong,Quản lý tài nguyên và môi trường,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-ly-tai-nguyen-va-moi-truong
+hnv-kinh-te-tai-nguyen-thien-nhien,Kinh tế tài nguyên thiên nhiên,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-kinh-te-tai-nguyen-thien-nhien
+hnv-bao-ho-lao-dong,Bảo hộ lao động,"[""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""MULTIPLE_CODES_IN_SOURCE_TABLES""]",https://huongnghiepviet.com/nganh-nghe/nganh-bao-ho-lao-dong
+hnv-trinh-sat-an-ninh,Trinh sát an ninh,"[""EMPTY_ARTICLE_BODY"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-trinh-sat-an-ninh
+hnv-trinh-sat-canh-sat,Trinh sát cảnh sát,"[""EMPTY_ARTICLE_BODY"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-trinh-sat-canh-sat
+hnv-dieu-tra-hinh-su,Điều tra hình sự,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-ky-thuat-hinh-su,Kỹ thuật hình sự,"[""EMPTY_ARTICLE_BODY"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-hinh-su
+hnv-quan-ly-nha-nuoc-ve-an-ninh-trat-tu,Quản lý nhà nước về an ninh trật tự,"[""EMPTY_ARTICLE_BODY"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE"", ""NO_SCHOOL_LISTINGS_EXTRACTED""]",https://huongnghiepviet.com/nganh-nghe/nganh-quan-ly-nha-nuoc-ve-an-ninh-trat-tu
+hnv-quan-ly-trat-tu-an-toan-giao-thong,Quản lý trật tự an toàn giao thông,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-thi-hanh-an-hinh-su-va-ho-tro-tu-phap,Thi hành án hình sự và hỗ trợ tư pháp,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-tham-muu-chi-huy-cong-an-nhan-dan,"Tham mưu, chỉ huy công an nhân dân","[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-phong-chay-chua-chay-va-cuu-nan-cuu-ho,Phòng cháy chữa cháy và cứu nạn cứu hộ,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-phong-chay-chua-chay-va-cuu-nan-cuu-ho
+hnv-hau-can-cong-an-nhan-dan,Hậu cần công an nhân dân,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-tinh-bao-an-ninh,Tình báo an ninh,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-tham-muu-luc-quan,Chỉ huy tham mưu Lục quân,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-luc-quan
+hnv-chi-huy-tham-muu-hai-quan,Chỉ huy tham mưu Hải quân,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-hai-quan
+hnv-chi-huy-tham-muu-khong-quan,Chỉ huy tham mưu Không quân,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-tham-muu-phong-khong,Chỉ huy tham mưu Phòng không,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-phong-khong
+hnv-chi-huy-tham-muu-phao-binh,Chỉ huy tham mưu Pháo binh,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-phao-binh
+hnv-chi-huy-tham-muu-tang-thiet-giap,Chỉ huy tham mưu Tăng - thiết giáp,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-tang-thiet-giap
+hnv-chi-huy-tham-muu-dac-cong,Chỉ huy tham mưu Đặc công,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-dac-cong
+hnv-bien-phong,Biên phòng,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-bien-phong
+hnv-tinh-bao-quan-su,Tình báo quân sự,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-hau-can-quan-su,Hậu cần quân sự,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-hau-can-quan-su
+hnv-chi-huy-tham-muu-thong-tin,Chỉ huy tham mưu thông tin,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-tham-muu-thong-tin
+hnv-quan-su-co-so,Quân sự cơ sở,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-quan-ly-ky-thuat,"Chỉ huy, quản lý kỹ thuật","[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-ky-thuat-phong-khong,Chỉ huy kỹ thuật Phòng không,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-ky-thuat-tang-thiet-giap,Chỉ huy kỹ thuật Tăng - thiết giáp,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-ky-thuat-cong-binh,Chỉ huy kỹ thuật Công binh,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-ky-thuat-cong-binh
+hnv-chi-huy-ky-thuat-hoa-hoc,Chỉ huy kỹ thuật Hoá học,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-chi-huy-ky-thuat-hoa-hoc
+hnv-trinh-sat-ky-thuat,Trinh sát kỹ thuật,"[""EMPTY_ARTICLE_BODY""]",https://huongnghiepviet.com/nganh-nghe/nganh-trinh-sat-ky-thuat
+hnv-chi-huy-ky-thuat-hai-quan,Chỉ huy kỹ thuật Hải quân,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
+hnv-chi-huy-ky-thuat-tac-chien-dien-tu,Chỉ huy kỹ thuật tác chiến điện tử,"[""SOURCE_HAS_NO_DETAIL_LINK"", ""NO_SINGLE_MAJOR_CODE_CANDIDATE""]",https://huongnghiepviet.com/nganh-nghe
