@@ -1,0 +1,41 @@
+name: Training Majors Catalog checks
+on:
+  pull_request:
+    paths:
+      - 'app/training-majors*.php'
+      - 'app/majors-*.php'
+      - 'scripts/import_hnv_majors.php'
+      - 'database/migrations/2026_13_training_majors_catalog.sql'
+      - 'tests/training-majors-test.php'
+      - '.github/workflows/training-majors.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'app/training-majors*.php'
+      - 'app/majors-*.php'
+      - 'scripts/import_hnv_majors.php'
+      - 'database/migrations/2026_13_training_majors_catalog.sql'
+      - 'tests/training-majors-test.php'
+      - '.github/workflows/training-majors.yml'
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP with SQLite
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, mbstring
+          coverage: none
+      - name: PHP syntax
+        run: |
+          set -e
+          for file in app/training-majors.php app/training-majors-importer.php app/majors-explorer.php app/majors-admin.php scripts/import_hnv_majors.php tests/training-majors-test.php index.php admin.php health.php app/bootstrap.php; do
+            php -l "$file"
+          done
+      - name: Training majors integration test
+        run: php -d zend.assertions=1 -d assert.exception=1 tests/training-majors-test.php

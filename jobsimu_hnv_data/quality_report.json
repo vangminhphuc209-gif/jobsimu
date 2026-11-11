@@ -1,0 +1,39 @@
+{
+  "catalogue_items": 358,
+  "groups": 23,
+  "subgroups": 76,
+  "detail_status_counts": {
+    "fetched": 308,
+    "not_linked_by_source": 49,
+    "unexpected_page": 1
+  },
+  "majors_with_article_body": 288,
+  "majors_with_school_links": 290,
+  "major_institution_links": 2712,
+  "unique_institution_source_urls": 248,
+  "source_news_year_counts": {
+    "2019": 57,
+    "2021": 35,
+    "2022": 53,
+    "2023": 383,
+    "2024": 150,
+    "2025": 2034
+  },
+  "majors_with_code_candidates": 211,
+  "officially_verified_major_codes": 0,
+  "failed_details": [
+    {
+      "id": "hnv-ky-thuat-tuyen-khoang",
+      "url": "https://huongnghiepviet.com/nganh-nghe/nganh-ky-thuat-tuyen-khoang",
+      "status": "unexpected_page"
+    }
+  ],
+  "validation": {
+    "unique_major_ids": true,
+    "unique_group_ids": true,
+    "unique_subgroup_ids": true,
+    "valid_group_references": true,
+    "valid_major_references": true,
+    "no_duplicate_relationships": true
+  }
+}

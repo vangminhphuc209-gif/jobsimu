@@ -3,6 +3,7 @@ declare(strict_types=1); require __DIR__.'/app/bootstrap.php';
 $page=is_string($_GET['page']??null)?$_GET['page']:'home';
 if($page==='university-compare') require __DIR__.'/app/university-compare.php';
 if($page==='university-explorer') require __DIR__.'/app/university-explorer.php';
+if(in_array($page,['majors','major-detail'],true)) require __DIR__.'/app/majors-explorer.php';
 if($page==='home') require __DIR__.'/app/home-hubs.php';
 if(in_array($page,['knowledge-hub','careers'],true)) require __DIR__.'/app/knowledge-hub.php';
 if(in_array($page,['assessment-hub','test-big5','test-caas','test-mbti','test-eq','assessment-report'],true)) require __DIR__.'/app/assessment-hub.php';

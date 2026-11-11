@@ -14,6 +14,8 @@ return [
     'app_name' => getenv('APP_NAME') ?: 'Hướng Nghiệp 360',
     'base_url' => getenv('APP_URL') ?: 'http://localhost:8000',
     'db' => [
+        'driver' => getenv('DB_DRIVER') ?: 'mysql',
+        'path' => getenv('DB_PATH') ?: (__DIR__ . '/database/local.sqlite'),
         'host' => getenv('DB_HOST') ?: '127.0.0.1',
         'port' => (int)(getenv('DB_PORT') ?: 3306),
         'name' => getenv('DB_NAME') ?: 'jobsimu',

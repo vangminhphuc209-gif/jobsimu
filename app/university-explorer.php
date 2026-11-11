@@ -62,7 +62,7 @@ $majors=db()->query('SELECT m.id,m.code,m.name,COUNT(DISTINCT p.id) AS program_c
 $pageTitle='University Explorer · Tra cứu trường và ngành';
 require __DIR__.'/header.php';
 ?>
-<section class="page-head"><div class="container"><span class="eyebrow">JOBSIMU · University Explorer</span><h1>Tra cứu trường đại học & ngành đào tạo</h1><p>Khám phá nghề, ngành học và trường đào tạo. Dữ liệu tuyển sinh chỉ có giá trị tham khảo theo đúng năm và nguồn công bố.</p><a class="btn btn-outline" href="<?=url('index.php?page=university-compare')?>">So sánh trường & chương trình →</a></div></section>
+<section class="page-head"><div class="container"><span class="eyebrow">JOBSIMU · University Explorer</span><h1>Tra cứu trường đại học & ngành đào tạo</h1><p>Khám phá nghề, ngành học và trường đào tạo. Dữ liệu tuyển sinh chỉ có giá trị tham khảo theo đúng năm và nguồn công bố.</p><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"><a class="btn btn-outline" href="<?=url('index.php?page=majors')?>">Khám phá danh mục ngành đào tạo →</a><a class="btn btn-outline" href="<?=url('index.php?page=university-compare')?>">So sánh trường & chương trình →</a></div></div></section>
 <div class="container">
   <form method="get" class="card toolbar" style="margin-top:24px">
     <input type="hidden" name="page" value="university-explorer">
