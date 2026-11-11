@@ -15,15 +15,15 @@ MonoBehaviour:
   id: mai
   displayName: "C\xF4 Mai"
   role: "Gi\xE1o vi\xEAn h\u01B0\u1EDBng d\u1EABn"
-  introduction: "C\xF4 s\u1EBD c\xF9ng b\u1EA1n chu\u1EA9n b\u1ECB v\xE0 nh\xECn l\u1EA1i ti\u1EBFt d\u1EA1y. H\u1ECDc sinh c\u1EA7n \u0111\u01B0\u1EE3c trao \u0111\u1ED5i v\xE0 ki\u1EC3m tra hi\u1EC3u b\xE0i."
+  introduction: "C\xF4 s\u1EBD c\xF9ng b\u1EA1n nh\u1EADn m\u1EE5c ti\xEAu ti\u1EBFt KHTN L\u1EDBp 8A, chu\u1EA9n b\u1ECB h\u1ECDc li\u1EC7u v\xE0 nh\xECn l\u1EA1i b\u1EB1ng ch\u1EE9ng cu\u1ED1i ti\u1EBFt."
   schedule:
-  - minute: 405
+  - minute: 430
     waypoint: 0
     seated: 0
   - minute: 450
     waypoint: 1
     seated: 0
-  - minute: 570
+  - minute: 495
     waypoint: 0
     seated: 0
   speed: 0.7

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167ad26359d09b66e87f59ddfbd88735, type: 3}
+  m_Name: NPC-ha
+  m_EditorClassIdentifier: JobSimu.Runtime::JobSimu.NPC.NpcProfile
+  id: ha
+  displayName: "H\xE0"
+  role: "Nh\xF3m 3"
+  introduction: "Em v\u1EBD xong s\u01A1 \u0111\u1ED3 khe h\u1EA1t \u0111\u1EA5t r\u1ED3i, \u0111\u1EC3 em gi\u1EA3i th\xEDch th\xEAm th\xE0nh c\xE2u."
+  schedule:
+  - minute: 430
+    waypoint: 0
+    seated: 1
+  - minute: 450
+    waypoint: 0
+    seated: 1
+  - minute: 495
+    waypoint: 0
+    seated: 1
+  speed: 0.7

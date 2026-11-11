@@ -1,10 +1,13 @@
-# JOBSIMU 3D — NGƯỜI THẦY SAU TIẾNG TRỐNG TRƯỜNG
+# JOBSIMU 3D — NGƯỜI THẦY SAU TIẾNG TRỐNG TRƯỜNG (TÀI LIỆU GDD GỐC)
+
+> [!IMPORTANT]
+> **Cập nhật định hướng triển khai (10/11/2026):** Tài liệu này là bản GDD gốc ban đầu (đề xuất Babylon.js, Lớp 9A, cả ngày làm việc). Trong phạm vi vertical slice hiện hành, các quyết định về engine, góc nhìn, bối cảnh lớp 8A và vòng lặp một tiết học đã được cập nhật và chốt thống nhất tại [`docs/TEACHER_8A_REDESIGN.md`](file:///home/minhphuc/jobsimu/docs/TEACHER_8A_REDESIGN.md) và [`AGENTS.md`](file:///home/minhphuc/jobsimu/AGENTS.md): **Unity 6 (`JobSimu3D/`)** góc nhìn thứ nhất là bản 3D chính, bối cảnh **Trường THCS Bình Minh — Lớp 8A (Khoa học tự nhiên, tiết 45 phút)**; `game/` (Babylon.js) chỉ giữ làm bản chuyển tiếp cũ.
 
 > **Game Design Document (GDD) + Technical Design + Production Plan**  
 > Dự án: [vangminhphuc209-gif/jobsimu](https://github.com/vangminhphuc209-gif/jobsimu)  
-> Phiên bản tài liệu: **1.0 — 07/11/2026**  
-> Trạng thái: **Đề xuất thiết kế, chưa phải chức năng đã được lập trình**  
-> Phạm vi ưu tiên: **Nghề giáo viên THCS — ngày đầu tiên có thể chơi trọn vẹn, sau đó mở rộng thành một tuần**.
+> Phiên bản tài liệu gốc: **1.0 — 07/11/2026**  
+> Trạng thái: **Tài liệu đề xuất gốc (một phần công nghệ & bối cảnh đã được thay thế bởi `docs/TEACHER_8A_REDESIGN.md`)**  
+> Phạm vi ưu tiên hiện hành: **Một tiết Khoa học tự nhiên Lớp 8A hoàn chỉnh (45 phút trong game) trên Unity 6 trước khi mở rộng sang cả ngày hay nghề khác**.
 
 ---
 

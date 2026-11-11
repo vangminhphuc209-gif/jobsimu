@@ -1,83 +1,41 @@
-# ASSET MANIFEST — JOBSIMU 3D: NGƯỜI THẦY SAU TIẾNG TRỐNG TRƯỜNG
+# ASSET MANIFEST — JOBSIMU 3D (UNITY VERTICAL SLICE LỚP 8A)
 
-> **Dự án:** JOBSIMU 3D (Vertical Slice — Ngày 1 Nghề Giáo Viên THCS)  
-> **Source of Truth:** [`docs/game3d.md`](file:///home/minhphuc/jobsimu/docs/game3d.md)  
-> **Phiên bản:** 1.0 — 07/11/2026
-
----
-
-## 1. NGÂN SÁCH HIỆU NĂNG (PERFORMANCE BUDGET)
-
-| Chỉ số kỹ thuật | Ngưỡng Tối đa (Budget Cap) | Chiến lược Tối ưu |
-|---|---|---|
-| **Tổng số Polygons / Scene** | $\le 60.000$ tris | Dùng Low-Poly Stylized kết hợp Flat/Gouraud shading |
-| **Draw Calls / Frame** | $\le 50$ draw calls | Bắt buộc dùng `instancedMesh` hoặc `thinInstance` cho bàn ghế, đèn quạt |
-| **Dung lượng Tải Ban đầu** | $\le 25\text{ MB}$ (Gzip $\le 10\text{ MB}$) | Nén hình học Draco/Meshopt, nén texture KTX2/WebP |
-| **Tốc độ khung hình (FPS)** | $30 - 60\text{ FPS}$ | Cung cấp 3 presets đồ họa (`Low`, `Medium`, `High`) |
+> **Dự án:** JOBSIMU 3D — Một tiết Khoa học tự nhiên Lớp 8A  
+> **Runtime chính:** Unity 6 (`JobSimu3D/`), URP Forward (Mobile/PC presets), góc nhìn thứ nhất  
+> **Cập nhật:** 10/11/2026
 
 ---
 
-## 2. DANH MỤC ASSETS 3D (GEOMETRY & PROPS)
+## 1. TRẠNG THÁI ASSETS HIỆN TẠI (BLOCKOUT CÓ TƯƠNG TÁC)
 
-### 2.1. Phân vùng Kiến trúc P0 (Environments)
-- `env_class9a.glb`: Phòng học Lớp 9A (Tường, cửa ra vào, cửa sổ kính, bục giảng, bảng xanh 2 cánh).
-- `env_staffroom.glb`: Phòng Giáo viên (Bàn tổ chuyên môn, tủ hồ sơ, bàn Cô Mai, máy in học liệu).
-- `env_corridor.glb`: Hành lang kết nối tầng 1 & tầng 2, cầu thang bộ, lan can, bảng tin Đoàn trường.
-- `env_yard.glb`: Sân trường, cột cờ, cổng trường, bồn hoa và cây bàng, cây phượng.
+Toàn bộ tài sản hình học và âm thanh trong nhánh hiện tại được dựng trực tiếp bằng mã C# Unity/URP và âm thanh tổng hợp trong repository, phục vụ kiểm thử gameplay và không gian:
 
-### 2.2. Đồ đạc & Đạo cụ Tương tác (Props & Interactables)
-- `prop_desk_student_double.glb`: Bàn học sinh đôi tiêu chuẩn trường THCS Việt Nam (Instanced $\times 16$).
-- `prop_chair_student.glb`: Ghế tựa học sinh (Instanced $\times 32$).
-- `prop_desk_teacher.glb`: Bàn giáo viên trên bục giảng.
-- `prop_projector_ceiling.glb`: Máy chiếu treo trần có animation đèn báo chớp vàng/đỏ (`PREP-01`, `CRISIS-02`).
-- `prop_projection_screen.glb`: Màn chiếu kéo thả.
-- `prop_printer_copier.glb`: Máy in/photo tài liệu phòng giáo viên (Tương tác in bản thảo dự phòng).
-- `prop_exit_ticket_stack.glb`: Xấp phiếu kiểm tra hiểu bài cuối giờ (Exit tickets).
-- `prop_ceiling_fan.glb`: Quạt trần 3 cánh có animation quay nhẹ.
-
-### 2.3. Nhân vật 3D (Characters)
-- `char_teacher_an.glb`: Nhân vật Giáo viên An (Avatar người chơi, trang phục sơ mi công sở gọn gàng).
-- `char_mentor_mai.glb`: Cô Mai (Áo dài truyền thống hoặc đồ công sở trang nhã).
-- `char_student_minh.glb`: Học sinh Minh (Đồng phục học sinh THCS, balo, dáng ngồi cúi đầu vẽ).
-- `char_student_linh.glb`: Lớp trưởng Linh (Đeo khăn quàng đỏ, dáng đứng thẳng, tự tin).
-- `char_student_nam.glb`: Nam (Đeo kính cận, sách vở đầy đủ).
-- `char_npc_student_crowd.glb`: Bộ 4 mô hình học sinh nền tối ưu hóa polygon để lấp đầy lớp 9A.
+- **Không gọi hình khối blockout là art hoàn chỉnh:** Các nhân vật học sinh và giáo viên là mô hình khối đơn giản có khớp tay/chân/đầu và cử động procedural (hoặc tư thế tĩnh khi bật *Giảm chuyển động*).
+- **Chưa nhập asset thương mại bên ngoài:** Không có file `.glb`/`.fbx` ngoài repo cần mua giấy phép.
+- **Font tiếng Việt:** `JobSimu3D/Assets/_JobSimu/Resources/JobSimuUI.ttf` (DejaVu Sans, kèm giấy phép `DejaVu-LICENSE.txt`, sao chép thành `ThirdPartyNotices.txt` khi build WebGL).
 
 ---
 
-## 3. DANH MỤC HOẠT ẢNH (ANIMATIONS)
+## 2. DANH MỤC KHÔNG GIAN & ĐẠO CỤ PHỤC VỤ GAMEPLAY
 
-- **Avatar Người chơi:** `idle`, `walk`, `run`, `interact_press_button`, `talk_gesture`, `inspect_paper`.
-- **Học sinh:** `seated_idle`, `seated_listening`, `seated_drawing_secretly`, `raise_hand`, `stand_answer`, `whisper_talk`.
-- **Giáo viên & Mentor:** `seated_working_laptop`, `stand_talk_warm`, `hand_over_papers`, `look_concerned`.
+### 2.1. Không gian trường THCS Bình Minh (thu gọn đúng khu vực cần chơi)
+- **Sân trường & Cổng trường:** Cổng trường mang biển `TRƯỜNG THCS BÌNH MINH`, cột cờ, lối đi, Cô Mai và khu vực **Vũng nước mẫu sân trường** (đối chiếu bề mặt gạch lát vs đất).
+- **Phòng giáo viên:** Bàn đọc bài làm tiết trước (chứa phiếu mẫu đọc được), bàn kiểm tra khay mẫu & máy chiếu, máy in phiếu/ảnh, máy chiếu chuẩn bị slide, bộ thẻ & khay mẫu cho 4 nhóm.
+- **Hành lang kết nối:** Hành lang nối Phòng giáo viên và Lớp 8A qua cửa trượt an toàn (`SlidingDoor`). Lớp 8B và cầu thang tầng 2 được khóa/rào để tập trung đúng không gian tiết học.
+- **Lớp 8A:**
+  - Bảng phấn cập nhật nội dung thật theo từng bước (câu hỏi mở đầu, sơ đồ dòng thấm, điều chỉnh cuối tiết).
+  - Màn chiếu và đèn báo máy chiếu (chuyển trạng thái rõ khi máy chiếu hoạt động hoặc ngắt lỗi).
+  - Bàn giáo viên kèm khay mẫu thử đất/gạch và góc thu phiếu cuối tiết.
+  - **4 cụm bàn nhóm** (`Nhóm 1`–`Nhóm 4`), mỗi cụm có 3 ghế, 3 học sinh ngồi đúng ghế, phiếu bài làm và khay mẫu trên bàn đổi trạng thái quan sát được theo tiến trình tiết học.
 
----
-
-## 4. DANH MỤC ÂM THANH (AUDIO MANIFEST)
-
-| Tên Audio Asset | Định dạng | Loại âm thanh | Mục đích & Vị trí |
-|---|---|---|---|
-| `sfx_school_bell.mp3` | MP3 / OGG | Hiệu ứng (SFX) | Tiếng trống trường / chuông điện báo chuyển tiết học |
-| `sfx_footsteps_tile.mp3` | MP3 / OGG | SFX | Tiếng bước chân trên sàn gạch hoa hành lang / lớp học |
-| `sfx_footsteps_concrete.mp3` | MP3 / OGG | SFX | Tiếng bước chân trên sân bê tông sân trường |
-| `sfx_paper_flip.mp3` | MP3 / OGG | SFX | Tiếng lật giáo án, phát phiếu exit ticket |
-| `sfx_projector_spark.mp3` | MP3 / OGG | SFX | Tiếng quạt tản nhiệt máy chiếu rè và ngắt điện |
-| `amb_school_yard.mp3` | MP3 / OGG | Môi trường (Ambience) | Tiếng chim hót, ve kêu, học sinh nô đùa râm ran giờ ra chơi |
-| `amb_classroom_murmur.mp3` | MP3 / OGG | Ambience | Tiếng thì thầm trao đổi nhóm trong lớp học |
+### 2.2. Hệ thống âm thanh tổng hợp (`SimulationAudio`)
+- Âm nền nhẹ trường học, nhạc nền tùy chỉnh âm lượng độc lập, cue tương tác, cue chuông vào/hết tiết học (tổng hợp bằng sóng âm nguyên bản trong mã nguồn, chưa phải bản thu môi trường thực tế).
 
 ---
 
-## 5. NGUỒN GỐC & GIẤY PHÉP (LICENSING & ATTRIBUTION)
+## 3. HẠNG MỤC PLACEHOLDER CẦN THAY THẾ Ở GIAI ĐOẠN ART SAU NÀY
 
-Toàn bộ tài nguyên 3D và Audio trong dự án tuân thủ:
-- Tự thiết kế và xuất từ Blender / Procedural Babylon.js primitives cho giai đoạn blockout.
-- Tài nguyên cộng đồng (nếu tích hợp bổ sung) phải thuộc giấy phép **CC0 (Public Domain)** hoặc **MIT / Apache 2.0 / CC-BY** với ghi nhận tác giả đầy đủ.
-- Không sử dụng các model vi phạm bản quyền thương mại của bên thứ ba.
-
-## Assets dựng bằng mã trong bản một tiết học
-
-- Tác giả: mã nguồn dự án JOBSIMU, bổ sung trong nhánh `feat/playable-teacher-3d`.
-- Nguồn: `game/src/world/SchoolWorld.ts`, `game/src/player/CharacterController.ts`, `game/src/npc/NPCController.ts`.
-- Nội dung: mesh nhân vật nhiều bộ phận, bàn ghế instancing, cây, biển chữ, phiếu, biểu đồ bảng.
-- Không nhập model/texture/âm thanh của bên thứ ba; giấy phép phân phối theo dự án (repository chưa khai báo license tổng thể). Không tự gán CC0 cho mã hoặc assets.
-- Chưa phải model rig/GLB cuối cùng; cần kiểm tra hình ảnh và hiệu năng GPU thực.
+1. Thay khối nhân vật blockout bằng nhân vật rigged/textured có nguồn giấy phép rõ ràng (giữ tỷ lệ phù hợp bàn ghế THCS).
+2. Thay bảng phấn/giấy/mẫu đất-gạch khối hộp bằng mesh chi tiết và texture đọc nét hơn khi được duyệt ngân sách art.
+3. Thay âm thanh tổng hợp bằng bản thu trường học/trống trường có giấy phép hợp lệ.
+4. Đo profiler thực tế (draw calls, bộ nhớ WebGL, FPS) trên thiết bị mục tiêu sau khi nâng cấp art.

@@ -48,6 +48,16 @@ namespace JobSimu.Editor
             Debug.Log("JobSimu generated: " + path + ". Original scene preserved. Press Play, then click the view.");
         }
 
+        public static void RegenerateFirstPlayableAndSharedDemoBatch()
+        {
+            Scene first = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            BuildScene(first);
+            if (!EditorSceneManager.SaveScene(first, ScenePath)) throw new IOException("Cannot save " + ScenePath);
+            AssetDatabase.SaveAssets();
+            PrototypeValidator.ValidateBatch();
+            FrameworkDemoGenerator.RebuildAndValidateBatch();
+        }
+
         public static PrototypeContext BuildScene(Scene scene)
         {
             SceneManager.SetActiveScene(scene);
@@ -176,7 +186,7 @@ namespace JobSimu.Editor
             foreach (float x in new[] { -4.6f, 4.6f })
                 Cube("Gate pillar", yard, new Vector3(x, 2, -22), new Vector3(.65f, 4, .65f), "Warm plaster");
             Cube("Gate lintel", yard, new Vector3(0, 4, -22), new Vector3(10, .7f, .65f), "Teal trim");
-            Label("TRƯỜNG THPT AN HÒA", yard, new Vector3(0, 4, -21.65f), 180, .21f, Color.white);
+            Label("TRƯỜNG THCS BÌNH MINH", yard, new Vector3(0, 4, -21.65f), 180, .21f, Color.white);
             foreach (float x in new[] { -14.8f, 14.8f })
                 Cube("Boundary front", bounds, new Vector3(x, 1, -22), new Vector3(20, 2, .25f), "Warm plaster");
             Cube("Boundary west", bounds, new Vector3(-24.8f, 1.2f, 0), new Vector3(.25f, 2.4f, 48), "Warm plaster");
@@ -225,7 +235,7 @@ namespace JobSimu.Editor
                     {
                         Instance(doorPrefab, building, new Vector3(doorX, 1.2f, 7.72f));
                         Cube("Door rail", building, new Vector3(doorX + .9f, 2.45f, 7.72f), new Vector3(3.5f, .07f, .1f), "Steel", false);
-                        string name = center < -6 ? "LỚP 10A1" : center < 6 ? "LỚP 10A2" : "PHÒNG GIÁO VIÊN";
+                        string name = center < -6 ? "LỚP 8A" : center < 6 ? "LỚP 8B" : "PHÒNG GIÁO VIÊN";
                         Label(name, building, new Vector3(doorX, 2.95f, 7.85f), 0, .12f, new Color(.07f, .22f, .24f));
                     }
                     else Cube("Upper locked door", building, new Vector3(doorX, y + 1.2f, 7.9f), new Vector3(1.8f, 2.4f, .12f), "Teal trim");
@@ -248,7 +258,7 @@ namespace JobSimu.Editor
 
             foreach (float center in new[] { -12f, 0f })
             {
-                Transform room = Group(center < 0 ? "Class 10A1" : "Class 10A2", furniture);
+                Transform room = Group(center < 0 ? "Class 8A" : "Class 8B", furniture);
                 for (int row = 0; row < 3; row++)
                     for (int col = 0; col < 3; col++)
                         Instance(deskPrefab, room, new Vector3(center - 2.1f + col * 3, 0, 10.5f + row * 2));
@@ -259,7 +269,7 @@ namespace JobSimu.Editor
                 {
                     OrientationInteractable interactable = board.AddComponent<OrientationInteractable>();
                     interactable.orientation = orientation; interactable.action = OrientationAction.ClassroomBoard;
-                    interactable.title = "Lớp 10A1 · Hoạt động mở đầu"; interactable.label = "Chuẩn bị hoạt động trên bảng";
+                    interactable.title = "Lớp 8A · Hoạt động mở đầu"; interactable.label = "Chuẩn bị hoạt động trên bảng";
                 }
                 for (int z = 11; z <= 15; z += 4)
                 {

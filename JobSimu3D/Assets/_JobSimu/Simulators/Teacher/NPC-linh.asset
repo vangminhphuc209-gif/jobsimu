@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: JobSimu.Runtime::JobSimu.NPC.NpcProfile
   id: linh
   displayName: Linh
-  role: "H\u1ECDc sinh l\u1EDBp 10A1"
-  introduction: "Em mu\u1ED1n xem m\u1ED9t v\xED d\u1EE5 c\u1EE5 th\u1EC3 tr\u01B0\u1EDBc khi t\u1EF1 gi\u1EA3i th\xEDch. M\xECnh c\xF3 th\u1EC3 c\xF9ng so s\xE1nh t\u1EEBng b\u01B0\u1EDBc kh\xF4ng?"
+  role: "Nh\xF3m 1"
+  introduction: "Em ghi b\u1EA3ng so s\xE1nh \u1EDF nh\xE1p nh\u01B0ng h\u01A1i ng\u1EA1i n\xF3i tr\u01B0\u1EDBc c\u1EA3 l\u1EDBp."
   schedule:
-  - minute: 405
+  - minute: 430
     waypoint: 0
-    seated: 0
-  - minute: 450
-    waypoint: 1
     seated: 1
-  - minute: 570
+  - minute: 450
     waypoint: 0
-    seated: 0
+    seated: 1
+  - minute: 495
+    waypoint: 0
+    seated: 1
   speed: 0.7
