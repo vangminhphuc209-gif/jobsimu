@@ -13,285 +13,1305 @@ MonoBehaviour:
   m_Name: FirstLesson
   m_EditorClassIdentifier: JobSimu.Runtime::JobSimu.Quests.ScenarioDefinition
   id: teacher.first-lesson
-  title: "M\u1ED9t ti\u1EBFt h\u1ECDc \xB7 V\xEC sao s\xE2n tr\u01B0\u1EDDng ng\u1EADp sau m\u01B0a?"
-  context: "Tr\u01B0\u1EDDng THPT An H\xF2a h\u01B0 c\u1EA5u. H\u1ECDc sinh so s\xE1nh b\u1EC1 m\u1EB7t th\u1EA5m n\u01B0\u1EDBc v\xE0 b\u1EC1 m\u1EB7t l\xE1t k\xEDn; gi\xE1o vi\xEAn chu\u1EA9n b\u1ECB, h\u1ED7 tr\u1EE3 suy lu\u1EADn v\xE0 thu b\u1EB1ng ch\u1EE9ng hi\u1EC3u b\xE0i."
-  contentVersion: 1
+  title: "Ti\u1EBFt KHTN L\u1EDBp 8A \xB7 V\xEC sao s\xE2n tr\u01B0\u1EDDng \u0111\u1ECDng n\u01B0\u1EDBc sau m\u01B0a?"
+  context: "Tr\u01B0\u1EDDng THCS B\xECnh Minh (h\u01B0 c\u1EA5u). Gi\xE1o vi\xEAn m\u1EDBi ph\u1EE5 tr\xE1ch ti\u1EBFt Khoa h\u1ECDc t\u1EF1 nhi\xEAn L\u1EDBp 8A (45 ph\xFAt) d\u01B0\u1EDBi s\u1EF1 h\u01B0\u1EDBng d\u1EABn c\u1EE7a c\xF4 Mai: \u0111i\u1EC1u tra v\xEC sao m\u1ED9t s\u1ED1 v\u1ECB tr\xED trong s\xE2n tr\u01B0\u1EDDng \u0111\u1ECDng n\u01B0\u1EDBc sau m\u01B0a qua quan s\xE1t v\xE0 so s\xE1nh m\u1EABu. T\xECnh hu\u1ED1ng thi\u1EBFt k\u1EBF tr\u1EA3i nghi\u1EC7m ngh\u1EC1, ch\u01B0a tuy\xEAn b\u1ED1 th\u1EA9m \u0111\u1ECBnh ch\u01B0\u01A1ng tr\xECnh ch\xEDnh th\u1EE9c."
+  contentVersion: 2
   profession: 0
   initialStepId: brief
+  initialMinute: 430
+  lessonNominalStartMinute: 450
+  lessonEndMinute: 495
   participants:
   - mai
   - linh
+  - an
+  - binh
   - nam
+  - vy
+  - khanh
+  - ha
+  - trang
+  - duc
+  - minh
+  - hung
+  - thao
   steps:
   - id: brief
-    objective: "G\u1EB7p c\xF4 Mai b\xEAn tr\xE1i s\xE2n \u0111\u1EC3 nh\u1EADn ti\u1EBFt d\u1EA1y."
+    objective: "G\u1EB7p c\xF4 Mai \u1EDF s\xE2n tr\u01B0\u1EDDng \u0111\u1EC3 nh\u1EADn m\u1EE5c ti\xEAu ti\u1EBFt KHTN L\u1EDBp 8A (c\xF3 th\u1EC3 h\u1ECFi th\xEAm & xem v\u0169ng n\u01B0\u1EDBc m\u1EABu)."
+    phase: 0
     terminal: 0
   - id: prepare
-    objective: "Ph\xF2ng gi\xE1o vi\xEAn: ch\u1ECDn b\u1EA3n in, m\xE1y chi\u1EBFu ho\u1EB7c b\u1ED9 th\u1EBB nh\xF3m."
+    objective: "Ph\xF2ng gi\xE1o vi\xEAn: \u0111\u1ECDc b\xE0i c\u0169, ki\u1EC3m tra thi\u1EBFt b\u1ECB v\xE0 ph\u1ED1i h\u1EE3p h\u1ECDc li\u1EC7u tr\u01B0\u1EDBc gi\u1EDD v\xE0o L\u1EDBp 8A."
+    phase: 1
     terminal: 0
   - id: begin
-    objective: "\u0110\u1EBFn b\u1EA3ng l\u1EDBp 10A1 v\xE0 b\u1EAFt \u0111\u1EA7u ti\u1EBFt h\u1ECDc."
+    objective: "L\u1EDBp 8A (B\u1EA3ng): n\xEAu nhi\u1EC7m v\u1EE5 \u0111i\u1EC1u tra v\xE0 ki\u1EC3m tra xem h\u1ECDc sinh hi\u1EC3u y\xEAu c\u1EA7u hay ch\u01B0a."
+    phase: 2
     terminal: 0
   - id: teach
-    objective: "Quan s\xE1t l\u1EDBp: h\u1ED7 tr\u1EE3 Linh, trao \u0111\u1ED5i v\u1EDBi Nam ho\u1EB7c minh h\u1ECDa tr\xEAn b\u1EA3ng."
+    objective: "L\u1EDBp 8A: quan s\xE1t b\xE0i 4 nh\xF3m, h\u1ECFi l\xE0m r\xF5, g\u1EE3i \xFD/minh h\u1ECDa, m\u1EDF r\u1ED9ng, ki\u1EC3m tra l\u1EA1i sau h\u1ED7 tr\u1EE3."
+    phase: 3
     terminal: 0
   - id: assess
-    objective: "Ki\u1EC3m tra vi\u1EC7c h\u1ECDc: thu phi\u1EBFu \u1EDF g\xF3c b\u1EA3ng ho\u1EB7c nghe Linh tr\xECnh b\xE0y."
+    objective: "L\u1EDBp 8A: thu b\u1EB1ng ch\u1EE9ng hi\u1EC3u b\xE0i (phi\u1EBFu 4 nh\xF3m, h\u1ECFi mi\u1EC7ng, phi\u1EBFu ng\u1EAFn) v\xE0 \u0111i\u1EC1u ch\u1EC9nh n\u1EBFu c\u1EA7n."
+    phase: 4
     terminal: 0
   - id: reflect
-    objective: "K\u1EBFt th\xFAc ti\u1EBFt. Quay l\u1EA1i c\xF4 Mai \u1EDF s\xE2n \u0111\u1EC3 nh\xECn l\u1EA1i b\u1EB1ng ch\u1EE9ng."
+    objective: "Ph\xF2ng gi\xE1o vi\xEAn / C\xF4 Mai: nh\xECn l\u1EA1i di\u1EC5n bi\u1EBFn, ch\u1ECDn b\u1EB1ng ch\u1EE9ng v\xE0 ph\u1EA3n t\u01B0 ti\u1EBFt h\u1ECDc."
+    phase: 5
     terminal: 0
   - id: complete
-    objective: "\u0110\xE3 ho\xE0n th\xE0nh ti\u1EBFt h\u1ECDc. Nh\u1EA5n P xem b\xE1o c\xE1o v\xE0 ghi ph\u1EA3n t\u01B0."
+    objective: "\u0110\xE3 ho\xE0n th\xE0nh ti\u1EBFt h\u1ECDc L\u1EDBp 8A. Nh\u1EA5n [P] \u0111\u1EC3 xem H\u1ED3 s\u01A1 tr\u1EA3i nghi\u1EC7m ngh\u1EC1 gi\xE1o vi\xEAn."
+    phase: 6
     terminal: 1
   actions:
+  - id: brief.ask_class
+    stepId: brief
+    stationId: mai
+    nextStepId: brief
+    label: "H\u1ECFi c\xF4 Mai v\u1EC1 th\xF3i quen h\u1ECDc t\u1EADp c\u1EE7a L\u1EDBp 8A"
+    tradeoff: "1 ph\xFAt \xB7 bi\u1EBFt th\xEAm t\xEDn hi\u1EC7u ban \u0111\u1EA7u c\xF4 Mai t\u1EEBng quan s\xE1t tu\u1EA7n tr\u01B0\u1EDBc."
+    feedback: "C\xF4 Mai: 'L\u1EDBp 8A c\xF3 4 nh\xF3m (12 b\u1EA1n). Tu\u1EA7n tr\u01B0\u1EDBc v\xE0i b\u1EA1n hay \u0111o\xE1n k\u1EBFt lu\u1EADn tr\u01B0\u1EDBc khi \u0111o th\u1EED. Ri\xEAng Minh t\u1EEBng nh\u1EA7m gi\u1EEFa y\xEAu c\u1EA7u quan s\xE1t v\u1EDBi vi\u1EC7c k\u1EC3 t\xEAn v\u1EADt b\u1EA9n; c\xF2n Linh l\xE0m b\xE0i c\u1EA9n th\u1EADn nh\u01B0ng \xEDt gi\u01A1 tay tr\u01B0\u1EDBc l\u1EDBp.'"
+    evidence: "H\u1ECFi th\xF4ng tin n\u1EC1n v\u1EC1 th\xF3i quen h\u1ECDc t\u1EADp c\u1EE7a l\u1EDBp tr\u01B0\u1EDBc khi chu\u1EA9n b\u1ECB."
+    npcId: mai
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: brief.asked_class
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: brief.ask_gear
+    stepId: brief
+    stationId: mai
+    nextStepId: brief
+    label: "H\u1ECFi c\xF4 Mai v\u1EC1 thi\u1EBFt b\u1ECB v\xE0 m\u1EABu v\u1EADt l\u1EDBp 8A"
+    tradeoff: "1 ph\xFAt \xB7 ki\u1EC3m tra th\xF4ng tin th\u1EF1c t\u1EBF v\u1EC1 ph\xF2ng h\u1ECDc v\xE0 m\xE1y chi\u1EBFu."
+    feedback: "C\xF4 Mai: 'Ph\xF2ng 8A x\u1EBFp 4 c\u1EE5m b\xE0n. B\xF3ng \u0111\xE8n m\xE1y chi\u1EBFu chi\u1EC1u qua h\u01A1i ch\u1EADp ch\u1EDDn n\xEAn \u0111\u1EEBng ph\u1EE5 thu\u1ED9c ho\xE0n to\xE0n v\xE0o slide; trong ph\xF2ng gi\xE1o vi\xEAn c\xF3 khay m\u1EABu \u0111\u1EA5t - g\u1EA1ch v\xE0 m\xE1y in.'"
+    evidence: "Ch\u1EE7 \u0111\u1ED9ng h\u1ECFi t\xECnh tr\u1EA1ng thi\u1EBFt b\u1ECB l\u1EDBp h\u1ECDc tr\u01B0\u1EDBc khi ch\u1ECDn h\u1ECDc li\u1EC7u."
+    npcId: mai
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: brief.asked_gear
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 4
+    effects: []
+    conditionalEffects: []
+  - id: yard.inspect_puddle
+    stepId: brief
+    stationId: yard_puddle
+    nextStepId: brief
+    label: "Quan s\xE1t v\u0169ng \u0111\u1ECDng n\u01B0\u1EDBc m\u1EABu ngo\xE0i s\xE2n tr\u01B0\u1EDDng"
+    tradeoff: "2 ph\xFAt \xB7 \u0111\u1ED1i chi\u1EBFu hi\u1EC7n tr\u01B0\u1EDDng th\u1EADt tr\u01B0\u1EDBc khi so\u1EA1n b\xE0i."
+    feedback: "Quan s\xE1t t\u1EA1i s\xE2n: ph\u1EA7n g\u1EA1ch l\xE1t tr\u0169ng c\u1EA1nh l\u1ED1i \u0111i gi\u1EEF v\u0169ng n\u01B0\u1EDBc n\xF4ng, trong khi b\u1ED3n \u0111\u1EA5t t\u01A1i c\xE1ch \u0111\xF3 1m ch\u1EC9 \u1EA9m m\u1EB7t v\xEC n\u01B0\u1EDBc th\u1EA5m qua c\xE1c khe \u0111\u1EA5t."
+    evidence: "Quan s\xE1t tr\u1EF1c ti\u1EBFp m\u1EABu s\xE2n tr\u01B0\u1EDDng \u0111\u1ECDng n\u01B0\u1EDBc tr\u01B0\u1EDBc gi\u1EDD l\xEAn l\u1EDBp."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: yard.inspected
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 0
+    effects: []
+    conditionalEffects: []
   - id: brief.accept
     stepId: brief
     stationId: mai
     nextStepId: prepare
-    label: "Nh\u1EADn ti\u1EBFt d\u1EA1y v\xE0 h\u1ECFi m\u1EE5c ti\xEAu"
-    tradeoff: "B\u1EAFt \u0111\u1EA7u chu\u1EA9n b\u1ECB l\xFAc 07:00."
-    feedback: "H\xE3y gi\xFAp h\u1ECDc sinh gi\u1EA3i th\xEDch n\u01B0\u1EDBc m\u01B0a \u0111i \u0111\xE2u tr\xEAn s\xE2n l\xE1t k\xEDn v\xE0 tr\xEAn \u0111\u1EA5t. Ba b\u1ED9 h\u1ECDc li\u1EC7u \u1EDF ph\xF2ng gi\xE1o vi\xEAn; l\u1EF1a ch\u1ECDn c\u1EE7a b\u1EA1n s\u1EBD \u1EA3nh h\u01B0\u1EDFng gi\u1EDD h\u1ECDc."
-    evidence: "\u0110\xE3 x\xE1c nh\u1EADn m\u1EE5c ti\xEAu h\u1ECDc t\u1EADp tr\u01B0\u1EDBc khi chu\u1EA9n b\u1ECB."
+    label: "Nh\u1EADn ti\u1EBFt d\u1EA1y L\u1EDBp 8A v\xE0 v\xE0o Ph\xF2ng gi\xE1o vi\xEAn chu\u1EA9n b\u1ECB"
+    tradeoff: "2 ph\xFAt \xB7 sang Ph\xF2ng gi\xE1o vi\xEAn tr\u01B0\u1EDBc tr\u1ED1ng 07:30."
+    feedback: "C\xF4 Mai: 'M\u1EE5c ti\xEAu ti\u1EBFt 8A l\xE0 gi\xFAp c\xE1c nh\xF3m gi\u1EA3i th\xEDch v\xEC sao c\xF3 ch\u1ED7 s\xE2n \u0111\u1ECDng n\u01B0\u1EDBc sau m\u01B0a b\u1EB1ng c\xE1ch quan s\xE1t v\xE0 so s\xE1nh m\u1EABu. H\xE3y xem b\xE0i c\u0169 v\xE0 chu\u1EA9n b\u1ECB h\u1ECDc li\u1EC7u trong ph\xF2ng gi\xE1o vi\xEAn nh\xE9.'"
+    evidence: "X\xE1c nh\u1EADn m\u1EE5c ti\xEAu ti\u1EBFt h\u1ECDc KHTN L\u1EDBp 8A c\xF9ng gi\xE1o vi\xEAn h\u01B0\u1EDBng d\u1EABn."
     npcId: mai
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
-    setsFlag: 
-    minutes: 0
-    earliestMinute: 420
+    setsFlag: brief.accepted
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 1
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: prep.read_prev_work
+    stepId: prepare
+    stationId: prev_work
+    nextStepId: prepare
+    label: "\u0110\u1ECDc m\u1ED9t s\u1ED1 b\xE0i l\xE0m ti\u1EBFt tr\u01B0\u1EDBc c\u1EE7a L\u1EDBp 8A"
+    tradeoff: "4 ph\xFAt \xB7 t\u1ED1n th\u1EDDi gian chu\u1EA9n b\u1ECB nh\u01B0ng ph\xE1t hi\u1EC7n s\u1EDBm ki\u1EC3u sai hay g\u1EB7p."
+    feedback: "\u0110\u1ECDc 3 b\xE0i c\u0169: (1) Minh t\u1EEBng vi\u1EBFt 'n\u01B0\u1EDBc bi\u1EBFn m\u1EA5t v\xE0o kh\xF4ng kh\xED' v\xE0 hay l\u1EA1c sang ti\xEAu ch\xED s\u1EA1ch/b\u1EA9n; (2) Nam vi\u1EBFt k\u1EBFt lu\u1EADn \u0111\xFAng nh\u01B0ng b\u1ECF tr\u1ED1ng c\u1ED9t l\u01B0\u1EE3ng n\u01B0\u1EDBc th\u1EED; (3) Linh k\u1EBB b\u1EA3ng r\xF5 r\xE0ng d\xF9 \xEDt ph\xE1t bi\u1EC3u."
+    evidence: "\u0110\u1ECDc tr\u01B0\u1EDBc b\xE0i l\xE0m c\u0169 \u0111\u1EC3 nh\u1EADn di\u1EC7n ch\u1ED7 h\u1ECDc sinh d\u1EC5 hi\u1EC3u nh\u1EA7m."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: prep.read_prev
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 2
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: prep.inspect_gear
+    stepId: prepare
+    stationId: gear_check
+    nextStepId: prepare
+    label: "Ki\u1EC3m tra h\u1ECDc li\u1EC7u, khay m\u1EABu v\u1EADt v\xE0 nh\u1EADt k\xFD m\xE1y chi\u1EBFu"
+    tradeoff: "2 ph\xFAt \xB7 x\xE1c nh\u1EADn m\u1EABu \u0111\u1EA5t/g\u1EA1ch \u0111\u1EA7y \u0111\u1EE7 v\xE0 \u0111\xE8n m\xE1y chi\u1EBFu \u0111ang b\xE1o v\xE0ng."
+    feedback: "Khay m\u1EABu (\u0111\u1EA5t t\u01A1i, \u0111\u1EA5t n\xE9n, g\u1EA1ch l\xE1t, \u1ED1ng nh\u1ECF gi\u1ECDt) d\xF9ng t\u1ED1t. S\u1ED5 thi\u1EBFt b\u1ECB ghi: '\u0110\xE8n m\xE1y chi\u1EBFu l\u1EDBp 8A c\xF3 d\u1EA5u hi\u1EC7u qu\xE1 nhi\u1EC7t n\u1EBFu b\u1EADt li\xEAn t\u1EE5c'."
+    evidence: "Ki\u1EC3m tra thi\u1EBFt b\u1ECB v\xE0 h\u1ECDc li\u1EC7u th\u1EF1c t\u1EBF tr\u01B0\u1EDBc gi\u1EDD d\u1EA1y."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: prep.checked_gear
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
     dimension: 4
     effects: []
     conditionalEffects: []
   - id: prep.print
     stepId: prepare
     stationId: printer
-    nextStepId: begin
-    label: "In \u1EA3nh v\xE0 phi\u1EBFu quan s\xE1t"
-    tradeoff: "12 ph\xFAt \xB7 c\xF3 h\u1ECDc li\u1EC7u d\u1EF1 ph\xF2ng, \xEDt th\u1EDDi gian chu\u1EA9n b\u1ECB th\xEAm."
-    feedback: "\u0110\xE3 nh\u1EADn \u1EA3nh in. Khi thi\u1EBFt b\u1ECB kh\xF4ng ho\u1EA1t \u0111\u1ED9ng, c\xE1c nh\xF3m v\u1EABn c\xF3 v\u1EADt li\u1EC7u \u0111\u1EC3 so s\xE1nh."
-    evidence: "Chu\u1EA9n b\u1ECB b\u1EA3n in tr\u01B0\u1EDBc gi\u1EDD h\u1ECDc."
+    nextStepId: prepare
+    label: "In phi\u1EBFu b\u1EA3ng so s\xE1nh & \u1EA3nh m\u1EABu cho 4 nh\xF3m"
+    tradeoff: "5 ph\xFAt \xB7 t\u1ED1n th\u1EDDi gian h\u01A1n m\xE1y chi\u1EBFu nh\u01B0ng c\xF3 t\xE0i li\u1EC7u d\u1EF1 ph\xF2ng khi thi\u1EBFt b\u1ECB h\u1ECFng."
+    feedback: "\u0110\xE3 in \u0111\u1EE7 phi\u1EBFu b\u1EA3ng 2 c\u1ED9t v\xE0 \u1EA3nh s\xE2n tr\u01B0\u1EDDng sau m\u01B0a cho 4 nh\xF3m. C\xF3 th\u1EC3 d\xF9ng \u0111\u1ED9c l\u1EADp ho\u1EB7c k\u1EBFt h\u1EE3p c\xF9ng b\u1ED9 th\u1EBB."
+    evidence: "In phi\u1EBFu h\u1ECDc t\u1EADp d\u1EF1 ph\xF2ng v\xE0 b\u1EA3ng ghi quan s\xE1t cho 4 nh\xF3m."
     npcId: 
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
     setsFlag: printed
-    minutes: 12
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 5
     earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 0
     dimension: 3
-    effects:
-    - kind: 3
-      amount: 2
-    - kind: 4
-      amount: 1
-    - kind: 0
-      amount: 1
+    effects: []
     conditionalEffects: []
   - id: prep.projector
     stepId: prepare
     stationId: projector
-    nextStepId: begin
-    label: "Chu\u1EA9n b\u1ECB tr\xECnh chi\u1EBFu"
-    tradeoff: "4 ph\xFAt \xB7 nhanh, nh\u01B0ng ch\u01B0a c\xF3 h\u1ECDc li\u1EC7u d\u1EF1 ph\xF2ng."
-    feedback: "B\xE0i tr\xECnh chi\u1EBFu \u0111\xE3 s\u1EB5n s\xE0ng. \u0110\xE8n b\xE1o m\xE1y chi\u1EBFu ch\u1EADp ch\u1EDDn; b\u1EA1n c\xF3 th\u1EC3 chuy\u1EC3n sang b\u1EA3ng n\u1EBFu c\u1EA7n."
-    evidence: "Ch\u1ECDn tr\xECnh chi\u1EBFu \u0111\u1EC3 ti\u1EBFt ki\u1EC7m th\u1EDDi gian chu\u1EA9n b\u1ECB."
+    nextStepId: prepare
+    label: "Chu\u1EA9n b\u1ECB slide tr\xECnh chi\u1EBFu so s\xE1nh hai b\u1EC1 m\u1EB7t"
+    tradeoff: "4 ph\xFAt \xB7 nhanh g\u1ECDn, nh\u01B0ng d\u1EC5 g\u1EB7p tr\u1EE5c tr\u1EB7c gi\u1EEFa ti\u1EBFt n\u1EBFu kh\xF4ng c\xF3 ph\u01B0\u01A1ng \xE1n d\u1EF1 ph\xF2ng."
+    feedback: "\u0110\xE3 ch\xE9p slide h\xECnh \u1EA3nh \u0111\u1ED1i chi\u1EBFu l\u01B0\u1EE3ng m\u01B0a l\xEAn m\xE1y t\xEDnh l\u1EDBp 8A. \u0110\xE8n ngu\u1ED3n b\xE1o ch\u1EADp ch\u1EDDn nh\u1EB9."
+    evidence: "So\u1EA1n tr\xECnh chi\u1EBFu minh h\u1ECDa \u0111\u1EC3 t\u1ED1i \u01B0u th\u1EDDi gian chu\u1EA9n b\u1ECB."
     npcId: 
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
     setsFlag: projector
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
     minutes: 4
     earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 0
-    dimension: 3
-    effects:
-    - kind: 3
-      amount: 1
+    dimension: 1
+    effects: []
     conditionalEffects: []
-  - id: prep.group
+  - id: prep.group_cards
     stepId: prepare
     stationId: group-kit
-    nextStepId: begin
-    label: "Chu\u1EA9n b\u1ECB b\u1ED9 th\u1EBB th\u1EA3o lu\u1EADn"
-    tradeoff: "8 ph\xFAt \xB7 kh\xF4ng c\u1EA7n m\xE1y chi\u1EBFu; c\u1EA7n ph\xE2n chia l\u01B0\u1EE3t n\xF3i."
-    feedback: "\u0110\xE3 chu\u1EA9n b\u1ECB th\u1EBB: \u0111\u1EA5t tr\u1ED3ng, s\xE2n b\xEA t\xF4ng, n\u01B0\u1EDBc \u0111\u1ECDng. Nh\xF3m s\u1EBD ph\xE2n lo\u1EA1i r\u1ED3i gi\u1EA3i th\xEDch."
-    evidence: "Thi\u1EBFt k\u1EBF h\u1ECDc li\u1EC7u ph\xE2n lo\u1EA1i theo nh\xF3m."
+    nextStepId: prepare
+    label: "So\u1EA1n b\u1ED9 th\u1EBB th\u1EA3o lu\u1EADn & khay m\u1EABu th\u1EED theo nh\xF3m"
+    tradeoff: "5 ph\xFAt \xB7 chu\u1EA9n b\u1ECB m\u1EABu th\u1EADt cho t\u1EEBng b\xE0n v\xE0 th\u1EBB chia l\u01B0\u1EE3t n\xF3i cho h\u1ECDc sinh \xEDt ph\xE1t bi\u1EC3u."
+    feedback: "\u0110\xE3 x\u1EBFp 4 khay m\u1EABu (\u0111\u1EA5t tr\u1ED3ng, g\u1EA1ch l\xE1t, \u1ED1ng nh\u1ECF gi\u1ECDt) k\xE8m th\u1EBB ph\xE2n vai \u0111\u1ECDc - ghi - th\u1EED n\u01B0\u1EDBc cho 4 nh\xF3m."
+    evidence: "Chu\u1EA9n b\u1ECB khay m\u1EABu tr\u1EF1c quan v\xE0 th\u1EBB h\u1ED7 tr\u1EE3 trao \u0111\u1ED5i nh\xF3m."
     npcId: 
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
     setsFlag: group-kit
-    minutes: 8
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 5
     earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 0
-    dimension: 1
-    effects:
-    - kind: 2
-      amount: 2
-    - kind: 3
-      amount: 1
+    dimension: 2
+    effects: []
     conditionalEffects: []
-  - id: lesson.begin
+  - id: prep.enter_class
+    stepId: prepare
+    stationId: staff_exit
+    nextStepId: begin
+    label: "Sang L\u1EDBp 8A \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u ti\u1EBFt h\u1ECDc"
+    tradeoff: "2 ph\xFAt \xB7 d\xF9ng to\xE0n b\u1ED9 h\u1ECDc li\u1EC7u b\u1EA1n \u0111\xE3 chu\u1EA9n b\u1ECB (ho\u1EB7c ch\u1EC9 b\u1EA3ng ph\u1EA5n n\u1EBFu ch\u01B0a so\u1EA1n th\xEAm)."
+    feedback: "B\u1EA1n mang h\u1ECDc li\u1EC7u \u0111\xE3 chu\u1EA9n b\u1ECB b\u01B0\u1EDBc qua h\xE0nh lang v\xE0o L\u1EDBp 8A."
+    evidence: "Ho\xE0n t\u1EA5t kh\xE2u chu\u1EA9n b\u1ECB v\xE0 di chuy\u1EC3n sang L\u1EDBp 8A."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: prep.entered
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: open.clear_task
+    stepId: begin
+    stationId: board
+    nextStepId: begin
+    label: "N\xEAu nhi\u1EC7m v\u1EE5 so s\xE1nh hai m\u1EABu d\u01B0\u1EDBi c\xF9ng l\u01B0\u1EE3ng n\u01B0\u1EDBc"
+    tradeoff: "3 ph\xFAt \xB7 gi\u1EA3i th\xEDch r\xF5 m\u1EE5c ti\xEAu v\xE0 ti\xEAu ch\xED so s\xE1nh tr\u01B0\u1EDBc khi giao vi\u1EC7c."
+    feedback: "B\u1EA1n vi\u1EBFt r\xF5 c\xE2u h\u1ECFi l\xEAn b\u1EA3ng: 'C\xF9ng m\u1ED9t l\u01B0\u1EE3ng n\u01B0\u1EDBc nh\u1ECF xu\u1ED1ng, v\xEC sao ch\u1ED7 \u0111\u1EA5t t\u01A1i r\xFAt nhanh c\xF2n m\u1EB7t l\xE1t k\xEDn l\u1EA1i \u0111\u1ECDng n\u01B0\u1EDBc?'."
+    evidence: "N\xEAu r\xF5 r\xE0ng c\xE2u h\u1ECFi \u0111i\u1EC1u tra v\xE0 y\xEAu c\u1EA7u so s\xE1nh m\u1EABu tr\xEAn b\u1EA3ng."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: open.clear
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags:
+    - open.clear
+    - open.rushed
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 4
+    effects: []
+    conditionalEffects: []
+  - id: open.quick_task
+    stepId: begin
+    stationId: board
+    nextStepId: begin
+    label: "N\xEAu nhanh y\xEAu c\u1EA7u \u0111\u1EC3 s\u1EDBm v\xE0o ho\u1EA1t \u0111\u1ED9ng nh\xF3m"
+    tradeoff: "1 ph\xFAt \xB7 ti\u1EBFt ki\u1EC7m 2 ph\xFAt \u0111\u1EA7u gi\u1EDD nh\u01B0ng d\u1EC5 khi\u1EBFn nh\xF3m \u0111\u1ECDc l\u01B0\u1EDBt hi\u1EC3u nh\u1EA7m."
+    feedback: "B\u1EA1n n\xF3i ng\u1EAFn g\u1ECDn: 'C\xE1c nh\xF3m xem v\xEC sao s\xE2n \u0111\u1ECDng n\u01B0\u1EDBc r\u1ED3i ghi l\u1EA1i l\xFD do nh\xE9'. M\u1ED9t v\xE0i b\xE0n quay sang h\u1ECFi nh\u1ECF nhau."
+    evidence: "N\xEAu nhanh nhi\u1EC7m v\u1EE5 \u0111\u1EA7u gi\u1EDD \u0111\u1EC3 t\u0103ng th\u1EDDi gian ho\u1EA1t \u0111\u1ED9ng nh\xF3m."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: open.rushed
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags:
+    - open.clear
+    - open.rushed
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: open.check_whole_class
+    stepId: begin
+    stationId: board
+    nextStepId: begin
+    label: "H\u1ECFi c\u1EA3 l\u1EDBp ki\u1EC3m tra xem \u0111\xE3 hi\u1EC3u y\xEAu c\u1EA7u ch\u01B0a"
+    tradeoff: "2 ph\xFAt \xB7 nhanh, nh\u01B0ng th\u01B0\u1EDDng ch\u1EC9 h\u1ECDc sinh nhanh mi\u1EC7ng gi\u01A1 tay tr\u1EA3 l\u1EDDi."
+    feedback: "B\u1EA1n h\u1ECFi: 'C\u1EA3 l\u1EDBp r\xF5 vi\u1EC7c c\u1EA7n l\xE0m ch\u01B0a?'."
+    evidence: "Ki\u1EC3m tra nhanh m\u1EE9c hi\u1EC3u y\xEAu c\u1EA7u qua c\xE2u h\u1ECFi c\u1EA3 l\u1EDBp."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: open.checked
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags:
+    - open.clear
+    - open.rushed
+    forbidsAnyFlags:
+    - open.checked
+    - open.checked_pair
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: open.check_pair_prompt
+    stepId: begin
+    stationId: board
+    nextStepId: begin
+    label: "Cho trao \u0111\u1ED5i c\u1EB7p 1 ph\xFAt v\xE0 h\u1ECFi l\u1EA1i 1 c\xE2u ki\u1EC3m tra hi\u1EC3u \u0111\u1EC1"
+    tradeoff: "3 ph\xFAt \xB7 t\u1ED1n th\xEAm 1 ph\xFAt nh\u01B0ng b\u1ED9c l\u1ED9 c\xE2u h\u1ECFi th\u1EADt t\u1EEB h\u1ECDc sinh r\u1EE5t r\xE8."
+    feedback: "B\u1EA1n y\xEAu c\u1EA7u m\u1ED7i c\u1EB7p nh\u1EAFc l\u1EA1i 2 vi\u1EC7c c\u1EA7n l\xE0m r\u1ED3i m\u1EDDi \u0111\u1EB7t c\xE2u h\u1ECFi."
+    evidence: "Ki\u1EC3m tra m\u1EE9c hi\u1EC3u y\xEAu c\u1EA7u b\u1EB1ng trao \u0111\u1ED5i c\u1EB7p tr\u01B0\u1EDBc khi chia vi\u1EC7c nh\xF3m."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: open.checked_pair
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags:
+    - open.clear
+    - open.rushed
+    forbidsAnyFlags:
+    - open.checked
+    - open.checked_pair
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 2
+    effects: []
+    conditionalEffects: []
+  - id: open.start_group_work
     stepId: begin
     stationId: board
     nextStepId: teach
-    label: "B\u1EAFt \u0111\u1EA7u: quan s\xE1t hai b\u1EC1 m\u1EB7t"
-    tradeoff: "07:30 \xB7 \u0111\u1EB7t c\xE2u h\u1ECFi tr\u01B0\u1EDBc khi \u0111\u01B0a l\u1EDDi gi\u1EA3i."
-    feedback: "Linh mu\u1ED1n th\xEAm m\u1ED9t v\xED d\u1EE5. Nam h\u1ECFi: \u2018N\u1EBFu l\u01B0\u1EE3ng m\u01B0a nh\u01B0 nhau, v\xEC sao s\xE2n b\xEA t\xF4ng \u0111\u1ECDng n\u01B0\u1EDBc l\xE2u h\u01A1n?\u2019. H\xE3y \u0111\u1EBFn g\u1EA7n \u0111\u1EC3 trao \u0111\u1ED5i ho\u1EB7c d\xF9ng b\u1EA3ng."
-    evidence: "M\u1EDF \u0111\u1EA7u ti\u1EBFt h\u1ECDc b\u1EB1ng c\xE2u h\u1ECFi so s\xE1nh."
+    label: "Ph\xE1t l\u1EC7nh cho 4 nh\xF3m b\u1EAFt \u0111\u1EA7u quan s\xE1t & th\u1EA3o lu\u1EADn"
+    tradeoff: "1 ph\xFAt \xB7 ch\xEDnh th\u1EE9c chuy\u1EC3n sang \u0111i\u1EC1u h\xE0nh 4 nh\xF3m trong L\u1EDBp 8A."
+    feedback: "C\u1EA3 4 nh\xF3m b\u1EAFt \u0111\u1EA7u l\xE0m vi\u1EC7c t\u1EA1i b\xE0n. B\u1EA1n c\xF3 th\u1EC3 t\u1EF1 do \u0111i quan s\xE1t t\u1EEBng b\xE0n, xem phi\u1EBFu ho\u1EB7c d\xF9ng b\u1EA3ng minh h\u1ECDa."
+    evidence: "Kh\u1EDFi \u0111\u1ED9ng ho\u1EA1t \u0111\u1ED9ng \u0111i\u1EC1u tra theo 4 nh\xF3m L\u1EDBp 8A."
     npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: open.groups_started
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags:
+    - open.checked
+    - open.checked_pair
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: teach.board_diagram
+    stepId: teach
+    stationId: board
+    nextStepId: teach
+    label: "V\u1EBD s\u01A1 \u0111\u1ED3 khe r\u1ED7ng gi\u1EEFa h\u1EA1t \u0111\u1EA5t vs m\u1EB7t l\xE1t k\xEDn l\xEAn b\u1EA3ng"
+    tradeoff: "4 ph\xFAt \xB7 l\xE0m r\xF5 nguy\xEAn l\xFD cho c\u1EA3 l\u1EDBp; kh\xF4ng ph\u1EE5 thu\u1ED9c m\xE1y chi\u1EBFu."
+    feedback: "B\u1EA1n v\u1EBD hai l\xE1t c\u1EAFt song song l\xEAn b\u1EA3ng \u0111\u1EC3 c\xE1c nh\xF3m t\u1EF1 \u0111\u1ED1i chi\u1EBFu v\u1EDBi quan s\xE1t c\u1EE7a m\xECnh."
+    evidence: "D\xF9ng s\u01A1 \u0111\u1ED3 b\u1EA3ng minh h\u1ECDa nguy\xEAn l\xFD th\u1EA5m n\u01B0\u1EDBc c\u1EE7a b\u1EC1 m\u1EB7t."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: board.illustrated
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 1
+    effects: []
+    conditionalEffects: []
+  - id: teach.board_criteria
+    stepId: teach
+    stationId: board
+    nextStepId: teach
+    label: "Ch\u1ED1t 3 ti\xEAu ch\xED \u0111\u1ED1i ch\u1EE9ng l\xEAn g\xF3c b\u1EA3ng"
+    tradeoff: "3 ph\xFAt \xB7 nh\u1EAFc l\u1EA1i \u0111i\u1EC1u ki\u1EC7n gi\u1EEF l\u01B0\u1EE3ng n\u01B0\u1EDBc b\u1EB1ng nhau cho c\xE1c nh\xF3m \u0111ang l\xE0m."
+    feedback: "B\u1EA1n ghi 3 g\u1EA1ch \u0111\u1EA7u d\xF2ng l\xEAn g\xF3c b\u1EA3ng: (1) C\xF9ng l\u01B0\u1EE3ng n\u01B0\u1EDBc th\u1EED, (2) \u0110\u1EB7t c\u1EA1nh 2 b\u1EC1 m\u1EB7t, (3) Ghi hi\u1EC7n t\u01B0\u1EE3ng tr\u01B0\u1EDBc khi k\u1EBFt lu\u1EADn."
+    evidence: "B\u1ED5 sung ti\xEAu ch\xED \u0111\u1ED1i ch\u1EE9ng r\xF5 r\xE0ng l\xEAn b\u1EA3ng trong gi\u1EDD l\xE0m nh\xF3m."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: board.criteria_written
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 4
+    effects: []
+    conditionalEffects: []
+  - id: g1.inspect_sheet
+    stepId: teach
+    stationId: group1_sheet
+    nextStepId: teach
+    label: "\u0110\u1ECDc phi\u1EBFu b\xE0i l\xE0m c\u1EE7a Nh\xF3m 1 (Linh, An, B\xECnh)"
+    tradeoff: "1 ph\xFAt \xB7 xem s\u1EA3n ph\u1EA9m vi\u1EBFt th\u1EF1c t\u1EBF tr\xEAn b\xE0n (kh\xF4ng c\u1ED9ng b\u1EB1ng ch\u1EE9ng tr\xF9ng n\u1EBFu b\xE0i ch\u01B0a \u0111\u1ED5i)."
+    feedback: "\u0110\u1ECDc phi\u1EBFu Nh\xF3m 1."
+    evidence: "Quan s\xE1t b\xE0i l\xE0m vi\u1EBFt tr\xEAn b\xE0n c\u1EE7a Nh\xF3m 1 \u0111\u1EC3 ki\u1EC3m ch\u1EE9ng th\u1EF1c t\u1EBF."
+    npcId: linh
+    targetGroupId: group1
     requiresFlag: 
     forbidsFlag: 
     setsFlag: 
-    minutes: 2
-    earliestMinute: 450
-    kind: 0
-    dimension: 0
-    effects: []
-    conditionalEffects:
-    - requiresFlag: printed
-      effects:
-      - kind: 1
-        amount: 1
-      feedback: "\u1EA2nh in \u0111\xE3 \u0111\u01B0\u1EE3c \u0111\u1EB7t tr\xEAn b\xE0n; nh\xF3m ti\u1EBFp t\u1EE5c quan s\xE1t."
-    - requiresFlag: group-kit
-      effects:
-      - kind: 2
-        amount: 1
-      feedback: "B\u1ED9 th\u1EBB \u0111\xE3 chia cho nh\xF3m; Linh s\u1EB5n s\xE0ng trao \u0111\u1ED5i."
-    - requiresFlag: projector
-      effects:
-      - kind: 4
-        amount: 2
-      feedback: "M\xE1y chi\u1EBFu kh\xF4ng l\xEAn h\xECnh. B\u1EA1n v\u1EABn c\xF3 th\u1EC3 d\xF9ng b\u1EA3ng, trao \u0111\u1ED5i v\u1EDBi h\u1ECDc sinh v\xE0 ho\xE0n th\xE0nh ti\u1EBFt h\u1ECDc."
-  - id: teach.scaffold
-    stepId: teach
-    stationId: linh
-    nextStepId: assess
-    label: "C\xF9ng Linh so s\xE1nh t\u1EEBng b\u01B0\u1EDBc"
-    tradeoff: "10 ph\xFAt \xB7 t\u0103ng h\u1ED7 tr\u1EE3, gi\u1EA3m th\u1EDDi gian m\u1EDF r\u1ED9ng."
-    feedback: "Linh: \u2018Em th\u1EA5y l\u01B0\u1EE3ng n\u01B0\u1EDBc v\xE0o \u0111\u1EA5t kh\xE1c v\u1EDBi l\u01B0\u1EE3ng n\u01B0\u1EDBc \u0111\u1ECDng tr\xEAn s\xE2n\u2019. Nh\xF3m c\xF3 th\xEAm m\u1ED9t c\xE1ch gi\u1EA3i th\xEDch; c\u1EA7n ki\u1EC3m tra xem c\xE1c b\u1EA1n kh\xE1c c\xF3 hi\u1EC3u t\u01B0\u01A1ng t\u1EF1 kh\xF4ng."
-    evidence: "L\u1EAFng nghe c\xE2u h\u1ECFi v\xE0 chia nhi\u1EC7m v\u1EE5 th\xE0nh c\xE1c b\u01B0\u1EDBc."
-    npcId: linh
-    requiresFlag: 
-    forbidsFlag: 
-    setsFlag: scaffolded
-    minutes: 10
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
     earliestMinute: 0
-    kind: 1
-    dimension: 2
-    effects:
-    - kind: 0
-      amount: 2
-    - kind: 1
-      amount: 2
-    - kind: 4
-      amount: 1
-    conditionalEffects: []
-  - id: teach.compare
-    stepId: teach
-    stationId: nam
-    nextStepId: assess
-    label: "C\xF9ng Nam \u0111\u1ED1i chi\u1EBFu hai quan s\xE1t"
-    tradeoff: "8 ph\xFAt \xB7 gi\u1EEF \u0111i\u1EC1u ki\u1EC7n l\u01B0\u1EE3ng m\u01B0a nh\u01B0 nhau v\xE0 t\xECm b\u1EB1ng ch\u1EE9ng."
-    feedback: "Nam: \u2018C\u1EA7n so s\xE1nh c\xF9ng l\u01B0\u1EE3ng m\u01B0a v\xE0 c\xF9ng th\u1EDDi gian quan s\xE1t\u2019. Nh\xF3m s\u1EEDa c\xE1ch gi\u1EA3i th\xEDch b\u1EB1ng b\u1EB1ng ch\u1EE9ng thay v\xEC \u0111o\xE1n."
-    evidence: "\u0110\u1ED1i chi\u1EBFu d\u1EEF li\u1EC7u v\xE0 ki\u1EC3m tra gi\u1EA3 \u0111\u1ECBnh c\xF9ng h\u1ECDc sinh."
-    npcId: nam
-    requiresFlag: 
-    forbidsFlag: 
-    setsFlag: compared
-    minutes: 8
-    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 0
+    grantsEvidence: 1
     kind: 2
     dimension: 0
-    effects:
-    - kind: 1
-      amount: 2
-    - kind: 2
-      amount: 1
+    effects: []
     conditionalEffects: []
-  - id: teach.explain
+  - id: g1.ask_private
+    stepId: teach
+    stationId: linh
+    nextStepId: teach
+    label: "H\u1ECFi nh\u1ECF ri\xEAng v\u1EDBi Linh ngay t\u1EA1i b\xE0n"
+    tradeoff: "3 ph\xFAt \xB7 gi\u1EEF kh\xF4ng gian an to\xE0n, kh\xF4ng g\xE2y \xE1p l\u1EF1c tr\u01B0\u1EDBc c\u1EA3 l\u1EDBp."
+    feedback: "Linh n\xF3i nh\u1ECF nh\u01B0ng r\xE0nh m\u1EA1ch: 'Nh\xF3m em th\u1EED nh\u1ECF c\xF9ng 3 gi\u1ECDt n\u01B0\u1EDBc th\xEC \u0111\u1EA5t t\u01A1i r\xFAt xu\u1ED1ng h\u1EBFt, c\xF2n g\u1EA1ch l\xE1t v\u1EABn \u0111\u1ECDng gi\u1ECDt n\u01B0\u1EDBc tr\xEAn m\u1EB7t \u1EA1.'"
+    evidence: "Trao \u0111\u1ED5i ri\xEAng \u1EDF c\u1EF1 ly g\u1EA7n gi\xFAp Linh chia s\u1EBB c\xE1ch hi\u1EC3u m\xE0 kh\xF4ng b\u1ECB \xE1p l\u1EF1c c\xF4ng khai."
+    npcId: linh
+    targetGroupId: group1
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g1.private_asked
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 2
+    effects: []
+    conditionalEffects: []
+  - id: g1.pair_share
+    stepId: teach
+    stationId: linh
+    nextStepId: teach
+    label: "Khuy\u1EBFn kh\xEDch Linh gi\u1EA3i th\xEDch tr\u01B0\u1EDBc cho An v\xE0 B\xECnh trong nh\xF3m"
+    tradeoff: "3 ph\xFAt \xB7 x\xE2y d\u1EF1ng nh\u1ECBp giao ti\u1EBFp an to\xE0n trong nh\xF3m 3 ng\u01B0\u1EDDi."
+    feedback: "Sau khi n\xF3i th\u1EED v\u1EDBi An v\xE0 B\xECnh, Linh g\u1EADt \u0111\u1EA7u t\u1EF1 tin h\u01A1n v\xE0 ghi th\xEAm ph\u1EA7n gi\u1EA3i th\xEDch v\xE0o phi\u1EBFu."
+    evidence: "T\u1EA1o c\u1EA7u n\u1ED1i trao \u0111\u1ED5i nh\xF3m nh\u1ECF \u0111\u1EC3 h\u1ECDc sinh \xEDt n\xF3i tham gia ch\u1EE7 \u0111\u1ED9ng h\u01A1n."
+    npcId: linh
+    targetGroupId: group1
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g1.pair_shared
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 2
+    effects: []
+    conditionalEffects: []
+  - id: g1.callout_public
+    stepId: teach
+    stationId: linh
+    nextStepId: teach
+    label: "G\u1ECDi Linh \u0111\u1EE9ng l\xEAn tr\xECnh b\xE0y ngay tr\u01B0\u1EDBc c\u1EA3 l\u1EDBp"
+    tradeoff: "2 ph\xFAt \xB7 nhanh, nh\u01B0ng c\xF3 th\u1EC3 khi\u1EBFn h\u1ECDc sinh \u0111ang ng\u1EA1i thu m\xECnh l\u1EA1i."
+    feedback: "Linh \u0111\u1EE9ng l\xEAn nh\xECn v\u1EDF, \u0111\u1ECDc ng\u1EADp ng\u1EEBng m\u1ED9t c\xE2u r\u1ED3i ng\u1ED3i xu\u1ED1ng im l\u1EB7ng. Tuy nhi\xEAn b\xE0i vi\u1EBFt tr\xEAn gi\u1EA5y c\u1EE7a em v\u1EABn \u0111\xFAng v\xE0 \u0111\u1EE7 \xFD."
+    evidence: "G\u1ECDi ph\xE1t bi\u1EC3u c\xF4ng khai ngay khi ch\u01B0a ki\u1EC3m tra m\u1EE9c s\u1EB5n s\xE0ng c\u1EE7a h\u1ECDc sinh."
+    npcId: linh
+    targetGroupId: group1
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g1.public_pressured
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: g2.inspect_sheet
+    stepId: teach
+    stationId: group2_sheet
+    nextStepId: teach
+    label: "\u0110\u1ECDc phi\u1EBFu b\xE0i l\xE0m c\u1EE7a Nh\xF3m 2 (Nam, Vy, Kh\xE1nh)"
+    tradeoff: "1 ph\xFAt \xB7 ki\u1EC3m tra xem nh\xF3m c\xF3 s\u1ED1 li\u1EC7u \u0111\u1ED1i ch\u1EE9ng hay m\u1EDBi n\xEAu nh\u1EADn \u0111\u1ECBnh."
+    feedback: "\u0110\u1ECDc phi\u1EBFu Nh\xF3m 2."
+    evidence: "Ki\u1EC3m tra b\xE0i l\xE0m c\u1EE7a Nh\xF3m 2 \u0111\u1EC3 xem c\u0103n c\u1EE9 \u0111\u1EB1ng sau c\xE2u tr\u1EA3 l\u1EDDi."
+    npcId: nam
+    targetGroupId: group2
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: 
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 0
+    grantsEvidence: 1
+    kind: 2
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: g2.accept_claim
+    stepId: teach
+    stationId: nam
+    nextStepId: teach
+    label: "Ghi nh\u1EADn ngay c\xE2u tr\u1EA3 l\u1EDDi c\u1EE7a Nam \u0111\u1EC3 chuy\u1EC3n b\xE0n kh\xE1c"
+    tradeoff: "1 ph\xFAt \xB7 r\u1EA5t nhanh, nh\u01B0ng nh\xF3m c\xF3 nguy c\u01A1 d\u1EEBng \u1EDF nh\u1EADn \u0111\u1ECBnh thi\u1EBFu ki\u1EC3m ch\u1EE9ng."
+    feedback: "B\u1EA1n g\u1EADt \u0111\u1EA7u: '\u0110\xFAng h\u01B0\u1EDBng r\u1ED3i \u0111\xF3'. Nam h\xED h\u1EEDng g\u1EA5p b\xFAt l\u1EA1i v\xE0 kh\xF4ng th\u1EED th\xEAm m\u1EABu \u0111\u1EA5t n\xE9n n\xE0o n\u1EEFa."
+    evidence: "Ch\u1EA5p nh\u1EADn c\xE2u tr\u1EA3 l\u1EDDi \u0111\xFAng b\u1EC1 m\u1EB7t m\xE0 ch\u01B0a y\xEAu c\u1EA7u ki\u1EC3m ch\u1EE9ng."
+    npcId: nam
+    targetGroupId: group2
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g2.accepted_surface
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: g2.ask_reasoning
+    stepId: teach
+    stationId: nam
+    nextStepId: teach
+    label: "H\u1ECFi c\xE1ch suy lu\u1EADn: 'Nh\xF3m \u0111\xE3 gi\u1EEF l\u01B0\u1EE3ng n\u01B0\u1EDBc b\u1EB1ng nhau ch\u01B0a?'"
+    tradeoff: "3 ph\xFAt \xB7 bu\u1ED9c nh\xF3m r\xE0 so\xE1t bi\u1EBFn ki\u1EC3m so\xE1t v\xE0 tr\u01B0\u1EDDng h\u1EE3p \u0111\u1EA5t n\xE9n."
+    feedback: "Nam kh\u1EF1ng l\u1EA1i: '\xC0, t\u1EE5i em m\u1EDBi \u0111o\xE1n t\u1EEB l\u1EA7n th\u1EA5y ngo\xE0i s\xE2n ch\u1EE9 ch\u01B0a nh\u1ECF gi\u1ECDt th\u1EED c\xF9ng l\u01B0\u1EE3ng n\u01B0\u1EDBc l\xEAn \u0111\u1EA5t n\xE9n!'"
+    evidence: "\u0110\u1EB7t c\xE2u h\u1ECFi ph\u1EA3n bi\u1EC7n l\xE0m r\xF5 thi\u1EBFu s\xF3t ki\u1EC3m ch\u1EE9ng trong l\u1EADp lu\u1EADn c\u1EE7a Nam."
+    npcId: nam
+    targetGroupId: group2
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g2.probed_reasoning
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: g2.design_test
+    stepId: teach
+    stationId: nam
+    nextStepId: teach
+    label: "C\xF9ng Nh\xF3m 2 thi\u1EBFt k\u1EBF ph\xE9p th\u1EED 3 gi\u1ECDt n\u01B0\u1EDBc tr\xEAn 3 m\u1EABu"
+    tradeoff: "4 ph\xFAt \xB7 m\u1EA5t th\u1EDDi gian h\u01A1n nh\u01B0ng bi\u1EBFn gi\u1EA3 thuy\u1EBFt th\xE0nh b\u1EB1ng ch\u1EE9ng \u0111o \u0111\u01B0\u1EE3c."
+    feedback: "Nam, Vy v\xE0 Kh\xE1nh nh\u1ECF \u0111\u1EC1u 3 gi\u1ECDt n\u01B0\u1EDBc l\xEAn g\u1EA1ch, \u0111\u1EA5t t\u01A1i v\xE0 \u0111\u1EA5t n\xE9n: nh\xF3m ghi l\u1EA1i ngay \u0111\u1EA5t n\xE9n c\u0169ng gi\u1EEF n\u01B0\u1EDBc tr\xEAn m\u1EB7t l\xE2u g\u1EA7n b\u1EB1ng g\u1EA1ch!"
+    evidence: "H\u01B0\u1EDBng d\u1EABn h\u1ECDc sinh thi\u1EBFt k\u1EBF ph\xE9p th\u1EED \u0111\u1ED1i ch\u1EE9ng \u0111\u1EC3 ch\u1EE9ng minh gi\u1EA3 thuy\u1EBFt."
+    npcId: nam
+    targetGroupId: group2
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g2.tested_evidence
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 2
+    dimension: 4
+    effects: []
+    conditionalEffects: []
+  - id: g2.recheck
+    stepId: teach
+    stationId: nam
+    nextStepId: teach
+    label: "Quay l\u1EA1i ki\u1EC3m tra l\u1EADp lu\u1EADn c\xF3 b\u1EB1ng ch\u1EE9ng c\u1EE7a Nh\xF3m 2"
+    tradeoff: "3 ph\xFAt \xB7 x\xE1c nh\u1EADn xem nh\xF3m \u0111\xE3 t\u1EF1 s\u1EEDa c\xE1ch gi\u1EA3i th\xEDch ch\u01B0a."
+    feedback: "B\u1EA1n ki\u1EC3m tra l\u1EA1i: Nh\xF3m 2 tr\xECnh b\xE0y \u0111\u01B0\u1EE3c \u0111\u1EA7y \u0111\u1EE7 l\xFD do c\u1EA7n gi\u1EEF c\xF9ng l\u01B0\u1EE3ng n\u01B0\u1EDBc v\xE0 gi\u1EA3i th\xEDch th\xEAm \u0111\u01B0\u1EE3c v\xF9ng \u0111\u1EA5t gi\u1EABm n\xE9n."
+    evidence: "Quay l\u1EA1i \u0111\u1ED1i chi\u1EBFu l\u1EADp lu\u1EADn m\u1EDBi c\u1EE7a Nh\xF3m 2 sau khi nh\u1EAFc nh\u1EDF."
+    npcId: nam
+    targetGroupId: group2
+    requiresFlag: g2.probed_reasoning
+    forbidsFlag: g2.tested_evidence
+    setsFlag: g2.rechecked
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 2
+    dimension: 4
+    effects: []
+    conditionalEffects: []
+  - id: g3.inspect_sheet
+    stepId: teach
+    stationId: group3_sheet
+    nextStepId: teach
+    label: "\u0110\u1ECDc phi\u1EBFu & h\xECnh v\u1EBD c\u1EE7a Nh\xF3m 3 (H\xE0, Trang, \u0110\u1EE9c)"
+    tradeoff: "1 ph\xFAt \xB7 quan s\xE1t h\xECnh v\u1EBD c\u1EAFt l\u1EDBp v\xE0 ti\u1EBFn \u0111\u1ED9 th\u1EF1c t\u1EBF c\u1EE7a nh\xF3m."
+    feedback: "\u0110\u1ECDc phi\u1EBFu Nh\xF3m 3."
+    evidence: "Quan s\xE1t s\u01A1 \u0111\u1ED3 v\u1EBD tay v\xE0 ti\u1EBFn \u0111\u1ED9 ho\xE0n th\xE0nh c\u1EE7a Nh\xF3m 3."
+    npcId: ha
+    targetGroupId: group3
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: 
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 0
+    grantsEvidence: 1
+    kind: 2
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: g3.bridge_verbal
+    stepId: teach
+    stationId: ha
+    nextStepId: teach
+    label: "H\u01B0\u1EDBng d\u1EABn H\xE0 chuy\u1EC3n h\xECnh v\u1EBD th\xE0nh 2 c\xE2u gi\u1EA3i th\xEDch r\xF5 r\xE0ng"
+    tradeoff: "3 ph\xFAt \xB7 h\u1ED7 tr\u1EE3 k\u1EF9 n\u0103ng di\u1EC5n \u0111\u1EA1t b\u1EB1ng l\u1EDDi t\u1EEB th\u1EBF m\u1EA1nh tr\u1EF1c quan c\u1EE7a H\xE0."
+    feedback: "B\u1EA1n ch\u1EC9 v\xE0o t\u1EEBng l\u1EDBp h\u1EA1t \u0111\u1EA5t tr\xEAn h\xECnh c\u1EE7a H\xE0 v\xE0 g\u1EE3i \xFD m\u1EABu c\xE2u 'V\xEC... n\xEAn...'. H\xE0 \u0111\u1ECDc l\u1EA1i tr\xF4i ch\u1EA3y cho Trang ghi th\xEAm v\xE0o phi\u1EBFu."
+    evidence: "Gi\xFAp H\xE0 di\u1EC5n \u0111\u1EA1t \xFD t\u01B0\u1EDFng t\u1EEB h\xECnh v\u1EBD th\xE0nh c\xE2u gi\u1EA3i th\xEDch khoa h\u1ECDc."
+    npcId: ha
+    targetGroupId: group3
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g3.verbalized
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 2
+    effects: []
+    conditionalEffects: []
+  - id: g3.assign_extension
+    stepId: teach
+    stationId: ha
+    nextStepId: teach
+    label: "Giao nhi\u1EC7m v\u1EE5 m\u1EDF r\u1ED9ng: so s\xE1nh m\u1EABu l\u1ED1i \u0111\u1EA5t n\xE9n d\u01B0\u1EDBi g\u1ED1c c\xE2y"
+    tradeoff: "3 ph\xFAt \xB7 gi\u1EEF t\u1EADp trung cho nh\xF3m xong s\u1EDBm b\u1EB1ng th\u1EED th\xE1ch n\xE2ng cao."
+    feedback: "Trang v\xE0 \u0110\u1EE9c h\xE0o h\u1EE9ng nh\u1EADn m\u1EABu \u0111\u1EA5t n\xE9n \u0111\u1EC3 th\u1EED th\xEAm, c\u1EA3 nh\xF3m quay l\u1EA1i ghi ch\xE9p t\u1EADp trung."
+    evidence: "Giao nhi\u1EC7m v\u1EE5 m\u1EDF r\u1ED9ng ph\xF9 h\u1EE3p cho nh\xF3m ho\xE0n th\xE0nh s\u1EDBm."
+    npcId: ha
+    targetGroupId: group3
+    requiresFlag: g3.finished_early
+    forbidsFlag: 
+    setsFlag: g3.extended
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 1
+    effects: []
+    conditionalEffects: []
+  - id: g3.cross_check_g4
+    stepId: teach
+    stationId: ha
+    nextStepId: teach
+    label: "Ph\xE2n c\xF4ng Nh\xF3m 3 ki\u1EC3m tra ch\xE9o Nh\xF3m 4 theo c\xE2u h\u1ECFi g\u1EE3i m\u1EDF"
+    tradeoff: "4 ph\xFAt \xB7 k\u1EBFt n\u1ED1i nh\xF3m xong s\u1EDBm h\u1ED7 tr\u1EE3 nh\xF3m g\u1EB7p kh\xF3 m\xE0 kh\xF4ng l\xE0m h\u1ED9 b\xE0i."
+    feedback: "B\u1EA1n d\u1EB7n H\xE0 v\xE0 Trang ch\u1EC9 h\u1ECFi Nh\xF3m 4: 'Hai m\u1EABu c\u1EE7a nh\xF3m b\u1EA1n \u0111\xE3 d\xF9ng c\xF9ng l\u01B0\u1EE3ng n\u01B0\u1EDBc ch\u01B0a?'. Hai nh\xF3m b\u1EAFt \u0111\u1EA7u \u0111\u1ED1i chi\u1EBFu t\u1EA1i b\xE0n."
+    evidence: "T\u1ED5 ch\u1EE9c ki\u1EC3m tra ch\xE9o c\xF3 h\u01B0\u1EDBng d\u1EABn gi\u1EEFa Nh\xF3m 3 v\xE0 Nh\xF3m 4."
+    npcId: ha
+    targetGroupId: group3
+    requiresFlag: g3.finished_early
+    forbidsFlag: 
+    setsFlag: g3.cross_checked
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 1
+    effects: []
+    conditionalEffects: []
+  - id: g4.inspect_sheet
+    stepId: teach
+    stationId: group4_sheet
+    nextStepId: teach
+    label: "\u0110\u1ECDc phi\u1EBFu b\xE0i l\xE0m c\u1EE7a Nh\xF3m 4 (Minh, H\xF9ng, Th\u1EA3o)"
+    tradeoff: "1 ph\xFAt \xB7 ph\xE1t hi\u1EC7n d\u1EA5u hi\u1EC7u hi\u1EC3u sai tr\xEAn gi\u1EA5y tr\u01B0\u1EDBc khi can thi\u1EC7p."
+    feedback: "\u0110\u1ECDc phi\u1EBFu Nh\xF3m 4."
+    evidence: "\u0110\u1ECDc s\u1EA3n ph\u1EA9m nh\xE1p c\u1EE7a Nh\xF3m 4 \u0111\u1EC3 ph\xE1t hi\u1EC7n sai l\u1EC7ch h\u01B0\u1EDBng \u0111i\u1EC1u tra."
+    npcId: minh
+    targetGroupId: group4
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: 
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 0
+    grantsEvidence: 1
+    kind: 2
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: g4.clarify_cause
+    stepId: teach
+    stationId: minh
+    nextStepId: teach
+    label: "H\u1ECFi l\xE0m r\xF5 ri\xEAng v\u1EDBi Minh v\xEC sao nh\xF3m ch\u1ECDn ti\xEAu ch\xED s\u1EA1ch/b\u1EA9n"
+    tradeoff: "3 ph\xFAt \xB7 x\xE1c \u0111\u1ECBnh Minh nh\u1EA7m \u0111\u1EC1 b\xE0i hay thi\u1EBFu kh\xE1i ni\u1EC7m th\u1EA5m n\u01B0\u1EDBc tr\u01B0\u1EDBc khi ch\u1ECDn c\xE1ch gi\xFAp."
+    feedback: "Minh n\xF3i nh\u1ECF: 'Em t\u01B0\u1EDFng t\xECm ch\u1ED7 nhi\u1EC1u l\xE1 r\xE1c l\xE0m ngh\u1EB9t n\u01B0\u1EDBc, v\u1EDBi l\u1EA1i em ngh\u0129 n\u01B0\u1EDBc tr\xEAn s\xE2n xi m\u0103ng t\u1EF1 b\u1ED1c h\u01A1i bi\u1EBFn m\u1EA5t ch\u1EE9 kh\xF4ng c\xF3 l\u1ED7 nh\u1ECF n\xE0o \u0111\u1EC3 th\u1EA5m.'"
+    evidence: "T\xECm hi\u1EC3u nguy\xEAn nh\xE2n hi\u1EC3u nh\u1EA7m tr\u01B0\u1EDBc khi \u0111\u01B0a ra c\xE1ch h\u1ED7 tr\u1EE3 cho Minh."
+    npcId: minh
+    targetGroupId: group4
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g4.cause_checked
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 2
+    effects: []
+    conditionalEffects: []
+  - id: g4.repeat_prompt
+    stepId: teach
+    stationId: minh
+    nextStepId: teach
+    label: "\u0110\u1ECDc l\u1EA1i nguy\xEAn v\u0103n \u0111\u1EC1 b\xE0i y\xEAu c\u1EA7u so s\xE1nh s\xE2n tr\u01B0\u1EDDng"
+    tradeoff: "2 ph\xFAt \xB7 nhanh, nh\u01B0ng ch\u01B0a ch\u1EAFc gi\u1EA3i quy\u1EBFt \u0111\u01B0\u1EE3c ch\u1ED7 v\u01B0\u1EDBng c\u1EE7a nh\xF3m."
+    feedback: "B\u1EA1n nh\u1EAFc l\u1EA1i nguy\xEAn c\xE2u \u0111\u1EC1 b\xE0i. Minh v\xE0 H\xF9ng g\u1EADt \u0111\u1EA7u cho qua nh\u01B0ng tr\xEAn phi\u1EBFu v\u1EABn ch\u1EC9 ghi th\xEAm hai ch\u1EEF 'sau m\u01B0a' m\xE0 ch\u01B0a bi\u1EBFt th\u1EED m\u1EABu th\u1EBF n\xE0o."
+    evidence: "Th\u1EED nh\u1EAFc l\u1EA1i nguy\xEAn h\u01B0\u1EDBng d\u1EABn; ghi nh\u1EADn ph\u1EA3n \u1EE9ng ch\u01B0a chuy\u1EC3n bi\u1EBFn th\u1EF1c s\u1EF1."
+    npcId: minh
+    targetGroupId: group4
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g4.repeated_only
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 2
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: g4.scaffold_steps
+    stepId: teach
+    stationId: minh
+    nextStepId: teach
+    label: "Chia nh\u1ECF nhi\u1EC7m v\u1EE5 cho Nh\xF3m 4 th\xE0nh 2 b\u01B0\u1EDBc c\u1EE5 th\u1EC3"
+    tradeoff: "4 ph\xFAt \xB7 gi\xFAp nh\xF3m tho\xE1t b\u1EBF t\u1EAFc t\u1EEBng b\u01B0\u1EDBc; c\u1EA7n quay l\u1EA1i ki\u1EC3m tra b\u1EB1ng v\xED d\u1EE5 m\u1EDBi."
+    feedback: "B\u1EA1n chia th\xE0nh 2 b\u01B0\u1EDBc tr\xEAn nh\xE1p c\u1EE7a Minh: (1) Nh\u1ECF 3 gi\u1ECDt v\xE0o \u0111\u1EA5t t\u01A1i v\xE0 \u0111\u1EBFm gi\xE2y r\xFAt; (2) Nh\u1ECF 3 gi\u1ECDt l\xEAn g\u1EA1ch l\xE1t. C\u1EA3 nh\xF3m b\u1EAFt \u0111\u1EA7u l\xE0m l\u1EA1i \u0111\xFAng h\u01B0\u1EDBng."
+    evidence: "Chia nh\u1ECF nhi\u1EC7m v\u1EE5 th\xE0nh b\u01B0\u1EDBc c\u1EE5 th\u1EC3 gi\xFAp Nh\xF3m 4 s\u1EEDa c\xE1ch l\xE0m."
+    npcId: minh
+    targetGroupId: group4
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g4.scaffolded
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 2
+    effects: []
+    conditionalEffects: []
+  - id: g4.demo_samples
+    stepId: teach
+    stationId: minh
+    nextStepId: teach
+    label: "Minh h\u1ECDa tr\u1EF1c ti\u1EBFp b\u1EB1ng m\u1EABu \u0111\u1EA5t v\xE0 g\u1EA1ch ngay t\u1EA1i b\xE0n Nh\xF3m 4"
+    tradeoff: "4 ph\xFAt \xB7 tr\u1EF1c quan cho h\u1ECDc sinh thi\u1EBFu ki\u1EBFn th\u1EE9c n\u1EC1n; v\u1EABn ph\u1EA3i ki\u1EC3m tra l\u1EA1i sau \u0111\xF3."
+    feedback: "B\u1EA1n nh\u1ECF 3 gi\u1ECDt n\u01B0\u1EDBc l\xEAn m\u1EABu \u0111\u1EA5t v\xE0 m\u1EA3nh g\u1EA1ch tr\u01B0\u1EDBc m\u1EB7t Minh, H\xF9ng, Th\u1EA3o: c\u1EA3 ba th\u1EA5y r\xF5 n\u01B0\u1EDBc th\u1EA5m qua khe \u0111\u1EA5t trong khi \u0111\u1ECDng tr\xF2n tr\xEAn g\u1EA1ch."
+    evidence: "Minh h\u1ECDa tr\u1EF1c quan b\u1EB1ng m\u1EABu v\u1EADt gi\xFAp Nh\xF3m 4 ph\xE2n bi\u1EC7t th\u1EA5m v\xE0 \u0111\u1ECDng n\u01B0\u1EDBc."
+    npcId: minh
+    targetGroupId: group4
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g4.demoed
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 1
+    effects: []
+    conditionalEffects: []
+  - id: g4.recheck_new_example
+    stepId: teach
+    stationId: minh
+    nextStepId: teach
+    label: "Quay l\u1EA1i ki\u1EC3m tra Nh\xF3m 4 b\u1EB1ng v\xED d\u1EE5 m\u1EDBi (l\u1ED1i \u0111\u1EA5t n\xE9n vs \u0111\u1EA5t v\u01B0\u1EDDn t\u01A1i)"
+    tradeoff: "3 ph\xFAt \xB7 ki\u1EC3m ch\u1EE9ng xem nh\xF3m th\u1EF1c s\u1EF1 hi\u1EC3u nguy\xEAn l\xFD hay ch\u1EC9 l\xE0m theo m\u1EABu v\u1EEBa ch\u1EC9."
+    feedback: "B\u1EA1n \u0111\u01B0a c\xE2u h\u1ECFi v\xED d\u1EE5 m\u1EDBi v\u1EC1 l\u1ED1i \u0111\u1EA5t b\u1ECB gi\u1EABm n\xE9n ch\u1EB7t \u1EDF g\u1ED1c c\xE2y v\xE0 b\u1ED3n \u0111\u1EA5t t\u01A1i. Minh tr\u1EA3 l\u1EDDi thay cho nh\xF3m."
+    evidence: "Quay l\u1EA1i ki\u1EC3m tra Nh\xF3m 4 b\u1EB1ng v\xED d\u1EE5 m\u1EDBi sau b\u01B0\u1EDBc h\u1ED7 tr\u1EE3."
+    npcId: minh
+    targetGroupId: group4
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: g4.rechecked_done
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags:
+    - g4.scaffolded
+    - g4.demoed
+    - g3.cross_checked
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 2
+    dimension: 4
+    effects: []
+    conditionalEffects: []
+  - id: teach.to_check
     stepId: teach
     stationId: board
     nextStepId: assess
-    label: "V\u1EBD s\u01A1 \u0111\u1ED3 d\xF2ng n\u01B0\u1EDBc tr\xEAn b\u1EA3ng"
-    tradeoff: "5 ph\xFAt \xB7 ti\u1EBFt ki\u1EC7m th\u1EDDi gian; ch\u01B0a nghe l\xFD gi\u1EA3i c\u1EE7a t\u1EEBng nh\xF3m."
-    feedback: "S\u01A1 \u0111\u1ED3 \u0111\xE3 l\xE0m r\xF5 d\xF2ng n\u01B0\u1EDBc th\u1EA5m v\xE0 ch\u1EA3y tr\xEAn b\u1EC1 m\u1EB7t. M\u1ED9t s\u1ED1 h\u1ECDc sinh ghi l\u1EA1i; ch\u01B0a bi\u1EBFt c\xE1c em t\u1EF1 gi\u1EA3i th\xEDch \u0111\u01B0\u1EE3c \u0111\u1EBFn \u0111\xE2u."
-    evidence: "D\xF9ng s\u01A1 \u0111\u1ED3 thay th\u1EBF \u0111\u1EC3 duy tr\xEC ti\u1EBFt h\u1ECDc."
+    label: "Chuy\u1EC3n sang giai \u0111o\u1EA1n Ki\u1EC3m tra vi\u1EC7c h\u1ECDc cu\u1ED1i ti\u1EBFt"
+    tradeoff: "1 ph\xFAt \xB7 ch\u1EC9 m\u1EDF sau khi \u0111\xE3 c\xF3 \xEDt nh\u1EA5t 2 ho\u1EA1t \u0111\u1ED9ng \u0111i\u1EC1u h\xE0nh l\u1EDBp (ho\u1EB7c g\u1EA7n cu\u1ED1i gi\u1EDD 08:05)."
+    feedback: "B\u1EA1n ra hi\u1EC7u cho c\u1EA3 l\u1EDBp t\u1EA1m d\u1EEBng l\xE0m b\xE0i \u0111\u1EC3 chuy\u1EC3n sang ph\u1EA7n ki\u1EC3m tra vi\u1EC7c h\u1ECDc."
+    evidence: "Chuy\u1EC3n l\u1EDBp sang b\u01B0\u1EDBc thu th\u1EADp b\u1EB1ng ch\u1EE9ng hi\u1EC3u b\xE0i cu\u1ED1i ti\u1EBFt."
     npcId: 
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
-    setsFlag: diagram
-    minutes: 5
+    setsFlag: teach.moved_to_check
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
     earliestMinute: 0
+    minFacilitateActions: 2
+    oneTime: 1
+    grantsEvidence: 1
     kind: 0
-    dimension: 1
-    effects:
-    - kind: 1
-      amount: 1
+    dimension: 3
+    effects: []
     conditionalEffects: []
-  - id: assess.tickets
+  - id: assess.collect_sheets
     stepId: assess
     stationId: tickets
-    nextStepId: reflect
-    label: "Thu v\xE0 \u0111\u1ED1i chi\u1EBFu phi\u1EBFu cu\u1ED1i gi\u1EDD"
-    tradeoff: "7 ph\xFAt \xB7 c\xF3 s\u1EA3n ph\u1EA9m t\u1EEBng nh\xF3m \u0111\u1EC3 chu\u1EA9n b\u1ECB ti\u1EBFt sau."
-    feedback: "Phi\u1EBFu cho th\u1EA5y m\u1ED9t nh\xF3m c\xF2n nh\u1EA7m \u2018n\u01B0\u1EDBc bi\u1EBFn m\u1EA5t\u2019 v\u1EDBi \u2018n\u01B0\u1EDBc th\u1EA5m\u2019. B\u1EA1n ghi l\u1EA1i v\xED d\u1EE5 c\u1EA7n d\xF9ng \u1EDF ti\u1EBFt sau. Ti\u1EBFt h\u1ECDc \u0111\xE3 k\u1EBFt th\xFAc."
-    evidence: "Thu s\u1EA3n ph\u1EA9m h\u1ECDc t\u1EADp v\xE0 x\xE1c \u0111\u1ECBnh \u0111i\u1EC3m c\u1EA7n ki\u1EC3m tra l\u1EA1i."
+    nextStepId: assess
+    label: "Thu v\xE0 \u0111\u1ECDc nhanh phi\u1EBFu l\xE0m vi\u1EC7c c\u1EE7a c\u1EA3 4 nh\xF3m"
+    tradeoff: "4 ph\xFAt \xB7 c\xF3 s\u1EA3n ph\u1EA9m vi\u1EBFt c\u1EE7a \u0111\u1EE7 12 h\u1ECDc sinh v\xE0o cu\u1ED1i gi\u1EDD."
+    feedback: "B\u1EA1n thu b\xE0i c\u1EE7a \u0111\u1EE7 4 nh\xF3m v\xE0 \u0111\u1ED1i chi\u1EBFu tr\u1EF1c ti\u1EBFp nh\u1EEFng l\u1ED7i c\xF2n s\xF3t."
+    evidence: "Thu phi\u1EBFu vi\u1EBFt c\u1EE7a c\u1EA3 4 nh\xF3m \u0111\u1EC3 ki\u1EC3m tra to\xE0n di\u1EC7n m\u1EE9c hi\u1EC3u."
     npcId: 
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
-    setsFlag: tickets-collected
-    minutes: 7
+    setsFlag: assess.sheets_collected
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 4
     earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 2
     dimension: 4
-    effects:
-    - kind: 1
-      amount: 1
+    effects: []
     conditionalEffects: []
-  - id: assess.oral
+  - id: assess.quick_probe
     stepId: assess
-    stationId: linh
-    nextStepId: reflect
-    label: "M\u1EDDi Linh t\u1ED5ng k\u1EBFt b\u1EB1ng l\u1EDDi"
-    tradeoff: "3 ph\xFAt \xB7 nhanh, nh\u01B0ng ch\u01B0a c\xF3 b\u1EB1ng ch\u1EE9ng c\u1EE7a c\u1EA3 l\u1EDBp."
-    feedback: "Linh t\xF3m t\u1EAFt \u0111\u01B0\u1EE3c n\u1ED9i dung. B\u1EA1n ch\u01B0a th\u1EC3 suy ra c\u1EA3 l\u1EDBp \u0111\xE3 hi\u1EC3u; ghi vi\u1EC7c ki\u1EC3m tra th\xEAm v\xE0o ti\u1EBFt sau. Ti\u1EBFt h\u1ECDc \u0111\xE3 k\u1EBFt th\xFAc."
-    evidence: "Thu ph\u1EA3n h\u1ED3i mi\u1EC7ng v\xE0 th\u1EEBa nh\u1EADn gi\u1EDBi h\u1EA1n d\u1EEF li\u1EC7u."
-    npcId: linh
+    stationId: tickets
+    nextStepId: assess
+    label: "Ph\xE1t phi\u1EBFu ng\u1EAFn 1 c\xE2u h\u1ECFi v\u1EADn d\u1EE5ng tr\xEAn m\u1EABu \u0111\u1EA5t n\xE9n"
+    tradeoff: "3 ph\xFAt \xB7 ki\u1EC3m tra kh\u1EA3 n\u0103ng chuy\u1EC3n sang v\xED d\u1EE5 m\u1EDBi \u1EDF cu\u1ED1i gi\u1EDD."
+    feedback: "B\u1EA1n cho c\xE1c nh\xF3m vi\u1EBFt nhanh c\xE2u tr\u1EA3 l\u1EDDi ng\u1EAFn v\u1EC1 hi\u1EC7n t\u01B0\u1EE3ng \u0111\u1ECDng n\u01B0\u1EDBc tr\xEAn \u0111\u01B0\u1EDDng \u0111\u1EA5t n\xE9n sau gi\u1EDD ra ch\u01A1i."
+    evidence: "Ki\u1EC3m tra nhanh kh\u1EA3 n\u0103ng v\u1EADn d\u1EE5ng nguy\xEAn l\xFD b\u1EB1ng v\xED d\u1EE5 m\u1EDBi."
+    npcId: 
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
-    setsFlag: oral-only
+    setsFlag: assess.probe_done
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
     minutes: 3
     earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 2
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: assess.oral_linh
+    stepId: assess
+    stationId: linh
+    nextStepId: assess
+    label: "M\u1EDDi Linh gi\u1EA3i th\xEDch mi\u1EC7ng ph\u1EA7n t\xF3m t\u1EAFt c\u1EE7a Nh\xF3m 1"
+    tradeoff: "3 ph\xFAt \xB7 nhanh, nh\u01B0ng ch\u1EC9 ph\u1EA3n \xE1nh 1 h\u1ECDc sinh, ch\u01B0a k\u1EBFt lu\u1EADn cho c\u1EA3 l\u1EDBp."
+    feedback: "Linh tr\xECnh b\xE0y ng\u1EAFn."
+    evidence: "Nghe Linh tr\xECnh b\xE0y mi\u1EC7ng v\xE0 ghi nh\u1EADn gi\u1EDBi h\u1EA1n c\u1EE7a m\u1EABu \u0111\u01A1n l\u1EBB."
+    npcId: linh
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: assess.oral_done
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 1
     dimension: 2
-    effects:
-    - kind: 0
-      amount: 1
+    effects: []
+    conditionalEffects: []
+  - id: assess.oral_nam
+    stepId: assess
+    stationId: nam
+    nextStepId: assess
+    label: "M\u1EDDi Nam tr\xECnh b\xE0y mi\u1EC7ng k\u1EBFt lu\u1EADn c\u1EE7a Nh\xF3m 2"
+    tradeoff: "3 ph\xFAt \xB7 nhanh, ki\u1EC3m tra l\u1EA1i c\xE1ch Nam d\xF9ng b\u1EB1ng ch\u1EE9ng tr\u01B0\u1EDBc l\u1EDBp."
+    feedback: "Nam tr\xECnh b\xE0y tr\u01B0\u1EDBc l\u1EDBp."
+    evidence: "Nghe Nam tr\xECnh b\xE0y mi\u1EC7ng v\xE0 ghi nh\u1EADn gi\u1EDBi h\u1EA1n ch\u01B0a \u0111\u1EA1i di\u1EC7n cho 3 nh\xF3m kia."
+    npcId: nam
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: assess.oral_done
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 1
+    dimension: 0
+    effects: []
+    conditionalEffects: []
+  - id: assess.adjust_reteach
+    stepId: assess
+    stationId: board
+    nextStepId: assess
+    label: "\u0110i\u1EC1u ch\u1EC9nh ng\u1EAFn tr\xEAn b\u1EA3ng d\u1EF1a theo l\u1ED7 h\u1ED5ng v\u1EEBa ph\xE1t hi\u1EC7n"
+    tradeoff: "3 ph\xFAt \xB7 k\u1ECBp th\u1EDDi ch\u1ED1t l\u1EA1i \u0111i\u1EC3m c\xE1c nh\xF3m c\xF2n nh\u1EA7m tr\u01B0\u1EDBc khi h\u1EBFt ti\u1EBFt."
+    feedback: "B\u1EA1n ch\u1ED1t l\u1EA1i \u0111i\u1EC3m c\xF2n v\u01B0\u1EDBng tr\xEAn b\u1EA3ng d\u1EF1a \u0111\xFAng v\xE0o b\u1EB1ng ch\u1EE9ng v\u1EEBa thu \u0111\u01B0\u1EE3c."
+    evidence: "\u0110i\u1EC1u ch\u1EC9nh n\u1ED9i dung gi\u1EA3ng ch\u1ED1t cu\u1ED1i ti\u1EBFt d\u1EF1a tr\xEAn k\u1EBFt qu\u1EA3 ki\u1EC3m tra th\u1EF1c t\u1EBF."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: assess.adjusted
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags:
+    - assess.sheets_collected
+    - assess.probe_done
+    - assess.oral_done
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 3
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 3
+    effects: []
+    conditionalEffects: []
+  - id: assess.end_lesson
+    stepId: assess
+    stationId: board
+    nextStepId: reflect
+    label: "K\u1EBFt th\xFAc ti\u1EBFt d\u1EA1y L\u1EDBp 8A & quay l\u1EA1i ph\u1EA3n t\u01B0 v\u1EDBi c\xF4 Mai"
+    tradeoff: "1 ph\xFAt \xB7 kh\xE9p l\u1EA1i ti\u1EBFt h\u1ECDc 45 ph\xFAt v\xE0 chuy\u1EC3n sang b\u01B0\u1EDBc ph\u1EA3n t\u01B0."
+    feedback: "B\u1EA1n ch\xE0o l\u1EDBp 8A, thu d\u1ECDn h\u1ECDc li\u1EC7u v\xE0 ra trao \u0111\u1ED5i t\u1ED5ng k\u1EBFt ti\u1EBFt h\u1ECDc c\xF9ng c\xF4 Mai."
+    evidence: "Ch\u1EE7 \u0111\u1ED9ng kh\xE9p l\u1EA1i ti\u1EBFt d\u1EA1y v\xE0 b\u01B0\u1EDBc v\xE0o ph\u1EA3n t\u01B0 b\u1EB1ng ch\u1EE9ng."
+    npcId: 
+    targetGroupId: 
+    requiresFlag: 
+    forbidsFlag: 
+    setsFlag: assess.lesson_ended
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags:
+    - assess.sheets_collected
+    - assess.probe_done
+    - assess.oral_done
+    forbidsAnyFlags: []
+    evidenceKey: 
+    minutes: 1
+    earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
+    kind: 0
+    dimension: 3
+    effects: []
     conditionalEffects: []
   - id: reflect.finish
     stepId: reflect
     stationId: mai
     nextStepId: complete
-    label: "Nh\xECn l\u1EA1i ti\u1EBFt d\u1EA1y v\u1EDBi c\xF4 Mai"
-    tradeoff: "5 ph\xFAt \xB7 xem b\u1EB1ng ch\u1EE9ng, ch\u1ECDn \u0111i\u1EC1u mu\u1ED1n th\u1EED \u1EDF ti\u1EBFt sau."
-    feedback: "C\xF4 Mai: \u2018H\xE3y xem \u0111i\u1EC1u g\xEC c\xF3 b\u1EB1ng ch\u1EE9ng v\xE0 \u0111i\u1EC1u g\xEC c\xF2n c\u1EA7n ki\u1EC3m tra. M\u1ED9t ti\u1EBFt h\u1ECDc kh\xF4ng quy\u1EBFt \u0111\u1ECBnh s\u1EF1 ph\xF9 h\u1EE3p ngh\u1EC1 nghi\u1EC7p\u2019. "
-    evidence: "Trao \u0111\u1ED5i sau ti\u1EBFt h\u1ECDc v\xE0 x\xE1c \u0111\u1ECBnh vi\u1EC7c c\u1EA7n c\u1EA3i thi\u1EC7n."
+    label: "Ho\xE0n t\u1EA5t ph\u1EA3n t\u01B0 v\xE0 nh\u1EADn trao \u0111\u1ED5i t\u1EEB c\xF4 Mai"
+    tradeoff: "5 ph\xFAt \xB7 t\u1ED5ng h\u1EE3p H\u1ED3 s\u01A1 tr\u1EA3i nghi\u1EC7m ngh\u1EC1 gi\xE1o vi\xEAn \u2014 phi\xEAn th\u1EED nghi\u1EC7m."
+    feedback: "C\xF4 Mai: 'H\xE3y \u0111\u1ED1i chi\u1EBFu t\u1EEBng nh\u1EADn x\xE9t v\u1EDBi s\u1EF1 ki\u1EC7n \u0111\xE3 x\u1EA3y ra trong ti\u1EBFt h\u1ECDc 8A v\u1EEBa r\u1ED3i.'"
+    evidence: "Ho\xE0n th\xE0nh ph\u1EA3n t\u01B0 c\xF3 d\u1EABn chi\u1EBFu b\u1EB1ng ch\u1EE9ng v\xE0 nh\u1EADn ph\u1EA3n h\u1ED3i t\u1EEB c\xF4 Mai."
     npcId: mai
+    targetGroupId: 
     requiresFlag: 
     forbidsFlag: 
-    setsFlag: 
+    setsFlag: reflect.done
+    clearsFlag: 
+    requiresAllFlags: []
+    requiresAnyFlags: []
+    forbidsAnyFlags: []
+    evidenceKey: 
     minutes: 5
     earliestMinute: 0
+    minFacilitateActions: 0
+    oneTime: 1
+    grantsEvidence: 1
     kind: 1
     dimension: 3
     effects: []
     conditionalEffects: []
   timedEvents:
-  - id: equipment.waited
+  - id: equipment.failed
     stepId: teach
     requiresFlag: projector
-    feedback: "\u0110\xE3 ch\u1EDD thi\u1EBFt b\u1ECB th\xEAm hai ph\xFAt. M\xE1y chi\u1EBFu ch\u01B0a ho\u1EA1t \u0111\u1ED9ng; chuy\u1EC3n sang b\u1EA3ng ho\u1EB7c trao \u0111\u1ED5i tr\u1EF1c ti\u1EBFp v\u1EABn kh\u1EA3 thi."
-    delayMinutes: 2
+    forbidsFlag: 
+    anchorFlag: 
+    setsFlag: 
+    feedback: "\u0110\xE8n m\xE1y chi\u1EBFu l\u1EDBp 8A t\u1EAFt ng\u1EA5m sau 6 ph\xFAt v\xEC qu\xE1 nhi\u1EC7t! M\xE0n chi\u1EBFu t\u1ED1i \u0111en; b\u1EA1n c\xF3 th\u1EC3 chuy\u1EC3n sang b\u1EA3ng ph\u1EA5n, b\u1EA3n in d\u1EF1 ph\xF2ng ho\u1EB7c m\u1EABu v\u1EADt tr\xEAn b\xE0n."
+    forbidsAnyFlags: []
+    delayMinutes: 6
+    effects:
+    - kind: 4
+      amount: 1
+  - id: group3.finished_early
+    stepId: teach
+    requiresFlag: 
+    forbidsFlag: 
+    anchorFlag: 
+    setsFlag: g3.finished_early
+    feedback: "Nh\xF3m 3 (H\xE0, Trang, \u0110\u1EE9c) \u0111\xE3 v\u1EBD xong s\u01A1 \u0111\u1ED3 khe \u0111\u1EA5t v\xE0 gi\u01A1 tay b\xE1o xong ph\u1EA7n c\u01A1 b\u1EA3n."
+    forbidsAnyFlags: []
+    delayMinutes: 5
+    effects:
+    - kind: 2
+      amount: 1
+  - id: group3.idle_drift
+    stepId: teach
+    requiresFlag: g3.finished_early
+    forbidsFlag: 
+    anchorFlag: g3.finished_early
+    setsFlag: 
+    feedback: "Nh\xF3m 3 ch\u1EDD kh\xE1 l\xE2u sau khi xong s\u1EDBm m\xE0 ch\u01B0a c\xF3 vi\u1EC7c ti\u1EBFp: Trang v\xE0 \u0110\u1EE9c b\u1EAFt \u0111\u1EA7u n\xF3i chuy\u1EC7n ri\xEAng l\xE0m gi\u1EA3m t\u1EADp trung."
+    forbidsAnyFlags:
+    - g3.extended
+    - g3.cross_checked
+    delayMinutes: 8
     effects:
     - kind: 4
       amount: 1

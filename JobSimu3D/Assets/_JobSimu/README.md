@@ -1,16 +1,16 @@
 # JobSimu — First Playable (Unity 6)
 
-**Demo mới:** mở `Scenes/SharedFrameworkDemo.unity` để chơi một tiết học với ba NPC, lựa chọn/hệ quả, nhật ký và lưu cục bộ. Xem [hướng dẫn framework và Web](FRAMEWORK.md). Nội dung bên dưới mô tả prototype làm quen trước đó, vẫn được giữ để kiểm tra hồi quy.
+**Bản chơi chính hiện hành:** mở `Scenes/SharedFrameworkDemo.unity` để chơi trọn tiết Khoa học tự nhiên **Lớp 8A (Trường THCS Bình Minh)** với 6 giai đoạn, 4 nhóm / 12 học sinh, Cô Mai, sổ lớp, phản tư và lưu cục bộ v2. Xem [hướng dẫn framework và Web](FRAMEWORK.md). Nội dung bên dưới mô tả cảnh làm quen cơ bản `SchoolFirstPlayable.unity`, vẫn được giữ để kiểm tra hồi quy.
 
-Prototype trường THPT An Hòa hư cấu, góc nhìn thứ nhất. Mở `Assets/_JobSimu/Scenes/SchoolFirstPlayable.unity`, nhấn **Play**, rồi nhấp vào Game view.
+Cảnh làm quen cơ bản của Trường THCS Bình Minh hư cấu, góc nhìn thứ nhất. Mở `Assets/_JobSimu/Scenes/SchoolFirstPlayable.unity`, nhấn **Play**, rồi nhấp vào Game view.
 
-## Chơi thử
+## Chơi thử (cảnh làm quen cơ bản)
 
 - **WASD** di chuyển; **Shift trái** chạy; chuột xoay camera.
 - **E** tương tác khi có lời nhắc giữa màn hình.
 - **Esc** đóng hội thoại / thả chuột; nhấp chuột vào cảnh để tiếp tục.
-- Gặp **cô Mai** bên trái sân → mở cửa **phòng giáo viên** bên phải → nhìn xuống và nhận **kế hoạch** trên bàn → vào **lớp 10A1** bên trái, tương tác **bảng** → quay lại cô Mai.
-- Lớp 10A2 mở để khám phá. Tầng 2 và cầu thang có rào chắn, chưa đưa vào vùng chơi.
+- Gặp **cô Mai** bên trái sân → mở cửa **phòng giáo viên** bên phải → nhìn xuống và nhận **kế hoạch** trên bàn → vào **lớp 8A** bên trái, tương tác **bảng** → quay lại cô Mai.
+- Lớp 8B mở để khám phá. Tầng 2 và cầu thang có rào chắn, chưa đưa vào vùng chơi.
 
 Hội thoại tạm dừng di chuyển và camera. Cửa trượt dừng khi capsule người chơi nằm trên đường chuyển động. Mất focus hoặc Esc thả chuột; không tự khóa lại ngoài thao tác nhấp chuột.
 

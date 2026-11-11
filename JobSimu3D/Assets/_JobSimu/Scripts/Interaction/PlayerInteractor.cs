@@ -25,13 +25,28 @@ namespace JobSimu.Interaction
             if (player.InteractPressed) target.Interact(this);
         }
 
-        // The first solid hit occludes all objects behind it, including through walls.
+        // The first solid hit occludes all objects behind it, including through walls, and ignores hidden/disabled targets.
         public Interactable FindTarget()
         {
             if (viewCamera == null) return null;
             Ray ray = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
-            return Physics.Raycast(ray, out RaycastHit hit, reach, interactionMask,
-                QueryTriggerInteraction.Ignore) ? hit.collider.GetComponentInParent<Interactable>() : null;
+            if (!Physics.Raycast(ray, out RaycastHit hit, reach, interactionMask, QueryTriggerInteraction.Ignore))
+                return null;
+            Interactable candidate = hit.collider.GetComponentInParent<Interactable>();
+            if (candidate == null || !candidate.CanInteract) return null;
+
+            Renderer hitRenderer = hit.collider.GetComponent<Renderer>();
+            if (hitRenderer != null && !hitRenderer.enabled)
+                return null;
+
+            if (hitRenderer == null)
+            {
+                bool anyVisibleChild = false;
+                foreach (Renderer r in candidate.GetComponentsInChildren<Renderer>(false))
+                    if (r.enabled) { anyVisibleChild = true; break; }
+                if (!anyVisibleChild) return null;
+            }
+            return candidate;
         }
     }
 }
