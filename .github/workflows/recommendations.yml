@@ -1,0 +1,62 @@
+name: Recommendation refresh checks
+on:
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'index.php'
+      - 'tests/recommendations*'
+      - 'tests/four-hubs-data-test.php'
+      - '.github/workflows/recommendations.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'index.php'
+      - 'tests/recommendations*'
+      - 'tests/four-hubs-data-test.php'
+      - '.github/workflows/recommendations.yml'
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.3']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test
+          MYSQL_DATABASE: recommendations_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -ptest"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, pdo_mysql, mbstring, ctype
+          coverage: none
+      - name: Syntax and SQLite integration
+        run: |
+          set -e
+          for file in app/recommendations.php app/assessment-hub.php app/constraints.php app/functions.php index.php tests/recommendations-test.php; do php -l "$file"; done
+          php tests/recommendations-test.php
+          php tests/psychometrics-test.php
+          php tests/four-hubs-data-test.php
+      - name: MySQL integration
+        env:
+          RECOMMENDATIONS_TEST_DSN: 'mysql:host=127.0.0.1;port=3306;dbname=recommendations_test;charset=utf8mb4'
+          TEST_DB_USER: root
+          TEST_DB_PASS: test
+        run: php tests/recommendations-test.php
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Real HTTP routes on disposable SQLite fixture
+        run: |
+          python -m pip install requests
+          python tests/recommendations-http.py

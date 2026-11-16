@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/four-hubs-data.php';
 require_once __DIR__ . '/four-hubs-ai.php';
+require_once __DIR__ . '/recommendations.php';
 
 function db(): PDO { global $pdo; return $pdo; }
 function run_migrations(): void {
@@ -792,6 +793,8 @@ function ai_advice(array $scores, array $matches, array $student): array {
 }
 
 function generate_assessment_ai(int $assessmentId, int $userId): array {
+    recommendations_refresh_current($userId);
+    $profileToken = recommendations_ai_token($userId, $assessmentId);
     $s=db()->prepare('SELECT a.*,u.name,u.grade,u.school FROM assessments a JOIN users u ON u.id=a.user_id WHERE a.id=? AND a.user_id=?');$s->execute([$assessmentId,$userId]);$assessment=$s->fetch();
     if(!$assessment) throw new RuntimeException('Không tìm thấy kết quả đánh giá.');
     $assessment['constraint_answers'] = json_decode($assessment['constraint_answers'] ?? '{}', true) ?: [];
@@ -825,17 +828,22 @@ function generate_assessment_ai(int $assessmentId, int $userId): array {
     }
     unset($match);
     $result=ai_advice($scores,$matches,$assessment);
-    $s=db()->prepare('UPDATE assessments SET ai_advice=?,ai_status=?,ai_model=?,ai_error=?,discrepancy_report=?,ai_generated_at=CURRENT_TIMESTAMP WHERE id=?');
-    $s->execute([
-        json_encode($result['advice'],JSON_UNESCAPED_UNICODE),
-        $result['status'],
-        $result['model'],
-        $result['error'],
-        json_encode($assessment['discrepancy_report'],JSON_UNESCAPED_UNICODE),
-        $assessmentId
-    ]);
-    $s=db()->prepare('INSERT INTO ai_logs(assessment_id,user_id,model,status,latency_ms,http_status,error_message) VALUES(?,?,?,?,?,?,?)');
-    $s->execute([$assessmentId,$userId,$result['model'],$result['status'],$result['latency_ms'],$result['http_status'],$result['error']]);
+    $published = recommendations_publish_ai($userId, $assessmentId, $profileToken, function () use ($result, $assessment, $assessmentId, $userId): void {
+        $s=db()->prepare('UPDATE assessments SET ai_advice=?,ai_status=?,ai_model=?,ai_error=?,discrepancy_report=?,ai_generated_at=CURRENT_TIMESTAMP WHERE id=?');
+        $s->execute([
+            json_encode($result['advice'],JSON_UNESCAPED_UNICODE),
+            $result['status'],
+            $result['model'],
+            $result['error'],
+            json_encode($assessment['discrepancy_report'],JSON_UNESCAPED_UNICODE),
+            $assessmentId
+        ]);
+        $s=db()->prepare('INSERT INTO ai_logs(assessment_id,user_id,model,status,latency_ms,http_status,error_message) VALUES(?,?,?,?,?,?,?)');
+        $s->execute([$assessmentId,$userId,$result['model'],$result['status'],$result['latency_ms'],$result['http_status'],$result['error']]);
+    });
+    if (!$published) {
+        return ['status'=>'failed', 'error'=>'Hồ sơ đã thay đổi trong lúc tạo tư vấn. Vui lòng thử lại.', 'advice'=>[]];
+    }
     return $result;
 }
 function audit(string $action, string $entity = '', ?int $entityId = null): void {

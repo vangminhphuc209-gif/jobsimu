@@ -19,18 +19,7 @@ if ($testType !== null && is_post()) {
         if (!is_array($_POST['answers'] ?? null)) throw new InvalidArgumentException('Vui lòng trả lời đầy đủ các câu hỏi.');
         $submittedAnswers = $_POST['answers'];
         $durationSec = max(0, min(7200, (int)($_POST['duration_seconds'] ?? 0)));
-        $scored = score_psychometric($testType, $submittedAnswers, $durationSec);
-        $statement = db()->prepare('INSERT INTO user_psychometrics(user_id,test_type,answers_json,scores_json,result_code,summary_label,duration_seconds,validity_flag) VALUES(?,?,?,?,?,?,?,?)');
-        $statement->execute([
-            $studentId,
-            $testType,
-            json_encode($scored['answers'], JSON_UNESCAPED_UNICODE),
-            json_encode($scored['scores'], JSON_UNESCAPED_UNICODE),
-            $scored['result_code'],
-            $scored['summary_label'],
-            $durationSec,
-            $scored['validity_flag'] ?? 'valid',
-        ]);
+        $scored = recommendations_save_psychometric($studentId, $testType, $submittedAnswers, $durationSec);
         $_SESSION['psychometric_saved'] = ['user_id'=>$studentId, 'type'=>$testType];
         if (!empty($scored['validity']['warning_message'])) {
             flash('warning', $scored['validity']['warning_message']);
@@ -44,6 +33,7 @@ if ($testType !== null && is_post()) {
     }
 }
 
+$currentRecommendations = $page === 'assessment-report' ? recommendations_refresh_current($studentId) : null;
 $latestPsych = four_hub_latest_psychometrics($studentId);
 $statement = db()->prepare('SELECT * FROM assessments WHERE user_id=? ORDER BY completed_at DESC,id DESC LIMIT 1');
 $statement->execute([$studentId]);
@@ -139,6 +129,31 @@ require __DIR__.'/header.php';
     $discrepancyData = calculate_self_insight_discrepancy($studentId);
 ?>
 <p><a href="<?=e(url('index.php?page=assessment-hub'))?>">← Bộ công cụ đánh giá</a></p>
+
+<section class="card" aria-labelledby="current-recommendations-title">
+    <h2 id="current-recommendations-title">Gợi ý từ hồ sơ hiện tại</h2>
+    <?php if ($currentRecommendations): ?>
+        <p>Đã cập nhật lúc <?=e($currentRecommendations['updated_at'])?>. Gợi ý có thể giữ nguyên nếu thông tin mới củng cố hướng khám phá trước đó.</p>
+        <p>Thứ tự gợi ý dựa trên Holland, điều kiện đã khai và Big Five khi có kết quả đủ điều kiện sử dụng. CAAS, MBTI và EQ bổ sung phần tự phản tư; chưa được dùng để cộng điểm xếp hạng nghề.</p>
+        <ul>
+        <?php foreach ($currentRecommendations['sources'] as $source):
+            $roleLabels = ['ranking'=>'Đã đưa vào tính gợi ý', 'reflection'=>'Đã cập nhật phần tự phản tư', 'missing'=>'Chưa có kết quả', 'review_needed'=>'Có lưu ý chất lượng trả lời; chưa đưa vào tính gợi ý']; ?>
+            <li><strong><?=e($source['label'])?>:</strong> <?=e($roleLabels[$source['role']])?><?php if ($source['completed_at']): ?> · <?=e($source['completed_at'])?><?php endif; ?></li>
+        <?php endforeach; ?>
+        </ul>
+        <?php
+        $matchQuery = db()->prepare("SELECT c.id,c.title FROM assessment_matches m JOIN careers c ON c.id=m.career_id WHERE m.assessment_id=? AND c.status='published' ORDER BY m.rank_order");
+        $matchQuery->execute([$currentRecommendations['assessment_id']]);
+        $currentMatches = $matchQuery->fetchAll();
+        ?>
+        <?php if ($currentMatches): ?><ol><?php foreach ($currentMatches as $match): ?>
+            <li><a href="<?=e(url('index.php?page=career&id='.(int)$match['id']))?>"><?=e($match['title'])?></a></li>
+        <?php endforeach; ?></ol><?php else: ?><p>Hiện chưa có nghề đã công bố để gợi ý.</p><?php endif; ?>
+        <p>Đây là những hướng để tìm hiểu thêm, không phải kết luận năng lực hay bảo đảm phù hợp nghề.</p>
+    <?php else: ?>
+        <p>Các bài bạn đã làm vẫn được lưu và trình bày bên dưới. Phần xếp hạng nghề hiện cần kết quả Holland cùng bước điều kiện học tập; thông tin còn thiếu không bị tính thành điểm thấp.</p>
+    <?php endif; ?>
+</section>
 
 <section class="card">
     <h2>1. Holland (SCCT-RIASEC) · Sở thích, Chuẩn hóa Nội tại & Tự hiệu quả</h2>
