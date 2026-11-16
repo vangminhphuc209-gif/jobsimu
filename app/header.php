@@ -4,6 +4,7 @@ declare(strict_types=1);
 $me = user();
 $site = setting('site_name', cfg('app_name', 'Hướng Nghiệp 360'));
 $navCurrentPage = is_string($page ?? null) ? $page : (is_string($_GET['page'] ?? null) ? $_GET['page'] : 'home');
+$currentPage = $navCurrentPage;
 
 // Detect active hub categories
 $isExploreActive = in_array($navCurrentPage, ['majors', 'major-detail', 'university-explorer', 'university-compare', 'knowledge-hub', 'careers', 'career'], true);

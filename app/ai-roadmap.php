@@ -13,6 +13,7 @@ if (is_post() && $page === 'ai-roadmap') {
         verify_csrf();
         $roadmap = user_roadmap_get_or_create($userId);
         $roadmapId = (int)$roadmap['id'];
+        $stageRedirect = in_array($_POST['stage'] ?? '', ['discovery', 'academic', 'skills', 'decision'], true) ? $_POST['stage'] : 'discovery';
         $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
                || (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false);
 
@@ -20,7 +21,7 @@ if (is_post() && $page === 'ai-roadmap') {
             if ($action === 'update_goal') {
                 user_roadmap_update_details($roadmapId, $userId, $_POST);
                 flash('success', 'Đã cập nhật mục tiêu và hướng đi của bạn.');
-                redirect('index.php?page=ai-roadmap#user-roadmap');
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
             } elseif ($action === 'add_milestone') {
                 $newId = user_roadmap_add_milestone($roadmapId, $userId, $_POST);
                 if ($isAjax) {
@@ -29,8 +30,18 @@ if (is_post() && $page === 'ai-roadmap') {
                     echo json_encode(['status' => 'ok', 'id' => $newId, 'progress' => user_roadmap_calculate_progress($milestones)]);
                     exit;
                 }
-                flash('success', 'Đã thêm cột mốc mới vào hành trình cá nhân.');
-                redirect('index.php?page=ai-roadmap#user-roadmap');
+                flash('success', 'Đã thêm công việc mới vào kế hoạch cá nhân.');
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
+            } elseif ($action === 'edit_milestone') {
+                $mid = (int)($_POST['milestone_id'] ?? 0);
+                user_roadmap_update_milestone($mid, $userId, $_POST);
+                if ($isAjax) {
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['status' => 'ok']);
+                    exit;
+                }
+                flash('success', 'Đã cập nhật công việc.');
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
             } elseif ($action === 'toggle_milestone') {
                 $mid = (int)($_POST['milestone_id'] ?? 0);
                 $res = user_roadmap_toggle_milestone($mid, $userId);
@@ -39,8 +50,8 @@ if (is_post() && $page === 'ai-roadmap') {
                     echo json_encode(['status' => 'ok', 'data' => $res]);
                     exit;
                 }
-                flash('success', $res['is_completed'] ? 'Đã hoàn thành cột mốc!' : 'Đã chuyển cột mốc về trạng thái đang làm.');
-                redirect('index.php?page=ai-roadmap#user-roadmap');
+                flash('success', $res['is_completed'] ? 'Đã hoàn thành công việc!' : 'Đã chuyển công việc về trạng thái đang làm.');
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
             } elseif ($action === 'delete_milestone') {
                 $mid = (int)($_POST['milestone_id'] ?? 0);
                 user_roadmap_delete_milestone($mid, $userId);
@@ -50,8 +61,8 @@ if (is_post() && $page === 'ai-roadmap') {
                     echo json_encode(['status' => 'ok', 'progress' => user_roadmap_calculate_progress($milestones)]);
                     exit;
                 }
-                flash('success', 'Đã xóa cột mốc khỏi hành trình.');
-                redirect('index.php?page=ai-roadmap#user-roadmap');
+                flash('success', 'Đã xóa công việc khỏi kế hoạch.');
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
             } elseif ($action === 'apply_all_suggestions') {
                 $insights = user_roadmap_derive_assessment_insights($userId);
                 $count = 0;
@@ -59,8 +70,8 @@ if (is_post() && $page === 'ai-roadmap') {
                     user_roadmap_add_milestone($roadmapId, $userId, $rm);
                     $count++;
                 }
-                flash('success', "Đã thêm $count cột mốc gợi ý từ bài kiểm tra vào hành trình của bạn.");
-                redirect('index.php?page=ai-roadmap#user-roadmap');
+                flash('success', "Đã thêm $count gợi ý từ bài kiểm tra vào kế hoạch của bạn.");
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
             } elseif ($action === 'ai_suggest_milestones') {
                 $aiData = user_roadmap_ai_generate_suggestions($userId, $roadmap);
                 if ($isAjax) {
@@ -69,8 +80,8 @@ if (is_post() && $page === 'ai-roadmap') {
                     exit;
                 }
                 $_SESSION['roadmap_ai_suggestions'] = $aiData;
-                flash('success', 'AI đã phân tích và đề xuất 3 cột mốc hành động phù hợp.');
-                redirect('index.php?page=ai-roadmap#ai-copilot-section');
+                flash('success', 'AI đã phân tích và đề xuất các mốc hành động phù hợp.');
+                redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
             }
         } catch (Throwable $e) {
             if ($isAjax) {
@@ -80,7 +91,7 @@ if (is_post() && $page === 'ai-roadmap') {
                 exit;
             }
             flash('error', $e->getMessage());
-            redirect('index.php?page=ai-roadmap#user-roadmap');
+            redirect('index.php?page=ai-roadmap&stage=' . urlencode($stageRedirect) . '#user-roadmap');
         }
     }
 }
@@ -135,377 +146,383 @@ $roadmapId = (int)$roadmap['id'];
 $groupedMilestones = $roadmap['milestones'];
 $progress = $roadmap['progress'];
 $assessmentInsights = user_roadmap_derive_assessment_insights($userId);
-$libraryMilestones = user_roadmap_library_milestones();
 $stages = user_roadmap_stages();
+$libraryMilestones = user_roadmap_library_milestones($roadmap['target_career_title'] ?? null);
 
-$pageTitle = 'Kế hoạch và Bản đồ hành trình cá nhân';
+// Determine active stage
+$activeStage = in_array($_GET['stage'] ?? '', ['discovery', 'academic', 'skills', 'decision'], true) ? $_GET['stage'] : 'discovery';
+$activeStageMeta = $stages[$activeStage];
+$activeStageData = $groupedMilestones[$activeStage] ?? ['items' => [], 'completed_count' => 0, 'total_count' => 0];
+
+// Compute genuine Next Action (Vùng B)
+$nextAction = user_roadmap_get_next_action($roadmap, $activeStage);
+
+$pageTitle = 'Lộ trình của tôi · Kế hoạch cá nhân';
 require __DIR__ . '/header.php';
 ?>
+<!-- Dedicated Roadmap CSS Component Bundle -->
+<link rel="stylesheet" href="<?= url('assets/css/roadmap.css') ?>">
+
 <section class="page-head no-print">
     <div class="container" style="max-width: var(--max-w-content);">
         <span class="eyebrow">Hành trình của tôi · Kế hoạch cá nhân</span>
-        <h1 style="font-size: var(--text-3xl); font-weight: 800; margin: var(--space-2) 0 var(--space-3); color: var(--text);">Kế hoạch và Bản đồ hành trình cá nhân</h1>
+        <h1 style="font-size: var(--text-3xl); font-weight: 800; margin: var(--space-2) 0 var(--space-3); color: var(--text);">Lộ trình của tôi</h1>
         <p style="font-size: var(--text-base); color: var(--muted); max-width: 680px; margin: 0; line-height: var(--leading-relaxed);">
-            Học sinh tự làm chủ lộ trình: đặt mục tiêu riêng, theo dõi các mốc hành động và chủ động nhờ AI gợi ý khi cần.
+            Kế hoạch hành động do bạn tự chủ thiết kế và điều chỉnh theo thời gian. Khám phá từng bước với mục tiêu rõ ràng và kết quả cụ thể.
         </p>
     </div>
 </section>
 
-<div class="container" style="max-width: var(--max-w-content); margin-top: var(--space-6); margin-bottom: var(--space-12);">
+<div class="roadmap-container">
 
-<!-- KHỐI 1 (ƯU TIÊN HÀNG ĐẦU): HÀNH TRÌNH TỰ CHỦ CỦA BẠN (USER-AUTHORED CAREER ROADMAP) -->
-<section id="user-roadmap" class="card roadmap-print" aria-labelledby="roadmap-main-title" style="margin-bottom: var(--space-6); border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);">
-    <!-- Tiêu đề & Thông tin Hành trình -->
-    <div class="flex flex-wrap items-center justify-between gap-3" style="border-bottom: 1px solid var(--border); padding-bottom: var(--space-4); margin-bottom: var(--space-5);">
-        <div>
-            <span class="eyebrow" style="color: var(--primary);">Kế hoạch hành động cá nhân</span>
-            <h2 id="roadmap-main-title" style="margin: var(--space-1) 0 0; font-size: var(--text-2xl); font-weight: 700; color: var(--text);">
-                <?= e(user()['name']) ?> · <?= e($roadmap['target_timeframe']) ?>
-            </h2>
-            <div style="margin-top: var(--space-2); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
-                <span style="font-size: var(--text-base); color: var(--text);">
-                    🎯 <strong>Mục tiêu:</strong> <span id="display-goal-title" style="font-weight: 600;"><?= e($roadmap['goal_title']) ?></span>
-                </span>
-                <?php if (!empty($roadmap['target_career_title'])): ?>
-                    <span class="badge" style="background: var(--primary-light); color: var(--primary); font-weight: 600; padding: 3px 8px;">
-                        Nghề hướng tới: <?= e($roadmap['target_career_title']) ?>
-                    </span>
+    <!-- VÙNG A: MỤC TIÊU CỦA TÔI -->
+    <section id="user-roadmap" class="roadmap-goal-card" aria-labelledby="roadmap-goal-heading">
+        <div class="roadmap-goal-header">
+            <div class="roadmap-goal-info">
+                <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                    <span class="eyebrow" style="color: var(--primary);">Mục tiêu hiện tại</span>
+                    <span class="roadmap-goal-timeframe">📅 Khung thời gian: <?= e($roadmap['target_timeframe']) ?></span>
+                    <?php if (!empty($roadmap['target_career_title'])): ?>
+                        <span class="badge" style="background: var(--primary-light); color: var(--primary); font-weight: 700; padding: 4px 10px; border-radius: var(--radius-full); font-size: var(--text-xs);">
+                            Nghề hướng tới: <?= e($roadmap['target_career_title']) ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+
+                <h2 id="roadmap-goal-heading" class="roadmap-goal-title">
+                    🎯 <span id="display-goal-title"><?= e($roadmap['goal_title']) ?></span>
+                </h2>
+
+                <?php if (!empty($roadmap['notes'])): ?>
+                    <p class="roadmap-goal-notes">
+                        "<?= e($roadmap['notes']) ?>"
+                    </p>
                 <?php endif; ?>
             </div>
-            <?php if (!empty($roadmap['notes'])): ?>
-                <p style="margin: var(--space-2) 0 0; font-size: var(--text-sm); color: var(--muted); font-style: italic;">
-                    "<?= e($roadmap['notes']) ?>"
-                </p>
-            <?php endif; ?>
-        </div>
-        <div class="flex flex-wrap gap-2 no-print">
-            <button type="button" class="btn btn-outline" id="toggle-goal-edit-btn" style="font-size: var(--text-sm);">✏️ Sửa mục tiêu</button>
-            <button type="button" class="btn btn-outline" id="print-roadmap" style="font-size: var(--text-sm);">🖨️ Xuất PDF / In</button>
-        </div>
-    </div>
 
-    <!-- Form Chỉnh sửa Mục tiêu (Ẩn/Hiện) -->
-    <div id="goal-edit-container" class="no-print" style="display: none; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-6);">
-        <h3 style="margin-top: 0; font-size: var(--text-base); font-weight: 700; color: var(--text);">Chỉnh sửa mục tiêu & hướng đi của bạn</h3>
-        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>">
-            <?= csrf_field() ?>
-            <input type="hidden" name="action" value="update_goal">
-            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);">
-                <div class="form-group">
-                    <label for="input-goal-title" style="font-size: var(--text-sm); font-weight: 600;">Mục tiêu lớn của bạn *</label>
-                    <input class="input" id="input-goal-title" name="goal_title" value="<?= e($roadmap['goal_title']) ?>" required maxlength="255" style="width: 100%;">
-                </div>
-                <div class="form-group">
-                    <label for="input-career-title" style="font-size: var(--text-sm); font-weight: 600;">Nghề đích / Lĩnh vực quan tâm</label>
-                    <input class="input" id="input-career-title" name="target_career_title" value="<?= e($roadmap['target_career_title']) ?>" placeholder="Ví dụ: Lập trình viên, Giáo viên, Bác sĩ..." maxlength="200" style="width: 100%;">
-                </div>
-            </div>
-            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-top: var(--space-3);">
-                <div class="form-group">
-                    <label for="input-timeframe" style="font-size: var(--text-sm); font-weight: 600;">Giai đoạn / Khung thời gian</label>
-                    <input class="input" id="input-timeframe" name="target_timeframe" value="<?= e($roadmap['target_timeframe']) ?>" placeholder="Ví dụ: Lớp 10 - 12, Năm 2026-2027..." maxlength="100" style="width: 100%;">
-                </div>
-                <div class="form-group">
-                    <label for="input-notes" style="font-size: var(--text-sm); font-weight: 600;">Ghi chú / Động lực cá nhân</label>
-                    <input class="input" id="input-notes" name="notes" value="<?= e($roadmap['notes']) ?>" placeholder="Điều thôi thúc bạn muốn đạt được mục tiêu này..." maxlength="2000" style="width: 100%;">
-                </div>
-            </div>
-            <div style="margin-top: var(--space-4); display: flex; gap: var(--space-2);">
-                <button type="submit" class="btn btn-primary" style="font-size: var(--text-sm);">Lưu mục tiêu</button>
-                <button type="button" class="btn btn-outline" id="cancel-goal-edit-btn" style="font-size: var(--text-sm);">Hủy</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Thanh tiến độ tổng quan -->
-    <div style="margin-bottom: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4);">
-        <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: var(--space-2);">
-            <span style="font-weight: 700; color: var(--text); font-size: var(--text-base);">Tiến độ thực hiện hành trình:</span>
-            <span id="progress-text" style="font-weight: 700; color: var(--primary); font-size: var(--text-base);">
-                <?= $progress['percent'] ?>% (Hoàn thành <?= $progress['completed'] ?> / <?= $progress['total'] ?> cột mốc)
-            </span>
-        </div>
-        <div style="width: 100%; height: 10px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-full); overflow: hidden;">
-            <div id="progress-bar-fill" style="width: <?= $progress['percent'] ?>%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
-        </div>
-    </div>
-
-    <!-- KHỐI TRỢ LÝ AI CỐ VẤN HÀNH TRÌNH (CHỈ KÍCH HOẠT KHI HỌC SINH CHỦ ĐỘNG YÊU CẦU) -->
-    <div id="ai-copilot-section" class="no-print" style="margin-bottom: var(--space-6);">
-        <div style="background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4);">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-                <div style="display: flex; align-items: center; gap: var(--space-3);">
-                    <span style="font-size: 1.5rem;" aria-hidden="true">✨</span>
-                    <div>
-                        <h3 style="margin: 0; font-size: var(--text-base); font-weight: 700; color: var(--text);">Trợ lý AI Cố Vấn Lộ Trình</h3>
-                        <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted);">
-                            AI chỉ hoạt động khi bạn bấm yêu cầu. Phân tích mục tiêu và gợi ý 3 mốc hành động thực tế tiếp theo.
-                        </p>
-                    </div>
-                </div>
-                <button type="button" class="btn btn-outline" id="toggle-ai-copilot-btn" style="border-color: var(--primary); color: var(--primary); font-weight: 600; font-size: var(--text-sm);">
-                    ✨ Mở Trợ Lý AI Lộ Trình
+            <div class="roadmap-goal-actions no-print">
+                <button type="button" class="btn btn-outline" id="open-goal-modal-btn" style="font-size: var(--text-sm); font-weight: 600;">
+                    ✏️ Sửa mục tiêu
+                </button>
+                <button type="button" class="btn btn-outline" id="print-roadmap-btn" style="font-size: var(--text-sm); font-weight: 600;">
+                    🖨️ In lộ trình
                 </button>
             </div>
+        </div>
 
-            <!-- Panel AI On-Demand (Ẩn mặc định) -->
-            <div id="ai-copilot-panel" style="display: none; margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px dashed var(--border);">
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4);">
-                    <!-- Option 1: AI Gợi ý Cột mốc thông minh -->
-                    <div style="background: var(--surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
-                        <h4 style="margin: 0 0 var(--space-2); font-size: var(--text-sm); font-weight: 700; color: var(--text);">1. Sinh 3 cột mốc hành động theo mục tiêu</h4>
-                        <p style="margin: 0 0 var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
-                            AI phân tích mục tiêu <strong>"<?= e($roadmap['target_career_title'] ?: $roadmap['goal_title']) ?>"</strong> và hồ sơ của bạn để đề xuất 3 bước hành động cụ thể.
-                        </p>
-                        <button type="button" class="btn btn-outline" id="btn-request-ai-milestones" style="font-size: var(--text-xs); border-color: var(--primary); color: var(--primary);">
-                            ✨ Nhờ AI gợi ý 3 cột mốc mới
-                        </button>
-                        <div id="ai-milestones-loading" style="display: none; margin-top: var(--space-2); font-size: var(--text-xs); color: var(--primary);">
-                            ⏳ Đang phân tích hồ sơ và tạo cột mốc phù hợp...
+        <!-- Thanh tiến độ tổng quan -->
+        <div class="roadmap-progress-bar-wrap">
+            <div class="roadmap-progress-meta">
+                <span style="font-weight: 700; color: var(--text);">Tiến độ lộ trình:</span>
+                <span id="progress-text" style="font-weight: 700; color: var(--primary);">
+                    <?= $progress['percent'] ?>% (Đã hoàn thành <?= $progress['completed'] ?> / <?= $progress['total'] ?> cột mốc)
+                </span>
+            </div>
+            <div class="roadmap-progress-track">
+                <div id="progress-bar-fill" class="roadmap-progress-fill" style="width: <?= $progress['percent'] ?>%;"></div>
+            </div>
+        </div>
+
+        <!-- Trạng thái gợi ý bắt đầu cho học sinh mới hoặc cần chọn hướng -->
+        <div class="no-print" style="margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px dashed var(--border); display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap;">
+            <span style="font-size: var(--text-xs); color: var(--muted);">Bắt đầu lập kế hoạch mới:</span>
+            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                <button type="button" class="btn btn-outline quick-start-goal-btn" data-mode="career" style="font-size: var(--text-xs); padding: 4px 10px;">
+                    🎯 Tôi đã có nghề muốn khám phá
+                </button>
+                <button type="button" class="btn btn-outline quick-start-goal-btn" data-mode="general" style="font-size: var(--text-xs); padding: 4px 10px;">
+                    🧭 Tôi chưa biết nên bắt đầu từ đâu
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- VÙNG B: VIỆC NÊN LÀM TIẾP THEO (HERO BANNER) -->
+    <?php if ($nextAction): ?>
+    <section class="roadmap-next-card no-print" aria-labelledby="next-step-title">
+        <div class="roadmap-next-content">
+            <span class="roadmap-next-badge">⚡ Bước tiếp theo nên làm · <?= e($nextAction['stage_title']) ?></span>
+            <h3 id="next-step-title" class="roadmap-next-title"><?= e($nextAction['title']) ?></h3>
+            <p class="roadmap-next-reason"><?= e($nextAction['rationale']) ?></p>
+            <div class="roadmap-next-outcome">
+                <span aria-hidden="true">🎯</span>
+                <span><strong>Kết quả cần có:</strong> <?= e($nextAction['outcome']) ?></span>
+            </div>
+        </div>
+        <div class="roadmap-next-action-area">
+            <?php if (!empty($nextAction['action_url']) && strpos($nextAction['action_url'], '#') !== 0): ?>
+                <a href="<?= url($nextAction['action_url']) ?>" class="roadmap-next-cta">
+                    <?= e($nextAction['action_label']) ?>
+                </a>
+            <?php else: ?>
+                <button type="button" class="roadmap-next-cta" id="next-action-trigger-btn">
+                    <?= e($nextAction['action_label']) ?>
+                </button>
+            <?php endif; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- VÙNG C: BỐ CỤC 2 CỘT (DESKTOP 280PX SIDEBAR + CỘT PHẢI DUY NHẤT GIAI ĐOẠN ĐANG CHỌN) -->
+    <div class="roadmap-layout">
+
+        <!-- CỘT TRÁI: BỘ CHỌN 4 GIAI ĐOẠN -->
+        <aside class="stage-sidebar" aria-label="Danh sách giai đoạn hành trình">
+            <h3 class="stage-sidebar-title">4 Giai đoạn phát triển</h3>
+            <ul class="stage-nav-list" role="tablist">
+                <?php 
+                $stageIndex = 1;
+                foreach ($stages as $sk => $sm): 
+                    $sd = $groupedMilestones[$sk] ?? ['completed_count' => 0, 'total_count' => 0];
+                    $isActive = ($sk === $activeStage);
+                ?>
+                <li role="presentation">
+                    <a href="<?= url('index.php?page=ai-roadmap&stage=' . $sk . '#user-roadmap') ?>" 
+                       class="stage-nav-btn <?= $isActive ? 'is-active' : '' ?>" 
+                       role="tab" 
+                       aria-selected="<?= $isActive ? 'true' : 'false' ?>"
+                       data-stage="<?= $sk ?>">
+                        <div class="stage-nav-left">
+                            <span class="stage-nav-number"><?= $stageIndex++ ?></span>
+                            <div>
+                                <span class="stage-nav-text"><?= e($sm['title']) ?></span>
+                            </div>
                         </div>
-                        <div id="ai-milestones-result" style="margin-top: var(--space-3);"></div>
+                        <span class="stage-nav-badge">
+                            <?= $sd['completed_count'] ?> / <?= $sd['total_count'] ?>
+                        </span>
+                    </a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+        </aside>
+
+        <!-- CỘT PHẢI: NỘI DUNG GIAI ĐOẠN ĐANG CHỌN -->
+        <main class="stage-main-panel" aria-labelledby="stage-main-title">
+            <!-- Header giai đoạn -->
+            <header class="stage-header">
+                <div class="stage-header-top">
+                    <div>
+                        <span class="eyebrow" style="color: var(--primary);">Giai đoạn đang chọn</span>
+                        <h2 id="stage-main-title" class="stage-header-title">
+                            <?= e($activeStageMeta['icon']) ?> <?= e($activeStageMeta['title']) ?>
+                        </h2>
+                        <p class="stage-header-desc"><?= e($activeStageMeta['summary']) ?></p>
                     </div>
+                    <div>
+                        <span class="badge" style="background: var(--surface-alt); border: 1px solid var(--border); font-size: var(--text-xs); padding: 5px 12px; font-weight: 700;">
+                            <?= $activeStageData['completed_count'] ?> / <?= $activeStageData['total_count'] ?> việc đã hoàn thành
+                        </span>
+                    </div>
+                </div>
 
-                    <!-- Option 2: Hỏi nhanh AI về lộ trình -->
-                    <div style="background: var(--surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
-                        <h4 style="margin: 0 0 var(--space-2); font-size: var(--text-sm); font-weight: 700; color: var(--text);">2. Hỏi đáp nhanh về lộ trình học tập</h4>
-                        <p style="margin: 0 0 var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
-                            Bấm câu hỏi gợi ý để chuyển nhanh xuống khung trò chuyện cố vấn bên dưới.
-                        </p>
-                        <div style="display: flex; flex-direction: column; gap: var(--space-2);">
-                            <div style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
-                                <button type="button" class="btn btn-outline quick-ai-ask" data-ask="Với mục tiêu <?= e($roadmap['target_career_title'] ?: 'nghề này') ?>, tôi nên tập trung vào môn học nào trước?" style="font-size: var(--text-xs); padding: 4px 8px;">
-                                    Tập trung môn gì?
-                                </button>
-                                <button type="button" class="btn btn-outline quick-ai-ask" data-ask="Làm thế nào để biết lộ trình này có vừa sức với học sinh THCS/THPT không?" style="font-size: var(--text-xs); padding: 4px 8px;">
-                                    Lộ trình có vừa sức?
-                                </button>
-                            </div>
-                            <div style="margin-top: var(--space-2);">
-                                <a href="#career-chat" class="btn btn-outline" style="font-size: var(--text-xs); width: 100%; text-align: center;">
-                                    💬 Chuyển xuống khung trò chuyện AI ↓
-                                </a>
-                            </div>
-                        </div>
+                <div class="stage-target-outcome-box">
+                    <span aria-hidden="true">💡</span>
+                    <span><strong>Mục tiêu giai đoạn:</strong> Hoàn thành các việc bên dưới để xây dựng nền tảng vững chắc và ghi chép kết quả thực tế.</span>
+                </div>
+            </header>
+
+            <!-- Thanh công cụ & Nút Thêm công việc duy nhất -->
+            <div class="stage-action-toolbar no-print">
+                <span style="font-size: var(--text-sm); font-weight: 700; color: var(--text);">
+                    Danh sách công việc (<?= count($activeStageData['items']) ?>)
+                </span>
+
+                <div class="add-task-dropdown-container">
+                    <button type="button" class="btn-add-task" id="btn-add-task-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span>+ Thêm công việc</span>
+                        <span style="font-size: 0.75rem;">▼</span>
+                    </button>
+                    <div class="add-task-menu" id="add-task-menu-dropdown" role="menu">
+                        <button type="button" class="add-task-menu-item" id="btn-open-custom-task-modal" role="menuitem">
+                            <span>✏️</span>
+                            <span>Tự viết việc cần làm</span>
+                        </button>
+                        <button type="button" class="add-task-menu-item" id="btn-open-template-modal" role="menuitem">
+                            <span>💡</span>
+                            <span>Chọn từ gợi ý có sẵn</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- Danh sách công việc của giai đoạn -->
+            <div class="tasks-list" id="tasks-list-container">
+                <?php if (empty($activeStageData['items'])): ?>
+                    <div style="background: var(--surface-alt); border: 1.5px dashed var(--border); border-radius: var(--radius-md); padding: var(--space-8); text-align: center;">
+                        <span style="font-size: 2rem; display: block; margin-bottom: var(--space-2);" aria-hidden="true">📝</span>
+                        <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-base); font-weight: 700; color: var(--text);">Giai đoạn này chưa có công việc nào</h4>
+                        <p style="margin: 0 0 var(--space-4); font-size: var(--text-xs); color: var(--muted); max-width: 420px; margin-left: auto; margin-right: auto; line-height: var(--leading-relaxed);">
+                            Bạn có thể chọn các gợi ý tiêu chuẩn từ thư viện hoặc tự viết mục tiêu riêng theo nhịp độ học tập của mình.
+                        </p>
+                        <div style="display: flex; justify-content: center; gap: var(--space-2); flex-wrap: wrap;">
+                            <button type="button" class="btn btn-primary" onclick="openTemplateModal()" style="font-size: var(--text-xs);">
+                                💡 Chọn từ gợi ý có sẵn
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="openCustomTaskModal()" style="font-size: var(--text-xs);">
+                                ✏️ Tự viết việc cần làm
+                            </button>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($activeStageData['items'] as $m): 
+                        $isCompleted = (bool)$m['is_completed'];
+                        $actionMeta = user_roadmap_resolve_action($m['action_url'] ?? '');
+                        $outcomeText = user_roadmap_resolve_outcome($m);
+                    ?>
+                    <article class="task-card <?= $isCompleted ? 'is-completed' : '' ?>" id="task-card-<?= $m['id'] ?>">
+                        <div class="task-card-main">
+                            <!-- Accessible Checkbox >= 44x44px target -->
+                            <label class="task-checkbox-container" title="<?= $isCompleted ? 'Đánh dấu chưa hoàn thành' : 'Đánh dấu đã hoàn thành' ?>">
+                                <input type="checkbox" 
+                                       class="task-checkbox task-toggle-check" 
+                                       data-id="<?= $m['id'] ?>" 
+                                       <?= $isCompleted ? 'checked' : '' ?>
+                                       aria-label="Hoàn thành: <?= e($m['title']) ?>">
+                            </label>
+
+                            <!-- Task Details -->
+                            <div class="task-content">
+                                <div class="task-title-row">
+                                    <h4 class="task-title"><?= e($m['title']) ?></h4>
+                                    <!-- Source Badge -->
+                                    <?php if ($m['source'] === 'assessment'): ?>
+                                        <span class="task-source-badge badge-source-assessment">Từ đánh giá</span>
+                                    <?php elseif ($m['source'] === 'ai'): ?>
+                                        <span class="task-source-badge badge-source-ai">✨ AI gợi ý</span>
+                                    <?php elseif ($m['source'] === 'custom'): ?>
+                                        <span class="task-source-badge badge-source-custom">Tự lập</span>
+                                    <?php else: ?>
+                                        <span class="task-source-badge badge-source-suggested">Gợi ý mẫu</span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <?php if (!empty($m['description'])): ?>
+                                    <p class="task-desc"><?= e($m['description']) ?></p>
+                                <?php endif; ?>
+
+                                <!-- Expected Outcome Box -->
+                                <div class="task-outcome-box">
+                                    <span class="task-outcome-label">🎯 Kết quả:</span>
+                                    <span><?= e($outcomeText) ?></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer & Action Buttons -->
+                        <div class="task-footer no-print">
+                            <div>
+                                <?php if (!empty($actionMeta['url'])): ?>
+                                    <a href="<?= url($actionMeta['url']) ?>" class="task-action-btn">
+                                        <?= e($actionMeta['label']) ?>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <button type="button" 
+                                        class="task-menu-btn edit-task-btn" 
+                                        data-id="<?= $m['id'] ?>" 
+                                        data-title="<?= e($m['title']) ?>" 
+                                        data-desc="<?= e($m['description'] ?? '') ?>"
+                                        title="Chỉnh sửa công việc">
+                                    ✏️
+                                </button>
+                                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;" onsubmit="return confirm('Bạn có chắc muốn xóa công việc này khỏi lộ trình?');">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="action" value="delete_milestone">
+                                    <input type="hidden" name="milestone_id" value="<?= $m['id'] ?>">
+                                    <input type="hidden" name="stage" value="<?= $activeStage ?>">
+                                    <button type="submit" class="task-menu-btn" style="color: var(--danger); border-color: #fecaca;" title="Xóa công việc">
+                                        🗑️
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- VÙNG D: TRỢ GIÚP VÀ PHẢN TƯ -->
+            <div class="roadmap-reflection-bar no-print">
+                <div class="reflection-bar-left">
+                    <span style="font-size: 1.25rem;" aria-hidden="true">💡</span>
+                    <span>Bạn muốn tìm thêm ý tưởng cho giai đoạn này hoặc ghi lại điều vừa học?</span>
+                </div>
+                <div class="reflection-bar-actions">
+                    <button type="button" class="btn-reflection-action" id="open-ai-suggest-btn">
+                        <span>✨</span>
+                        <span>Nhờ Mây gợi ý</span>
+                    </button>
+                    <button type="button" class="btn-reflection-action" id="open-reflection-modal-btn">
+                        <span>📝</span>
+                        <span>Nhìn lại điều vừa học</span>
+                    </button>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- DANH SÁCH CỘT MỐC THEO 4 GIAI ĐOẠN (CHECKLIST VÀ THƯ VIỆN GỢI Ý) -->
-    <div class="roadmap-stages-container">
-        <?php foreach ($stages as $stageKey => $stageMeta):
-            $stageData = $groupedMilestones[$stageKey] ?? ['items' => [], 'completed_count' => 0, 'total_count' => 0];
-            $items = $stageData['items'];
-            $libItems = $libraryMilestones[$stageKey] ?? [];
-        ?>
-        <div class="stage-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4);">
-            <div class="flex flex-wrap items-center justify-between gap-2" style="border-bottom: 1px solid var(--border); padding-bottom: var(--space-3); margin-bottom: var(--space-4);">
-                <div style="display: flex; align-items: center; gap: var(--space-2);">
-                    <span style="font-size: 1.25rem;" aria-hidden="true"><?= $stageMeta['icon'] ?></span>
-                    <div>
-                        <h3 style="margin: 0; font-size: var(--text-base); font-weight: 700; color: var(--text);"><?= e($stageMeta['title']) ?></h3>
-                        <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted);"><?= e($stageMeta['summary']) ?></p>
-                    </div>
-                </div>
+    <!-- KHỐI COLLAPSIBLE: DỮ LIỆU THAM KHẢO TỪ CÁC BÀI ĐÁNH GIÁ ĐÃ LÀM -->
+    <details id="assessment-insights" class="card no-print" style="margin-top: var(--space-8); border: 1.5px solid var(--border); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);">
+        <summary style="cursor: pointer; padding: var(--space-2) 0; display: flex; align-items: center; justify-content: space-between; list-style: none;">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <span style="font-size: 1.5rem;" aria-hidden="true">🧭</span>
                 <div>
-                    <span class="badge" style="background: var(--surface-alt); color: var(--text); font-size: var(--text-xs); padding: 4px 8px; border: 1px solid var(--border);">
-                        <?= $stageData['completed_count'] ?> / <?= $stageData['total_count'] ?> hoàn thành
+                    <strong style="font-size: var(--text-base); color: var(--text);">Dữ liệu tham khảo từ các bài kiểm tra đã làm</strong>
+                    <span class="badge" style="background: var(--primary-light); color: var(--primary); font-size: var(--text-xs); margin-left: var(--space-2); font-weight: 700;">
+                        <?= $assessmentInsights['tests_count'] ?> nguồn dữ liệu
                     </span>
                 </div>
             </div>
+            <span style="font-size: var(--text-xs); color: var(--primary); font-weight: 700;">Xem chi tiết & Gợi ý ▼</span>
+        </summary>
 
-            <!-- Danh sách Cột mốc Hiện tại của User (Checklist dạng thẻ rõ ràng) -->
-            <div class="milestones-list" id="stage-milestones-<?= $stageKey ?>" style="margin-bottom: var(--space-4);">
-                <?php if (empty($items)): ?>
-                    <div class="empty-stage-note" style="padding: var(--space-3); font-size: var(--text-sm); color: var(--muted); font-style: italic; background: var(--surface-alt); border-radius: var(--radius-sm); border: 1px dashed var(--border);">
-                        Chưa có cột mốc nào trong giai đoạn này. Hãy chọn từ gợi ý bên dưới hoặc tự thêm cột mốc riêng.
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($items as $m): ?>
-                    <div class="milestone-item <?= $m['is_completed'] ? 'is-completed' : '' ?>" id="milestone-row-<?= $m['id'] ?>" style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); margin-bottom: var(--space-2); border-radius: var(--radius-sm); border: 1px solid <?= $m['is_completed'] ? 'var(--success)' : 'var(--border)' ?>; background: <?= $m['is_completed'] ? '#f0fdf4' : 'var(--surface)' ?>;">
-                        <div style="display: flex; align-items: flex-start; gap: var(--space-3); flex: 1;">
-                            <!-- Checkbox toggle -->
-                            <input type="checkbox" class="milestone-toggle-check" data-id="<?= $m['id'] ?>" <?= $m['is_completed'] ? 'checked' : '' ?> style="width: 18px; height: 18px; margin-top: 3px; cursor: pointer; accent-color: var(--success);" aria-label="Đánh dấu hoàn thành cột mốc">
-                            <div>
-                                <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
-                                    <strong class="milestone-title-text" style="font-size: var(--text-sm); color: <?= $m['is_completed'] ? 'var(--success)' : 'var(--text)' ?>; <?= $m['is_completed'] ? 'text-decoration: line-through;' : '' ?>">
-                                        <?= e($m['title']) ?>
-                                    </strong>
-                                    <!-- Source Badge phân biệt nguồn -->
-                                    <?php if ($m['source'] === 'assessment'): ?>
-                                        <span class="badge" style="background: #e0e7ff; color: #4338ca; font-size: 0.7rem; padding: 2px 6px;">Từ đánh giá</span>
-                                    <?php elseif ($m['source'] === 'ai'): ?>
-                                        <span class="badge" style="background: var(--primary-light); color: var(--primary); font-size: 0.7rem; padding: 2px 6px;">✨ AI gợi ý</span>
-                                    <?php elseif ($m['source'] === 'custom'): ?>
-                                        <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 0.7rem; padding: 2px 6px;">Tự lập</span>
-                                    <?php else: ?>
-                                        <span class="badge" style="background: var(--surface-alt); color: var(--muted); font-size: 0.7rem; padding: 2px 6px;">Gợi ý mẫu</span>
-                                    <?php endif; ?>
-                                </div>
-                                <?php if (!empty($m['description'])): ?>
-                                    <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);"><?= e($m['description']) ?></p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="no-print" style="display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0;">
-                            <?php if (!empty($m['action_url'])): ?>
-                                <a href="<?= url($m['action_url']) ?>" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; white-space: nowrap;">
-                                    Mở →
-                                </a>
-                            <?php endif; ?>
-                            <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;" onsubmit="return confirm('Bạn có chắc muốn xóa cột mốc này?');">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="action" value="delete_milestone">
-                                <input type="hidden" name="milestone_id" value="<?= $m['id'] ?>">
-                                <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; color: var(--danger); border-color: var(--danger);" title="Xóa cột mốc">
-                                    ✕
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-
-            <!-- Form Tự Thêm Cột Mốc Mới -->
-            <details class="no-print" style="margin-top: var(--space-3); background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3);">
-                <summary style="font-weight: 600; font-size: var(--text-xs); color: var(--primary); cursor: pointer;">
-                    + Tự viết cột mốc riêng của bạn trong giai đoạn này
-                </summary>
-                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin-top: var(--space-3);">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="add_milestone">
-                    <input type="hidden" name="stage" value="<?= $stageKey ?>">
-                    <input type="hidden" name="source" value="custom">
-                    <div class="form-group" style="margin-bottom: var(--space-2);">
-                        <label style="font-size: var(--text-xs); font-weight: 600;">Tên nhiệm vụ / Cột mốc *</label>
-                        <input class="input" name="title" required maxlength="255" placeholder="Ví dụ: Ôn tập 5 đề thi môn Toán, phỏng vấn một anh chị đi trước..." style="width: 100%;">
-                    </div>
-                    <div class="form-group" style="margin-bottom: var(--space-3);">
-                        <label style="font-size: var(--text-xs); font-weight: 600;">Ghi chú thực hiện:</label>
-                        <textarea class="input" name="description" rows="2" maxlength="2000" placeholder="Chi tiết cách bạn sẽ hoàn thành nhiệm vụ này..." style="width: 100%;"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 5px 12px;">
-                        Lưu vào hành trình
-                    </button>
-                </form>
-            </details>
-
-            <!-- Thư Viện Cột Mốc Mẫu Từ Website -->
-            <details class="no-print" style="margin-top: var(--space-2); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: var(--space-3);">
-                <summary style="font-weight: 600; font-size: var(--text-xs); color: var(--muted); cursor: pointer;">
-                    💡 Gợi ý mẫu từ thư viện website (<?= count($libItems) ?> mẫu)
-                </summary>
-                <div style="margin-top: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2);">
-                    <?php foreach ($libItems as $lib): ?>
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); background: var(--surface-alt); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                        <div>
-                            <strong style="font-size: var(--text-xs); color: var(--text);"><?= e($lib['title']) ?></strong>
-                            <p style="margin: 2px 0 0; font-size: var(--text-xs); color: var(--muted);"><?= e($lib['description']) ?></p>
-                        </div>
-                        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0; flex-shrink: 0;">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="action" value="add_milestone">
-                            <input type="hidden" name="stage" value="<?= $stageKey ?>">
-                            <input type="hidden" name="title" value="<?= e($lib['title']) ?>">
-                            <input type="hidden" name="description" value="<?= e($lib['description']) ?>">
-                            <input type="hidden" name="action_url" value="<?= e($lib['action_url']) ?>">
-                            <input type="hidden" name="source" value="suggested">
-                            <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; white-space: nowrap;">
-                                + Chọn
-                            </button>
-                        </form>
-                    </div>
-                    <?php endforeach; ?>
+        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+                <div style="background: var(--surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--text); margin-top: 0;">✨ Điểm mạnh & Thiên hướng nhận diện</h4>
+                    <?php if (!empty($assessmentInsights['strengths'])): ?>
+                        <ul style="padding-left: var(--space-4); margin: var(--space-2) 0; color: var(--text); line-height: var(--leading-relaxed); font-size: var(--text-xs);">
+                            <?php foreach ($assessmentInsights['strengths'] as $s): ?>
+                                <li><?= e($s) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p style="font-size: var(--text-xs); color: var(--muted); margin: 0;">Chưa có kết quả kiểm tra. Hãy làm bài đánh giá để nhận diện phong cách học tập/làm việc.</p>
+                    <?php endif; ?>
                 </div>
-            </details>
-        </div>
-        <?php endforeach; ?>
-    </div>
 
-    <p style="margin-top: var(--space-4); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
-        Bản đồ hành trình là công cụ hướng dẫn cá nhân, có thể điều chỉnh bất kỳ lúc nào theo sự trưởng thành và điều kiện thực tế của bạn. Hãy chia sẻ với giáo viên hoặc gia đình để nhận thêm lời khuyên.
-    </p>
-</section>
-
-<!-- KHỐI 2 (COLLAPSIBLE): PHÂN TÍCH & GỢI Ý TỪ KẾT QUẢ CÁC BÀI ĐÁNH GIÁ TRƯỚC -->
-<details id="assessment-insights" class="card no-print" style="margin-bottom: var(--space-6); border: 1px solid var(--border);" <?= $assessmentInsights['tests_count'] > 0 ? '' : '' ?>>
-    <summary style="cursor: pointer; padding: var(--space-2) 0; display: flex; align-items: center; justify-content: space-between; list-style: none;">
-        <div style="display: flex; align-items: center; gap: var(--space-2);">
-            <span style="font-size: 1.25rem;" aria-hidden="true">🧭</span>
-            <div>
-                <strong style="font-size: var(--text-base); color: var(--text);">Phân tích & Gợi ý từ các bài kiểm tra đã làm</strong>
-                <span class="badge" style="background: var(--primary-light); color: var(--primary); font-size: var(--text-xs); margin-left: var(--space-2);">
-                    <?= $assessmentInsights['tests_count'] ?> dữ liệu đánh giá
-                </span>
-            </div>
-        </div>
-        <span style="font-size: var(--text-xs); color: var(--primary); font-weight: 600;">Xem chi tiết & gợi ý ▼</span>
-    </summary>
-
-    <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
-        <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
-            <div style="background: var(--surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
-                <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--text); margin-top: 0;">✨ Điểm mạnh & Thiên hướng nhận diện</h4>
-                <?php if (!empty($assessmentInsights['strengths'])): ?>
-                    <ul style="padding-left: var(--space-4); margin: var(--space-2) 0; color: var(--text); line-height: var(--leading-relaxed); font-size: var(--text-xs);">
-                        <?php foreach ($assessmentInsights['strengths'] as $s): ?>
-                            <li><?= e($s) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p style="font-size: var(--text-xs); color: var(--muted); margin: 0;">Chưa có kết quả kiểm tra. Hãy làm bài đánh giá để phát hiện điểm mạnh tự nhiên.</p>
-                <?php endif; ?>
+                <div style="background: var(--surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                    <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--text); margin-top: 0;">⚠️ Vùng cần lưu ý & Ranh giới thực tế</h4>
+                    <?php if (!empty($assessmentInsights['growth_areas'])): ?>
+                        <ul style="padding-left: var(--space-4); margin: var(--space-2) 0; color: var(--text); line-height: var(--leading-relaxed); font-size: var(--text-xs);">
+                            <?php foreach ($assessmentInsights['growth_areas'] as $g): ?>
+                                <li><?= e($g) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p style="font-size: var(--text-xs); color: var(--muted); margin: 0;">Hồ sơ cân bằng hoặc chưa hoàn thành khảo sát Cổng đánh đổi.</p>
+                    <?php endif; ?>
+                </div>
             </div>
 
-            <div style="background: var(--surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
-                <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--text); margin-top: 0;">⚠️ Vùng cần lưu ý & Ranh giới thực tế</h4>
-                <?php if (!empty($assessmentInsights['growth_areas'])): ?>
-                    <ul style="padding-left: var(--space-4); margin: var(--space-2) 0; color: var(--text); line-height: var(--leading-relaxed); font-size: var(--text-xs);">
-                        <?php foreach ($assessmentInsights['growth_areas'] as $g): ?>
-                            <li><?= e($g) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p style="font-size: var(--text-xs); color: var(--muted); margin: 0;">Hồ sơ cân bằng hoặc chưa hoàn thành khảo sát Cổng đánh đổi.</p>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <!-- Gợi ý nghề mục tiêu từ bài đánh giá -->
-        <?php if (!empty($assessmentInsights['suggested_careers'])): ?>
-        <div style="background: var(--surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: var(--space-4);">
-            <h4 style="margin: 0 0 var(--space-2); font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Nghề tương thích từ kết quả đánh giá (Bấm để chọn làm mục tiêu):</h4>
-            <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
-                <?php foreach ($assessmentInsights['suggested_careers'] as $c): ?>
-                    <button type="button" class="btn btn-outline apply-career-goal" data-career-title="<?= e($c['title']) ?>" style="background: var(--surface); font-size: var(--text-xs);">
-                        🎯 <?= e($c['title']) ?> (Độ khớp: <?= (int)$c['match_percent'] ?>%)
-                    </button>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <!-- Các cột mốc đề xuất tương ứng với điểm mạnh / rào cản -->
-        <div>
-            <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: var(--space-3);">
-                <h4 style="font-size: var(--text-sm); font-weight: 700; margin: 0; color: var(--text);">📋 Cột mốc hành động gợi ý từ bài kiểm tra:</h4>
-                <?php if (!empty($assessmentInsights['recommended_milestones'])): ?>
-                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="apply_all_suggestions">
-                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 5px 12px;">
-                        📥 Thêm tất cả gợi ý vào hành trình của tôi
-                    </button>
-                </form>
-                <?php endif; ?>
-            </div>
-
+            <!-- Gợi ý cột mốc hành động từ bài đánh giá -->
             <?php if (!empty($assessmentInsights['recommended_milestones'])): ?>
+            <div style="margin-top: var(--space-4);">
+                <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: var(--space-3);">
+                    <h4 style="font-size: var(--text-sm); font-weight: 700; margin: 0; color: var(--text);">📋 Gợi ý phù hợp từ kết quả bài làm:</h4>
+                    <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="action" value="apply_all_suggestions">
+                        <input type="hidden" name="stage" value="<?= $activeStage ?>">
+                        <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 5px 12px;">
+                            📥 Thêm tất cả gợi ý vào lộ trình
+                        </button>
+                    </form>
+                </div>
+
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3);">
                     <?php foreach ($assessmentInsights['recommended_milestones'] as $rm): ?>
                         <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); display: flex; flex-direction: column; justify-content: space-between;">
@@ -518,7 +535,7 @@ require __DIR__ . '/header.php';
                             </div>
                             <div style="margin-top: var(--space-3); display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
                                 <?php if (!empty($rm['action_url'])): ?>
-                                    <a href="<?= url($rm['action_url']) ?>" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px;">Thực hiện →</a>
+                                    <a href="<?= url($rm['action_url']) ?>" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px;">Xem →</a>
                                 <?php else: ?>
                                     <span></span>
                                 <?php endif; ?>
@@ -531,261 +548,477 @@ require __DIR__ . '/header.php';
                                     <input type="hidden" name="action_url" value="<?= e($rm['action_url']) ?>">
                                     <input type="hidden" name="source" value="assessment">
                                     <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; color: var(--primary); border-color: var(--primary);">
-                                        + Thêm vào hành trình
+                                        + Thêm
                                     </button>
                                 </form>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
-            <?php else: ?>
-                <p style="font-size: var(--text-xs); color: var(--muted);">Chưa có đề xuất cụ thể. Hãy hoàn thành các bài trắc nghiệm để nhận gợi ý chuẩn.</p>
+            </div>
             <?php endif; ?>
         </div>
-    </div>
-</details>
+    </details>
 
-<!-- KHỐI 3 (COLLAPSIBLE): TỔNG HỢP HỒ SƠ ĐA CHIỀU (THAM KHẢO) -->
-<details id="profile-summary" class="card no-print" style="margin-bottom: var(--space-6); border: 1px solid var(--border);">
-    <summary style="cursor: pointer; padding: var(--space-2) 0; display: flex; align-items: center; justify-content: space-between; list-style: none;">
-        <div style="display: flex; align-items: center; gap: var(--space-2);">
-            <span style="font-size: 1.25rem;" aria-hidden="true">📊</span>
-            <div>
-                <strong style="font-size: var(--text-base); color: var(--text);">Hồ sơ đa chiều của bạn (RIASEC, MBTI, Big Five, Trải nghiệm)</strong>
-                <span class="badge" style="background: var(--surface-alt); color: var(--muted); font-size: var(--text-xs); margin-left: var(--space-2);">
-                    Tham khảo
-                </span>
-            </div>
-        </div>
-        <span style="font-size: var(--text-xs); color: var(--primary); font-weight: 600;">Xem hồ sơ ▼</span>
-    </summary>
-
-    <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
-        <div class="grid-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
-            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Holland (RIASEC)</h4>
-                <p style="font-size: var(--text-base); font-weight: 700; color: var(--primary); margin: 0 0 var(--space-2);"><?= e($context['holland']['code'] ?? 'Chưa có kết quả') ?></p>
-                <a href="<?= url('index.php?page=assessment-report') ?>" style="font-size: var(--text-xs); color: var(--primary);">Xem báo cáo đánh giá →</a>
-            </div>
-            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Tính cách & Thích ứng</h4>
-                <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 4px;">MBTI: <strong><?= e($context['psychometrics']['mbti']['code'] ?? 'Chưa làm') ?></strong></p>
-                <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 4px;">Big Five: <?= isset($context['psychometrics']['big5']) ? '<span style="color:var(--success);">Đã có hồ sơ</span>' : 'Chưa làm' ?></p>
-                <p style="font-size: var(--text-xs); color: var(--text); margin: 0;">EQ: <?= isset($context['psychometrics']['eq']) ? '<span style="color:var(--success);">Đã có hồ sơ</span>' : 'Chưa làm' ?></p>
-            </div>
-            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
-                <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Bằng chứng trải nghiệm</h4>
-                <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 var(--space-2);"><?= count($context['experiences']) ?> trải nghiệm gần nhất được tổng hợp.</p>
-                <a href="<?= url('index.php?page=simulations') ?>" style="font-size: var(--text-xs); color: var(--primary);">Mở phòng trải nghiệm nghề →</a>
-            </div>
-        </div>
-        <p style="margin-top: var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
-            Các kết quả chỉ hỗ trợ khám phá, không phải chẩn đoán hay thước đo giá trị của bạn. Trợ lý không tự ý suy đoán khi chưa có dữ liệu quan sát.
-        </p>
-    </div>
-</details>
-
-<!-- KHỐI 4: GÓC NGƯỜI TRONG NGHỀ & CHATBOT HƯỚNG NGHIỆP (BẢO TOÀN KIẾN TRÚC & TESTS) -->
-<?php require __DIR__ . '/career-conversations-view.php'; ?>
-
-<section id="career-chat" class="card no-print" aria-labelledby="chat-title" style="margin-top: var(--space-6); border: 1px solid var(--border);">
-    <h2 id="chat-title" style="margin-top: 0; font-size: var(--text-xl); font-weight: 700; color: var(--text);">
-        <?= e($scenario ? 'Cùng khám phá: ' . $scenario['title'] : 'Trao đổi với trợ lý hướng nghiệp') ?>
-    </h2>
-    <p style="font-size: var(--text-xs); color: var(--muted); margin: var(--space-1) 0 var(--space-2); line-height: var(--leading-relaxed);">
-        Khi AI được cấu hình, câu hỏi và hội thoại trong mục đang chọn được gửi tới nhà cung cấp AI. Chat thông thường kèm tóm tắt đánh giá/trải nghiệm; chat tình huống chỉ kèm hồ sơ nếu bạn chọn bên dưới. Nếu không có kết nối AI, hệ thống hiển thị gợi ý dự phòng chuẩn mực.
-    </p>
-    <p style="font-size: var(--text-xs); color: var(--text); margin-bottom: var(--space-4);">
-        <strong><?= max(0, 10 - $used) ?> / 10 lượt còn lại hôm nay</strong> · Đặt lại lúc 00:00 theo giờ Việt Nam.
-    </p>
-
-    <div class="chat-history" aria-label="Lịch sử hội thoại" style="margin-bottom: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);">
-        <?php if (!$messages): ?>
-            <p style="font-size: var(--text-sm); color: var(--muted); font-style: italic;">Bắt đầu bằng một câu hỏi về hồ sơ, lộ trình học tập hoặc bước tiếp theo của bạn.</p>
-        <?php endif; ?>
-        <?php foreach ($messages as $chat): ?>
-            <article class="card chat-message" style="background: <?= $chat['role'] === 'user' ? 'var(--surface-alt)' : 'var(--surface)' ?>; border: 1px solid var(--border); padding: var(--space-3); border-radius: var(--radius-sm);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                    <strong style="font-size: var(--text-xs); color: <?= $chat['role'] === 'user' ? 'var(--text)' : 'var(--primary)' ?>;">
-                        <?= $chat['role'] === 'user' ? 'Bạn' : ($chat['model'] === 'fallback' ? 'Gợi ý dự phòng' : ($chat['model'] === 'unavailable' ? 'Trạng thái AI' : 'Trợ lý AI · ' . e($chat['model']))) ?>
-                    </strong>
-                    <small style="font-size: 0.7rem; color: var(--muted);"><?= e($chat['created_at']) ?></small>
+    <!-- KHỐI COLLAPSIBLE: HỒ SƠ ĐA CHIỀU THAM KHẢO -->
+    <details id="profile-summary" class="card no-print" style="margin-top: var(--space-4); border: 1px solid var(--border);">
+        <summary style="cursor: pointer; padding: var(--space-2) 0; display: flex; align-items: center; justify-content: space-between; list-style: none;">
+            <div style="display: flex; align-items: center; gap: var(--space-2);">
+                <span style="font-size: 1.25rem;" aria-hidden="true">📊</span>
+                <div>
+                    <strong style="font-size: var(--text-base); color: var(--text);">Hồ sơ đa chiều của bạn (RIASEC, MBTI, Big Five, Trải nghiệm)</strong>
+                    <span class="badge" style="background: var(--surface-alt); color: var(--muted); font-size: var(--text-xs); margin-left: var(--space-2);">
+                        Tham khảo
+                    </span>
                 </div>
-                <p style="white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed);"><?= e($chat['message']) ?></p>
-            </article>
-        <?php endforeach; ?>
-    </div>
+            </div>
+            <span style="font-size: var(--text-xs); color: var(--primary); font-weight: 700;">Xem hồ sơ ▼</span>
+        </summary>
 
-    <div class="flex flex-wrap gap-2" aria-label="Câu hỏi gợi ý" style="margin-bottom: var(--space-4);">
-        <?php foreach (($scenario ? career_conversation_prompts($scenario) : ['Tôi nên tập trung môn học nào cho lộ trình này?', 'MBTI và Big Five của tôi có ý nghĩa gì với nghề này?', 'Gợi ý thử thách 15 phút thực tế cho tôi.']) as $chip): ?>
-            <button type="button" class="btn btn-outline" data-chat-prompt="<?= e($chip) ?>" style="font-size: var(--text-xs); padding: 4px 10px;"><?= e($chip) ?></button>
-        <?php endforeach; ?>
-    </div>
-
-    <form method="post" action="<?= url('index.php?page=ai-chat') ?>" class="mt-4" id="career-chat-form">
-        <?= csrf_field() ?>
-        <input type="hidden" name="chat_nonce" value="<?= e($_SESSION['four_hub_chat_nonce']) ?>">
-        <input type="hidden" name="scenario" value="<?= e($scenario['id'] ?? '') ?>">
-        <?php if ($scenario): ?>
-            <p style="font-size: var(--text-xs); margin-bottom: var(--space-2);"><label><input type="checkbox" name="include_profile" value="1"> Kèm tóm tắt đánh giá/trải nghiệm của tôi để liên hệ với tình huống (tùy chọn).</label></p>
-        <?php endif; ?>
-        <div class="form-group" style="margin-bottom: var(--space-3);">
-            <label for="career-question" style="font-size: var(--text-xs); font-weight: 600; display: block; margin-bottom: var(--space-1);">Câu hỏi của bạn</label>
-            <textarea class="input" id="career-question" name="message" rows="3" maxlength="2000" required <?= $used >= 10 ? 'disabled' : '' ?> placeholder="Hỏi về nghề nghiệp, môn học hoặc bước đi tiếp theo..." style="width: 100%;"></textarea>
+        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+            <div class="grid-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
+                <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Holland (RIASEC)</h4>
+                    <p style="font-size: var(--text-base); font-weight: 700; color: var(--primary); margin: 0 0 var(--space-2);"><?= e($context['holland']['code'] ?? 'Chưa có kết quả') ?></p>
+                    <a href="<?= url('index.php?page=assessment-report') ?>" style="font-size: var(--text-xs); color: var(--primary);">Xem báo cáo đánh giá →</a>
+                </div>
+                <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Tính cách & Thích ứng</h4>
+                    <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 4px;">MBTI: <strong><?= e($context['psychometrics']['mbti']['code'] ?? 'Chưa làm') ?></strong></p>
+                    <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 4px;">Big Five: <?= isset($context['psychometrics']['big5']) ? '<span style="color:var(--success);">Đã có hồ sơ</span>' : 'Chưa làm' ?></p>
+                    <p style="font-size: var(--text-xs); color: var(--text); margin: 0;">EQ: <?= isset($context['psychometrics']['eq']) ? '<span style="color:var(--success);">Đã có hồ sơ</span>' : 'Chưa làm' ?></p>
+                </div>
+                <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Bằng chứng trải nghiệm</h4>
+                    <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 var(--space-2);"><?= count($context['experiences']) ?> trải nghiệm được tổng hợp.</p>
+                    <a href="<?= url('index.php?page=simulations') ?>" style="font-size: var(--text-xs); color: var(--primary);">Mở phòng trải nghiệm nghề →</a>
+                </div>
+            </div>
+            <p style="margin-top: var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
+                Các kết quả chỉ hỗ trợ khám phá, không phải thước đo cố định về con người bạn. Bạn hoàn toàn có thể thay đổi và phát triển thêm theo thời gian.
+            </p>
         </div>
-        <button class="btn btn-primary" type="submit" <?= $used >= 10 ? 'disabled' : '' ?> style="font-size: var(--text-sm);">Gửi câu hỏi</button>
-        <p id="chat-send-status" role="status" style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-2);"></p>
-    </form>
-</section>
+    </details>
+
+    <!-- GÓC NGƯỜI TRONG NGHỀ (CAREER CONVERSATIONS) -->
+    <?php require __DIR__ . '/career-conversations-view.php'; ?>
+
+    <!-- KHỐI CHAT ĐỊNH HƯỚNG NGHỀ NGHIỆP -->
+    <section id="career-chat" class="card no-print" aria-labelledby="chat-title" style="margin-top: var(--space-6); border: 1px solid var(--border);">
+        <h2 id="chat-title" style="margin-top: 0; font-size: var(--text-xl); font-weight: 700; color: var(--text);">
+            <?= e($scenario ? 'Cùng khám phá: ' . $scenario['title'] : 'Trao đổi với trợ lý định hướng') ?>
+        </h2>
+        <p style="font-size: var(--text-xs); color: var(--muted); margin: var(--space-1) 0 var(--space-2); line-height: var(--leading-relaxed);">
+            Trợ lý định hướng hỗ trợ trả lời thắc mắc về lộ trình môn học, trải nghiệm thực tế hoặc giải tỏa áp lực. Khi không có kết nối AI ngoài, hệ thống dùng phản hồi sư phạm chuẩn mực.
+        </p>
+        <p style="font-size: var(--text-xs); color: var(--text); margin-bottom: var(--space-4);">
+            <strong><?= max(0, 10 - $used) ?> / 10 lượt còn lại hôm nay</strong> · Đặt lại lúc 00:00 theo giờ Việt Nam.
+        </p>
+
+        <div class="chat-history" aria-label="Lịch sử hội thoại" style="margin-bottom: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);">
+            <?php if (!$messages): ?>
+                <p style="font-size: var(--text-sm); color: var(--muted); font-style: italic;">Bắt đầu bằng một câu hỏi về mục tiêu, tổ hợp môn hoặc việc nên làm tiếp theo.</p>
+            <?php endif; ?>
+            <?php foreach ($messages as $chat): ?>
+                <article class="card chat-message" style="background: <?= $chat['role'] === 'user' ? 'var(--surface-alt)' : 'var(--surface)' ?>; border: 1px solid var(--border); padding: var(--space-3); border-radius: var(--radius-sm);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                        <strong style="font-size: var(--text-xs); color: <?= $chat['role'] === 'user' ? 'var(--text)' : 'var(--primary)' ?>;">
+                            <?= $chat['role'] === 'user' ? 'Bạn' : ($chat['model'] === 'fallback' ? 'Gợi ý dự phòng' : ($chat['model'] === 'unavailable' ? 'Trạng thái AI' : 'Trợ lý AI · ' . e($chat['model']))) ?>
+                        </strong>
+                        <small style="font-size: 0.7rem; color: var(--muted);"><?= e($chat['created_at']) ?></small>
+                    </div>
+                    <p style="white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed);"><?= e($chat['message']) ?></p>
+                </article>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="flex flex-wrap gap-2" aria-label="Câu hỏi gợi ý" style="margin-bottom: var(--space-4);">
+            <?php foreach (($scenario ? career_conversation_prompts($scenario) : ['Tôi nên tập trung môn học nào cho lộ trình này?', 'Holland và Big Five của tôi có ý nghĩa gì với nghề này?', 'Gợi ý thử thách 15 phút thực tế cho tôi.']) as $chip): ?>
+                <button type="button" class="btn btn-outline" data-chat-prompt="<?= e($chip) ?>" style="font-size: var(--text-xs); padding: 4px 10px;"><?= e($chip) ?></button>
+            <?php endforeach; ?>
+        </div>
+
+        <form method="post" action="<?= url('index.php?page=ai-chat') ?>" class="mt-4" id="career-chat-form">
+            <?= csrf_field() ?>
+            <input type="hidden" name="chat_nonce" value="<?= e($_SESSION['four_hub_chat_nonce']) ?>">
+            <input type="hidden" name="scenario" value="<?= e($scenario['id'] ?? '') ?>">
+            <?php if ($scenario): ?>
+                <p style="font-size: var(--text-xs); margin-bottom: var(--space-2);"><label><input type="checkbox" name="include_profile" value="1"> Kèm tóm tắt đánh giá/trải nghiệm của tôi để liên hệ với tình huống (tùy chọn).</label></p>
+            <?php endif; ?>
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+                <label for="career-question" style="font-size: var(--text-xs); font-weight: 600; display: block; margin-bottom: var(--space-1);">Câu hỏi của bạn</label>
+                <textarea class="input" id="career-question" name="message" rows="3" maxlength="2000" required <?= $used >= 10 ? 'disabled' : '' ?> placeholder="Hỏi về nghề nghiệp, môn học hoặc bước đi tiếp theo..." style="width: 100%;"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit" <?= $used >= 10 ? 'disabled' : '' ?> style="font-size: var(--text-sm);">Gửi câu hỏi</button>
+            <p id="chat-send-status" role="status" style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-2);"></p>
+        </form>
+    </section>
 
 </div>
 
-<script>
-// Print roadmap
-document.getElementById('print-roadmap').addEventListener('click', () => window.print());
+<!-- ==================== MODALS & DRAWERS ==================== -->
 
-// Chat prompt helper
-document.querySelectorAll('[data-chat-prompt]').forEach(button => {
-    button.addEventListener('click', () => {
-        const field = document.getElementById('career-question');
-        field.value = button.dataset.chatPrompt;
-        field.focus();
+<!-- 1. Modal Sửa Mục Tiêu (Vùng A) -->
+<div class="roadmap-modal-backdrop" id="goal-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
+    <div class="roadmap-modal">
+        <div class="roadmap-modal-header">
+            <h3 class="roadmap-modal-title" id="goal-modal-title">✏️ Chỉnh sửa mục tiêu & hướng đi</h3>
+            <button type="button" class="roadmap-modal-close" onclick="closeGoalModal()" aria-label="Đóng">&times;</button>
+        </div>
+        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="update_goal">
+            <input type="hidden" name="stage" value="<?= $activeStage ?>">
+
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+                <label for="input-goal-title" style="font-size: var(--text-xs); font-weight: 700;">Mục tiêu của bạn *</label>
+                <input class="input" id="input-goal-title" name="goal_title" value="<?= e($roadmap['goal_title']) ?>" required maxlength="255" style="width: 100%;">
+                <small style="font-size: 0.72rem; color: var(--muted);">Ví dụ: Khám phá nghề Nhà báo / Biên tập viên, hoặc Xây dựng nền tảng hướng nghiệp tương lai.</small>
+            </div>
+
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+                <label for="input-career-title" style="font-size: var(--text-xs); font-weight: 700;">Nghề đích / Lĩnh vực quan tâm (Tùy chọn)</label>
+                <input class="input" id="input-career-title" name="target_career_title" value="<?= e($roadmap['target_career_title']) ?>" placeholder="Ví dụ: Nhà báo, Lập trình viên, Bác sĩ..." maxlength="200" style="width: 100%;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+                <label for="input-timeframe" style="font-size: var(--text-xs); font-weight: 700;">Khung thời gian dự kiến</label>
+                <input class="input" id="input-timeframe" name="target_timeframe" value="<?= e($roadmap['target_timeframe']) ?>" placeholder="Ví dụ: Lớp 10 - 12, Học kỳ này..." maxlength="100" style="width: 100%;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: var(--space-4);">
+                <label for="input-notes" style="font-size: var(--text-xs); font-weight: 700;">Động lực / Ghi chú cá nhân</label>
+                <textarea class="input" id="input-notes" name="notes" rows="2" maxlength="2000" placeholder="Điều thôi thúc bạn muốn hoàn thành kế hoạch này..." style="width: 100%;"><?= e($roadmap['notes']) ?></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                <button type="button" class="btn btn-outline" onclick="closeGoalModal()" style="font-size: var(--text-xs);">Hủy</button>
+                <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs);">Lưu mục tiêu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 2. Modal Tự Thêm Công Việc (Custom Task) -->
+<div class="roadmap-modal-backdrop" id="custom-task-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="custom-task-title">
+    <div class="roadmap-modal">
+        <div class="roadmap-modal-header">
+            <h3 class="roadmap-modal-title" id="custom-task-title">✏️ Tự viết việc cần làm</h3>
+            <button type="button" class="roadmap-modal-close" onclick="closeCustomTaskModal()" aria-label="Đóng">&times;</button>
+        </div>
+        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="add_milestone">
+            <input type="hidden" name="stage" value="<?= $activeStage ?>">
+            <input type="hidden" name="source" value="custom">
+
+            <p style="font-size: var(--text-xs); color: var(--muted); margin: 0 0 var(--space-3);">
+                Thêm vào: <strong><?= e($activeStageMeta['title']) ?></strong>
+            </p>
+
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+                <label for="custom-task-name" style="font-size: var(--text-xs); font-weight: 700;">Tên công việc / Cột mốc *</label>
+                <input class="input" id="custom-task-name" name="title" required maxlength="255" placeholder="Ví dụ: Đọc và so sánh 2 bài viết về nghề..." style="width: 100%;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: var(--space-4);">
+                <label for="custom-task-desc" style="font-size: var(--text-xs); font-weight: 700;">Chi tiết cách thực hiện hoặc kết quả dự kiến</label>
+                <textarea class="input" id="custom-task-desc" name="description" rows="3" maxlength="2000" placeholder="Ví dụ: Ghi lại 2 điểm khác biệt và điều mình thích vào sổ tay..." style="width: 100%;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                <button type="button" class="btn btn-outline" onclick="closeCustomTaskModal()" style="font-size: var(--text-xs);">Hủy</button>
+                <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs);">Thêm vào danh sách</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 3. Modal Chọn Từ Thư Viện Gợi Ý Có Sẵn (Templates) -->
+<div class="roadmap-modal-backdrop" id="template-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="template-modal-title">
+    <div class="roadmap-modal" style="max-width: 650px;">
+        <div class="roadmap-modal-header">
+            <div>
+                <h3 class="roadmap-modal-title" id="template-modal-title">💡 Gợi ý mẫu cho <?= e($activeStageMeta['title']) ?></h3>
+                <p style="margin: 2px 0 0; font-size: var(--text-xs); color: var(--muted);">Chọn những việc phù hợp với bạn để thêm vào kế hoạch.</p>
+            </div>
+            <button type="button" class="roadmap-modal-close" onclick="closeTemplateModal()" aria-label="Đóng">&times;</button>
+        </div>
+
+        <div style="max-height: 60vh; overflow-y: auto; padding-right: 4px;">
+            <?php 
+            $stageTemplates = $libraryMilestones[$activeStage] ?? [];
+            if ($stageTemplates): 
+                foreach ($stageTemplates as $tpl): 
+            ?>
+            <div class="template-item-card">
+                <div style="flex: 1;">
+                    <h4 class="template-item-title"><?= e($tpl['title']) ?></h4>
+                    <p class="template-item-desc"><?= e($tpl['description']) ?></p>
+                    <?php if (!empty($tpl['expected_outcome'])): ?>
+                        <div style="font-size: 0.72rem; color: var(--primary); font-weight: 600;">
+                            🎯 Kết quả: <?= e($tpl['expected_outcome']) ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0; flex-shrink: 0;">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="add_milestone">
+                    <input type="hidden" name="stage" value="<?= $activeStage ?>">
+                    <input type="hidden" name="title" value="<?= e($tpl['title']) ?>">
+                    <input type="hidden" name="description" value="<?= e($tpl['description']) ?>">
+                    <input type="hidden" name="action_url" value="<?= e($tpl['action_url']) ?>">
+                    <input type="hidden" name="source" value="suggested">
+                    <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 5px 12px; white-space: nowrap;">
+                        + Chọn việc này
+                    </button>
+                </form>
+            </div>
+            <?php 
+                endforeach; 
+            else: 
+            ?>
+                <p style="font-size: var(--text-sm); color: var(--muted); text-align: center; padding: var(--space-4);">Chưa có mẫu cho giai đoạn này.</p>
+            <?php endif; ?>
+        </div>
+
+        <div style="margin-top: var(--space-4); display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-outline" onclick="closeTemplateModal()" style="font-size: var(--text-xs);">Đóng</button>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Modal Chỉnh Sửa Công Việc Hiện Có -->
+<div class="roadmap-modal-backdrop" id="edit-task-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="edit-task-title">
+    <div class="roadmap-modal">
+        <div class="roadmap-modal-header">
+            <h3 class="roadmap-modal-title" id="edit-task-title">✏️ Chỉnh sửa công việc</h3>
+            <button type="button" class="roadmap-modal-close" onclick="closeEditTaskModal()" aria-label="Đóng">&times;</button>
+        </div>
+        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="edit_milestone">
+            <input type="hidden" name="milestone_id" id="edit-task-id" value="">
+            <input type="hidden" name="stage" value="<?= $activeStage ?>">
+
+            <div class="form-group" style="margin-bottom: var(--space-3);">
+                <label for="edit-task-name" style="font-size: var(--text-xs); font-weight: 700;">Tên công việc *</label>
+                <input class="input" id="edit-task-name" name="title" required maxlength="255" style="width: 100%;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: var(--space-4);">
+                <label for="edit-task-desc" style="font-size: var(--text-xs); font-weight: 700;">Ghi chú / Cách làm</label>
+                <textarea class="input" id="edit-task-desc" name="description" rows="3" maxlength="2000" style="width: 100%;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                <button type="button" class="btn btn-outline" onclick="closeEditTaskModal()" style="font-size: var(--text-xs);">Hủy</button>
+                <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs);">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 5. Modal AI Gợi Ý Cho Giai Đoạn Này (On-demand) -->
+<div class="roadmap-modal-backdrop" id="ai-suggest-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="ai-suggest-title">
+    <div class="roadmap-modal" style="max-width: 600px;">
+        <div class="roadmap-modal-header">
+            <div>
+                <h3 class="roadmap-modal-title" id="ai-suggest-title">✨ Mây gợi ý cho <?= e($activeStageMeta['title']) ?></h3>
+                <p style="margin: 2px 0 0; font-size: var(--text-xs); color: var(--muted);">Dựa trên mục tiêu "<?= e($roadmap['target_career_title'] ?: $roadmap['goal_title']) ?>" của bạn.</p>
+            </div>
+            <button type="button" class="roadmap-modal-close" onclick="closeAiSuggestModal()" aria-label="Đóng">&times;</button>
+        </div>
+
+        <div id="ai-suggest-body">
+            <div id="ai-suggest-loading" style="display: none; padding: var(--space-6); text-align: center;">
+                <div style="font-size: 1.5rem; margin-bottom: var(--space-2);" aria-hidden="true">⏳</div>
+                <p style="font-size: var(--text-sm); font-weight: 600; color: var(--primary); margin: 0;">Mây đang phân tích hồ sơ và tạo gợi ý phù hợp...</p>
+            </div>
+            <div id="ai-suggest-result"></div>
+        </div>
+
+        <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: var(--space-3);">
+            <button type="button" class="btn btn-outline" id="btn-re-generate-ai" style="font-size: var(--text-xs);">
+                🔄 Sinh lại gợi ý
+            </button>
+            <button type="button" class="btn btn-outline" onclick="closeAiSuggestModal()" style="font-size: var(--text-xs);">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 6. Modal Nhìn Lại Điều Vừa Học (Phản Tư) -->
+<div class="roadmap-modal-backdrop" id="reflection-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="reflection-modal-title">
+    <div class="roadmap-modal">
+        <div class="roadmap-modal-header">
+            <h3 class="roadmap-modal-title" id="reflection-modal-title">📝 Nhìn lại điều vừa học</h3>
+            <button type="button" class="roadmap-modal-close" onclick="closeReflectionModal()" aria-label="Đóng">&times;</button>
+        </div>
+        <div style="margin-bottom: var(--space-4);">
+            <p style="font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed); margin: 0 0 var(--space-3);">
+                Dành 2 phút ghi chép giúp bạn nhận ra điều gì thực sự hợp với mình và chủ động điều chỉnh kế hoạch:
+            </p>
+            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border); margin-bottom: var(--space-3); font-size: var(--text-xs); line-height: var(--leading-relaxed);">
+                <strong>Câu hỏi gợi ý:</strong>
+                <ul style="margin: 4px 0 0; padding-left: var(--space-4);">
+                    <li>Điều gì khiến bạn bất ngờ nhất sau khi làm các công việc gần đây?</li>
+                    <li>Có điểm nào bạn cảm thấy chưa thoải mái hoặc muốn tránh?</li>
+                    <li>Bạn có muốn thay đổi hoặc bổ sung mục tiêu nào cho bước tiếp theo không?</li>
+                </ul>
+            </div>
+            <textarea class="input" id="reflection-input" rows="4" maxlength="2000" placeholder="Viết vài dòng cảm nhận hoặc điều chỉnh bạn muốn thực hiện..." style="width: 100%;"></textarea>
+            <p style="font-size: 0.72rem; color: var(--muted); margin-top: 4px;">Ghi chép lưu tạm trong phiên hoặc bạn có thể copy để trao đổi cùng thầy cô/gia đình.</p>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+            <button type="button" class="btn btn-outline" onclick="closeReflectionModal()" style="font-size: var(--text-xs);">Đóng</button>
+            <button type="button" class="btn btn-primary" id="btn-save-reflection" style="font-size: var(--text-xs);">Ghi nhận phản tư</button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT LOGIC CHO TOÀN BỘ TƯƠNG TÁC LỘ TRÌNH -->
+<script>
+// 1. In lộ trình
+document.getElementById('print-roadmap-btn')?.addEventListener('click', () => window.print());
+
+// 2. Dropdown "+ Thêm công việc"
+const addTaskToggle = document.getElementById('btn-add-task-toggle');
+const addTaskMenu = document.getElementById('add-task-menu-dropdown');
+if (addTaskToggle && addTaskMenu) {
+    addTaskToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = addTaskMenu.classList.toggle('is-open');
+        addTaskToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', () => {
+        addTaskMenu.classList.remove('is-open');
+        addTaskToggle.setAttribute('aria-expanded', 'false');
+    });
+}
+
+// 3. Modals Open/Close Handlers
+function openGoalModal() {
+    document.getElementById('goal-modal-backdrop')?.classList.add('is-open');
+    document.getElementById('input-goal-title')?.focus();
+}
+function closeGoalModal() {
+    document.getElementById('goal-modal-backdrop')?.classList.remove('is-open');
+}
+document.getElementById('open-goal-modal-btn')?.addEventListener('click', openGoalModal);
+
+function openCustomTaskModal() {
+    document.getElementById('add-task-menu-dropdown')?.classList.remove('is-open');
+    document.getElementById('custom-task-modal-backdrop')?.classList.add('is-open');
+    document.getElementById('custom-task-name')?.focus();
+}
+function closeCustomTaskModal() {
+    document.getElementById('custom-task-modal-backdrop')?.classList.remove('is-open');
+}
+document.getElementById('btn-open-custom-task-modal')?.addEventListener('click', openCustomTaskModal);
+
+function openTemplateModal() {
+    document.getElementById('add-task-menu-dropdown')?.classList.remove('is-open');
+    document.getElementById('template-modal-backdrop')?.classList.add('is-open');
+}
+function closeTemplateModal() {
+    document.getElementById('template-modal-backdrop')?.classList.remove('is-open');
+}
+document.getElementById('btn-open-template-modal')?.addEventListener('click', openTemplateModal);
+
+function openEditTaskModal(id, title, desc) {
+    const backdrop = document.getElementById('edit-task-modal-backdrop');
+    if (!backdrop) return;
+    document.getElementById('edit-task-id').value = id;
+    document.getElementById('edit-task-name').value = title;
+    document.getElementById('edit-task-desc').value = desc || '';
+    backdrop.classList.add('is-open');
+    document.getElementById('edit-task-name').focus();
+}
+function closeEditTaskModal() {
+    document.getElementById('edit-task-modal-backdrop')?.classList.remove('is-open');
+}
+
+document.querySelectorAll('.edit-task-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        openEditTaskModal(btn.dataset.id, btn.dataset.title, btn.dataset.desc);
     });
 });
 
-// Chat submit loading
-document.getElementById('career-chat-form').addEventListener('submit', function() {
-    this.querySelector('button[type=submit]').disabled = true;
-    document.getElementById('chat-send-status').textContent = 'Đang tổng hợp hồ sơ và trả lời…';
+function openAiSuggestModal() {
+    document.getElementById('ai-suggest-modal-backdrop')?.classList.add('is-open');
+    fetchAiSuggestions();
+}
+function closeAiSuggestModal() {
+    document.getElementById('ai-suggest-modal-backdrop')?.classList.remove('is-open');
+}
+document.getElementById('open-ai-suggest-btn')?.addEventListener('click', openAiSuggestModal);
+
+function openReflectionModal() {
+    document.getElementById('reflection-modal-backdrop')?.classList.add('is-open');
+    document.getElementById('reflection-input')?.focus();
+}
+function closeReflectionModal() {
+    document.getElementById('reflection-modal-backdrop')?.classList.remove('is-open');
+}
+document.getElementById('open-reflection-modal-btn')?.addEventListener('click', openReflectionModal);
+
+// Close on Escape or click backdrop
+document.querySelectorAll('.roadmap-modal-backdrop').forEach(backdrop => {
+    backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) backdrop.classList.remove('is-open');
+    });
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.roadmap-modal-backdrop.is-open').forEach(b => b.classList.remove('is-open'));
+    }
 });
 
-// Toggle Goal Editing
-const toggleGoalBtn = document.getElementById('toggle-goal-edit-btn');
-const goalContainer = document.getElementById('goal-edit-container');
-const cancelGoalBtn = document.getElementById('cancel-goal-edit-btn');
-if (toggleGoalBtn && goalContainer) {
-    toggleGoalBtn.addEventListener('click', () => {
-        goalContainer.style.display = goalContainer.style.display === 'none' ? 'block' : 'none';
-        if (goalContainer.style.display === 'block') {
+// Quick start goal buttons
+document.querySelectorAll('.quick-start-goal-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        openGoalModal();
+        if (mode === 'career') {
+            document.getElementById('input-career-title').focus();
+        } else {
+            document.getElementById('input-goal-title').value = 'Khám phá và nhận diện hướng đi phù hợp';
+            document.getElementById('input-career-title').value = '';
             document.getElementById('input-goal-title').focus();
         }
     });
-    if (cancelGoalBtn) {
-        cancelGoalBtn.addEventListener('click', () => {
-            goalContainer.style.display = 'none';
-        });
-    }
-}
-
-// Quick apply career goal from assessment
-document.querySelectorAll('.apply-career-goal').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const title = btn.dataset.careerTitle;
-        if (goalContainer) {
-            goalContainer.style.display = 'block';
-            document.getElementById('input-career-title').value = title;
-            document.getElementById('input-goal-title').value = 'Định hình lộ trình phát triển nghề ' + title;
-            goalContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    });
 });
 
-// Toggle AI Copilot Panel on-demand
-const toggleAiBtn = document.getElementById('toggle-ai-copilot-btn');
-const aiPanel = document.getElementById('ai-copilot-panel');
-if (toggleAiBtn && aiPanel) {
-    toggleAiBtn.addEventListener('click', () => {
-        aiPanel.style.display = aiPanel.style.display === 'none' ? 'block' : 'none';
-        toggleAiBtn.textContent = aiPanel.style.display === 'none' ? '✨ Mở Trợ Lý AI Lộ Trình' : '▲ Thu gọn Trợ Lý AI';
-    });
-}
-
-// Quick ask from AI Copilot to Chat form
-document.querySelectorAll('.quick-ai-ask').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const ask = btn.dataset.ask;
-        const field = document.getElementById('career-question');
-        field.value = ask;
-        const chatSec = document.getElementById('career-chat');
-        if (chatSec) chatSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        field.focus();
-    });
+// Trigger next action if special modal
+document.getElementById('next-action-trigger-btn')?.addEventListener('click', () => {
+    openGoalModal();
 });
 
-// Request AI Milestones Generator
-const btnAiMilestones = document.getElementById('btn-request-ai-milestones');
-const aiLoading = document.getElementById('ai-milestones-loading');
-const aiResult = document.getElementById('ai-milestones-result');
-if (btnAiMilestones) {
-    btnAiMilestones.addEventListener('click', async () => {
-        btnAiMilestones.disabled = true;
-        if (aiLoading) aiLoading.style.display = 'block';
-        if (aiResult) aiResult.innerHTML = '';
-
-        try {
-            const csrfToken = document.querySelector('input[name="csrf"]')?.value || '';
-            const formData = new FormData();
-            formData.append('action', 'ai_suggest_milestones');
-            formData.append('csrf', csrfToken);
-
-            const res = await fetch('<?= url('index.php?page=ai-roadmap') ?>', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            const data = await res.json();
-            if (data.status === 'ok' && data.data && data.data.suggestions) {
-                let html = '<div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
-                data.data.suggestions.forEach(item => {
-                    html += `
-                        <div style="background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                            <div>
-                                <strong style="font-size: var(--text-xs); color: var(--text);">${item.title}</strong>
-                                <p style="margin: 2px 0 0; font-size: var(--text-xs); color: var(--muted);">${item.description}</p>
-                            </div>
-                            <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0; flex-shrink: 0;">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="action" value="add_milestone">
-                                <input type="hidden" name="stage" value="${item.stage}">
-                                <input type="hidden" name="title" value="${item.title}">
-                                <input type="hidden" name="description" value="${item.description}">
-                                <input type="hidden" name="action_url" value="${item.action_url || ''}">
-                                <input type="hidden" name="source" value="ai">
-                                <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 4px 8px; white-space: nowrap;">
-                                    + Thêm
-                                </button>
-                            </form>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                if (aiResult) aiResult.innerHTML = html;
-            } else {
-                if (aiResult) aiResult.innerHTML = '<p style="color: var(--danger); font-size: var(--text-xs);">Chưa thể sinh gợi ý từ AI lúc này. Vui lòng thử lại sau.</p>';
-            }
-        } catch (e) {
-            if (aiResult) aiResult.innerHTML = '<p style="color: var(--danger); font-size: var(--text-xs);">Đã xảy ra lỗi kết nối. Hãy thử lại.</p>';
-        } finally {
-            btnAiMilestones.disabled = false;
-            if (aiLoading) aiLoading.style.display = 'none';
-        }
-    });
-}
-
-// Milestone Checkbox Toggle via AJAX
-document.querySelectorAll('.milestone-toggle-check').forEach(chk => {
+// 4. Milestone Checkbox Optimistic Toggle with Rollback
+document.querySelectorAll('.task-toggle-check').forEach(chk => {
     chk.addEventListener('change', async function() {
         const id = this.dataset.id;
-        const row = document.getElementById('milestone-row-' + id);
-        const titleText = row?.querySelector('.milestone-title-text');
-        const csrfToken = document.querySelector('input[name="csrf"]')?.value || '';
+        const card = document.getElementById('task-card-' + id);
+        const originallyChecked = !this.checked; // previous state
+        const isNowCompleted = this.checked;
 
+        // 1. Optimistic UI Update
+        if (card) {
+            if (isNowCompleted) {
+                card.classList.add('is-completed');
+            } else {
+                card.classList.remove('is-completed');
+            }
+        }
+
+        const csrfToken = document.querySelector('input[name="csrf"]')?.value || '';
         const formData = new FormData();
         formData.append('action', 'toggle_milestone');
         formData.append('milestone_id', id);
+        formData.append('stage', '<?= $activeStage ?>');
         formData.append('csrf', csrfToken);
 
         try {
@@ -799,41 +1032,126 @@ document.querySelectorAll('.milestone-toggle-check').forEach(chk => {
             });
             const result = await res.json();
             if (result.status === 'ok') {
-                const isCompleted = result.data.is_completed;
-                if (row) {
-                    if (isCompleted) {
-                        row.classList.add('is-completed');
-                        row.style.background = '#f0fdf4';
-                        row.style.borderColor = 'var(--success)';
-                        if (titleText) {
-                            titleText.style.color = 'var(--success)';
-                            titleText.style.textDecoration = 'line-through';
-                        }
-                    } else {
-                        row.classList.remove('is-completed');
-                        row.style.background = 'var(--surface)';
-                        row.style.borderColor = 'var(--border)';
-                        if (titleText) {
-                            titleText.style.color = 'var(--text)';
-                            titleText.style.textDecoration = 'none';
-                        }
-                    }
-                }
                 // Update progress bar
                 if (result.data.progress) {
                     const p = result.data.progress;
                     const pText = document.getElementById('progress-text');
                     const pFill = document.getElementById('progress-bar-fill');
-                    if (pText) pText.textContent = `${p.percent}% (Hoàn thành ${p.completed} / ${p.total} cột mốc)`;
+                    if (pText) pText.textContent = `${p.percent}% (Đã hoàn thành ${p.completed} / ${p.total} cột mốc)`;
                     if (pFill) pFill.style.width = `${p.percent}%`;
                 }
             } else {
-                this.checked = !this.checked;
+                // Rollback on server error
+                this.checked = originallyChecked;
+                if (card) card.classList.toggle('is-completed', originallyChecked);
+                alert(result.message || 'Chưa thể cập nhật trạng thái. Vui lòng thử lại.');
             }
         } catch (err) {
-            this.checked = !this.checked;
+            // Rollback on network failure
+            this.checked = originallyChecked;
+            if (card) card.classList.toggle('is-completed', originallyChecked);
+            alert('Lỗi kết nối mạng khi cập nhật cột mốc. Vui lòng thử lại.');
         }
     });
+});
+
+// 5. Fetch AI Suggestions on demand
+async function fetchAiSuggestions() {
+    const loading = document.getElementById('ai-suggest-loading');
+    const resultBox = document.getElementById('ai-suggest-result');
+    if (!resultBox) return;
+
+    if (loading) loading.style.display = 'block';
+    resultBox.innerHTML = '';
+
+    try {
+        const csrfToken = document.querySelector('input[name="csrf"]')?.value || '';
+        const formData = new FormData();
+        formData.append('action', 'ai_suggest_milestones');
+        formData.append('stage', '<?= $activeStage ?>');
+        formData.append('csrf', csrfToken);
+
+        const res = await fetch('<?= url('index.php?page=ai-roadmap') ?>', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        const data = await res.json();
+        if (data.status === 'ok' && data.data && data.data.suggestions) {
+            let html = '<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">';
+            data.data.suggestions.forEach(item => {
+                html += `
+                    <div class="template-item-card">
+                        <div style="flex: 1;">
+                            <h4 class="template-item-title">${item.title}</h4>
+                            <p class="template-item-desc">${item.description}</p>
+                            <span class="task-source-badge badge-source-ai" style="margin-top: 4px; display: inline-block;">Gợi ý phù hợp mục tiêu</span>
+                        </div>
+                        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0; flex-shrink: 0;">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="action" value="add_milestone">
+                            <input type="hidden" name="stage" value="${item.stage || '<?= $activeStage ?>'}">
+                            <input type="hidden" name="title" value="${item.title}">
+                            <input type="hidden" name="description" value="${item.description}">
+                            <input type="hidden" name="action_url" value="${item.action_url || ''}">
+                            <input type="hidden" name="source" value="ai">
+                            <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 5px 12px; white-space: nowrap;">
+                                + Thêm
+                            </button>
+                        </form>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            resultBox.innerHTML = html;
+        } else {
+            resultBox.innerHTML = '<p style="color: var(--danger); font-size: var(--text-xs); text-align: center; padding: 12px;">Chưa thể sinh gợi ý lúc này. Hãy thử lại.</p>';
+        }
+    } catch (e) {
+        resultBox.innerHTML = '<p style="color: var(--danger); font-size: var(--text-xs); text-align: center; padding: 12px;">Đã xảy ra lỗi kết nối. Hãy thử lại.</p>';
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+document.getElementById('btn-re-generate-ai')?.addEventListener('click', fetchAiSuggestions);
+
+// 6. Reflection save note (localStorage or feedback)
+document.getElementById('btn-save-reflection')?.addEventListener('click', () => {
+    const text = document.getElementById('reflection-input')?.value.trim();
+    if (!text) {
+        alert('Hãy viết vài dòng cảm nhận trước khi ghi nhận.');
+        return;
+    }
+    try {
+        localStorage.setItem('jobsimu_roadmap_reflection_<?= $userId ?>', JSON.stringify({
+            text: text,
+            stage: '<?= $activeStage ?>',
+            saved_at: new Date().toISOString()
+        }));
+    } catch(e) {}
+    alert('Đã ghi nhận phản tư của bạn. Bạn có thể xem lại bất kỳ lúc nào!');
+    closeReflectionModal();
+});
+
+// 7. Chat prompts
+document.querySelectorAll('[data-chat-prompt]').forEach(button => {
+    button.addEventListener('click', () => {
+        const field = document.getElementById('career-question');
+        if (field) {
+            field.value = button.dataset.chatPrompt;
+            field.focus();
+        }
+    });
+});
+
+document.getElementById('career-chat-form')?.addEventListener('submit', function() {
+    const btn = this.querySelector('button[type=submit]');
+    if (btn) btn.disabled = true;
+    const status = document.getElementById('chat-send-status');
+    if (status) status.textContent = 'Đang tổng hợp hồ sơ và trả lời…';
 });
 </script>
 <?php require __DIR__ . '/footer.php'; exit;

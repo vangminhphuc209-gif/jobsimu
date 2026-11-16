@@ -88,27 +88,27 @@ function user_roadmap_stages(): array
     return [
         'discovery' => [
             'key' => 'discovery',
-            'title' => 'Giai đoạn 1: Khám phá & Thấu hiểu bản thân',
+            'title' => '1. Hiểu bản thân',
             'icon' => '🔍',
-            'summary' => 'Làm rõ sở thích, năng lực tiềm ẩn, phong cách hành vi và các ranh giới đánh đổi.',
+            'summary' => 'Sở thích, cách học/làm việc, điều kiện cá nhân.',
         ],
         'academic' => [
             'key' => 'academic',
-            'title' => 'Giai đoạn 2: Định hình môn học & Tổ hợp đào tạo',
+            'title' => '2. Khám phá nghề và đường học',
             'icon' => '📚',
-            'summary' => 'Đối chiếu tổ hợp môn xét tuyển, chuẩn bị kiến thức nền tảng và chọn trường mục tiêu.',
+            'summary' => 'Công việc thực tế, ngành đào tạo chuẩn, trường học.',
         ],
         'skills' => [
             'key' => 'skills',
-            'title' => 'Giai đoạn 3: Rèn luyện kỹ năng & Trải nghiệm thực tế',
+            'title' => '3. Thử sức và rèn luyện',
             'icon' => '🛠️',
-            'summary' => 'Thực hành mô phỏng nghề 3D/Web, làm thử thách đời thực và kiểm tra năng lực qua góc nhìn đa chiều.',
+            'summary' => 'Mô phỏng thực tế, thử thách 15 phút, kỹ năng chuyển giao, sản phẩm nhỏ.',
         ],
         'decision' => [
             'key' => 'decision',
-            'title' => 'Giai đoạn 4: Tuyển sinh, Kế hoạch dự phòng & Quyết định',
+            'title' => '4. Chọn hướng và lập kế hoạch',
             'icon' => '🎯',
-            'summary' => 'Lập danh sách nguyện vọng ưu tiên, đánh giá phương án chi phí và chuẩn bị hồ sơ ứng tuyển.',
+            'summary' => 'So sánh phương án, kế hoạch học tập, thời điểm nhìn lại mục tiêu.',
         ],
     ];
 }
@@ -158,11 +158,16 @@ function user_roadmap_seed_starter_milestones(int $roadmapId, int $userId, array
     $primaryCareer = $context['suggested_careers'][0] ?? null;
     $careerTitle = $primaryCareer['title'] ?? 'nghề bạn quan tâm';
 
+    $isTeacher = preg_match('/giáo viên|sư phạm/i', $careerTitle);
+    $simulationTitle = $isTeacher
+        ? 'Thực hiện 1 tiết mô phỏng nghề Giáo viên THCS (Lớp 8A)'
+        : 'Trải nghiệm 1 tình huống thử việc thực tế tại Phòng mô phỏng nghề';
+
     $starters = [
         [
             'stage' => 'discovery',
-            'title' => 'Hoàn thành bài đánh giá Holland (RIASEC) và Big Five',
-            'description' => 'Khám phá 6 nhóm sở thích nghề nghiệp và 5 nét tính cách cốt lõi để nhận diện điểm mạnh tự nhiên.',
+            'title' => 'Làm bài trắc nghiệm Holland (RIASEC) và Big Five',
+            'description' => 'Khám phá 6 nhóm sở thích nghề nghiệp và 5 nét tính cách cốt lõi để nhận diện phong cách học tập/làm việc phù hợp.',
             'action_url' => 'index.php?page=assessment-hub',
             'source' => 'suggested',
             'sort_order' => 1,
@@ -177,7 +182,7 @@ function user_roadmap_seed_starter_milestones(int $roadmapId, int $userId, array
         ],
         [
             'stage' => 'skills',
-            'title' => 'Trải nghiệm 1 tình huống mô phỏng nghề tại Phòng mô phỏng',
+            'title' => $simulationTitle,
             'description' => 'Thử thách giải quyết tình huống nghề nghiệp giả định để đối chiếu cảm nhận thực tế với sở thích ban đầu.',
             'action_url' => 'index.php?page=simulations',
             'source' => 'suggested',
@@ -433,8 +438,13 @@ function user_roadmap_derive_assessment_insights(int $userId): array
  * Standard milestone suggestions library offered by website.
  * Directly fulfills requirement 2: "website chỉ đưa ra những cột mốc, những suggest làm gì".
  */
-function user_roadmap_library_milestones(): array
+function user_roadmap_library_milestones(?string $targetCareer = null): array
 {
+    $isTeacher = $targetCareer && preg_match('/giáo viên|sư phạm/i', $targetCareer);
+    $simTitle = $isTeacher
+        ? 'Thực hiện 1 tiết mô phỏng nghề Giáo viên THCS (Lớp 8A)'
+        : 'Trải nghiệm tình huống thử việc thực tế tại Phòng mô phỏng nghề';
+
     return [
         'discovery' => [
             [
@@ -442,24 +452,28 @@ function user_roadmap_library_milestones(): array
                 'title' => 'Làm trắc nghiệm Holland (RIASEC) để tìm mã sở thích',
                 'description' => 'Xác định 3 nhóm sở thích nổi trội và nhận gợi ý nghề nghiệp ban đầu.',
                 'action_url' => 'index.php?page=assessment',
+                'expected_outcome' => 'Mã 3 chữ cái RIASEC và danh sách ngành nghề tương ứng.',
             ],
             [
                 'stage' => 'discovery',
                 'title' => 'Thực hiện bài kiểm tra tính cách Big Five & EQ tự nhận xét',
                 'description' => 'Đo lường mức độ tận tâm, cởi mở, hướng ngoại và trí tuệ cảm xúc để chọn môi trường phù hợp.',
                 'action_url' => 'index.php?page=assessment-hub',
+                'expected_outcome' => 'Bản đồ 5 nét tính cách và gợi ý môi trường làm việc phù hợp.',
             ],
             [
                 'stage' => 'discovery',
                 'title' => 'Khảo sát điều kiện học tập & Cổng đánh đổi thực tế',
                 'description' => 'Làm rõ các yếu tố về tài chính gia đình, thời gian học và những áp lực muốn tránh.',
                 'action_url' => 'index.php?page=assessment-hub',
+                'expected_outcome' => 'Bản ghi rõ những điều kiện muốn tránh (áp lực, di chuyển, học phí) để không bị sốc thực tế.',
             ],
             [
                 'stage' => 'discovery',
                 'title' => 'Gửi link SOKA 360 Mirror mời bạn bè/thầy cô đánh giá khách quan',
-                'description' => 'Thu thập góc nhìn từ người khác để nhận diện vùng mù và tiềm năng ẩn giấu của bạn.',
+                'description' => 'Thu thập góc nhìn từ người khác để nhận diện vùng mù và tiềm năng của bạn.',
                 'action_url' => 'index.php?page=assessment-hub#soka-section',
+                'expected_outcome' => 'Góc nhìn khách quan từ bạn bè, thầy cô để đối chiếu với tự nhận thức.',
             ],
         ],
         'academic' => [
@@ -468,50 +482,58 @@ function user_roadmap_library_milestones(): array
                 'title' => 'Tra cứu mã ngành và các trường đào tạo trên Danh mục ngành HNV',
                 'description' => 'Khám phá 358 ngành đào tạo chuẩn và các trường đại học/cao đẳng có tuyển sinh.',
                 'action_url' => 'index.php?page=majors',
+                'expected_outcome' => 'Mã ngành đào tạo chuẩn, các trường tuyển sinh và tổ hợp môn tương ứng.',
             ],
             [
                 'stage' => 'academic',
                 'title' => 'Xác định tổ hợp môn xét tuyển trọng tâm (ví dụ: A00, A01, D01, B00...)',
                 'description' => 'Đánh giá điểm số hiện tại của 3 môn then chốt và đặt mục tiêu điểm số từng kỳ.',
                 'action_url' => 'index.php?page=knowledge-hub',
+                'expected_outcome' => 'Kế hoạch điểm số mục tiêu cho 3 môn then chốt trong học kỳ tới.',
             ],
             [
                 'stage' => 'academic',
                 'title' => 'Tra cứu điểm chuẩn và chỉ tiêu tuyển sinh 2 năm gần nhất',
                 'description' => 'Sử dụng công cụ Tra cứu trường đại học để xem dữ liệu điểm chuẩn công bố chính thức.',
                 'action_url' => 'index.php?page=university-explorer',
+                'expected_outcome' => 'Bảng so sánh điểm chuẩn 2 năm gần nhất của 2–3 trường đào tạo mục tiêu.',
             ],
             [
                 'stage' => 'academic',
                 'title' => 'Trao đổi với giáo viên chủ nhiệm hoặc giáo viên bộ môn về năng lực học tập',
                 'description' => 'Nhận góp ý chuyên môn về khả năng bứt phá ở các môn học then chốt.',
                 'action_url' => '',
+                'expected_outcome' => 'Nhận xét cụ thể từ thầy cô về điểm mạnh và phần kiến thức cần bồi dưỡng thêm.',
             ],
         ],
         'skills' => [
             [
                 'stage' => 'skills',
-                'title' => 'Thực hiện 1 tiết mô phỏng nghề Giáo viên THCS (Lớp 8A)',
-                'description' => 'Trải nghiệm điều hành lớp học, xử lý tình huống sư phạm và phản tư sau tiết dạy.',
+                'title' => $simTitle,
+                'description' => 'Trải nghiệm điều hành thử thách, xử lý tình huống thực tế và phản tư sau phiên làm việc.',
                 'action_url' => 'index.php?page=simulations',
+                'expected_outcome' => 'Nhật ký phản tư ghi nhận phản ứng thực tế trước thử thách nghề nghiệp.',
             ],
             [
                 'stage' => 'skills',
                 'title' => 'Thực hiện Thử thách 15 phút đời thực',
                 'description' => 'Tìm kiếm một nhiệm vụ thường ngày của nghề, giải thích cách làm cho bạn bè và ghi lại cảm xúc.',
                 'action_url' => 'index.php?page=ai-roadmap#career-chat',
+                'expected_outcome' => 'Ghi chép 2 điểm thú vị và 1 băn khoăn sau khi tìm hiểu một ngày làm việc điển hình.',
             ],
             [
                 'stage' => 'skills',
                 'title' => 'Rèn luyện kỹ năng tự học và quản lý thời gian cá nhân',
                 'description' => 'Áp dụng phương pháp làm việc có kế hoạch, ghi chép tiến độ học tập hàng tuần.',
                 'action_url' => '',
+                'expected_outcome' => 'Quy trình làm việc/học tập cá nhân áp dụng liên tục trong 2 tuần.',
             ],
             [
                 'stage' => 'skills',
                 'title' => 'Tham gia một hoạt động câu lạc bộ hoặc dự án nhỏ liên quan đến nghề',
-                'description' => 'Thử sức làm việc nhóm và giao tiếp trong môi trường thực tế.',
+                'description' => 'Thử sức làm việc nhóm, giao tiếp và tạo một sản phẩm học tập nhỏ.',
                 'action_url' => '',
+                'expected_outcome' => 'Một sản phẩm học tập nhỏ (bài viết, slide, mô hình) mang dấu ấn cá nhân.',
             ],
         ],
         'decision' => [
@@ -520,26 +542,203 @@ function user_roadmap_library_milestones(): array
                 'title' => 'Lập danh sách 3 phương án nguyện vọng ưu tiên (An toàn - Vừa sức - Thử thách)',
                 'description' => 'Chia nhỏ danh sách trường mục tiêu để đảm bảo luôn có phương án dự phòng chắc chắn.',
                 'action_url' => 'index.php?page=university-explorer',
+                'expected_outcome' => 'Danh mục 3 phương án trường (An toàn, Vừa sức, Thử thách) rõ ràng.',
             ],
             [
                 'stage' => 'decision',
                 'title' => 'Đánh giá chi phí học tập và các cơ hội học bổng / hỗ trợ tài chính',
                 'description' => 'Tính toán học phí dự kiến, sinh hoạt phí và thảo luận cùng gia đình.',
                 'action_url' => 'index.php?page=knowledge-hub',
+                'expected_outcome' => 'Bảng ước tính học phí, sinh hoạt phí và phương án tài chính dự phòng.',
             ],
             [
                 'stage' => 'decision',
                 'title' => 'Chuẩn bị hồ sơ xét tuyển và theo dõi lịch tuyển sinh chính thức',
                 'description' => 'Nắm chắc các mốc thời gian nộp hồ sơ, thi đánh giá năng lực hoặc xét tuyển sớm.',
                 'action_url' => 'index.php?page=knowledge-hub',
+                'expected_outcome' => 'Lịch trình các mốc nộp hồ sơ, thi ĐGNL và hồ sơ xét tuyển đã sẵn sàng.',
             ],
             [
                 'stage' => 'decision',
                 'title' => 'Tổng kết bản đồ hành trình và chia sẻ với người cố vấn tin cậy',
                 'description' => 'In bản đồ hành trình cá nhân ra PDF để lưu trữ và xin ý kiến thầy cô, phụ huynh.',
                 'action_url' => 'javascript:window.print()',
+                'expected_outcome' => 'Bản in lộ trình hoàn chỉnh kèm góp ý từ giáo viên hoặc người thân.',
             ],
         ],
+    ];
+}
+
+/**
+ * Map an action_url to a meaningful, human-friendly action button label.
+ * Avoid generic "Mở" buttons per product specification.
+ */
+function user_roadmap_resolve_action(?string $url): array
+{
+    $url = trim((string)$url);
+    if ($url === '') {
+        return ['label' => '', 'url' => ''];
+    }
+
+    if (strpos($url, 'javascript:window.print') !== false) {
+        return ['label' => 'In bản kế hoạch 🖨️', 'url' => $url];
+    }
+    if (strpos($url, 'assessment-report') !== false) {
+        return ['label' => 'Xem báo cáo đánh giá →', 'url' => $url];
+    }
+    if (strpos($url, 'page=assessment') !== false || strpos($url, 'assessment-hub') !== false) {
+        return ['label' => 'Làm bài trắc nghiệm →', 'url' => $url];
+    }
+    if (strpos($url, 'page=majors') !== false) {
+        return ['label' => 'Khám phá ngành học →', 'url' => $url];
+    }
+    if (strpos($url, 'university-explorer') !== false) {
+        return ['label' => 'Tra cứu trường →', 'url' => $url];
+    }
+    if (strpos($url, 'simulations') !== false) {
+        return ['label' => 'Vào phòng thử việc →', 'url' => $url];
+    }
+    if (strpos($url, 'knowledge-hub') !== false) {
+        return ['label' => 'Đọc bài viết nghề →', 'url' => $url];
+    }
+    if (strpos($url, 'career-chat') !== false) {
+        return ['label' => 'Trò chuyện định hướng →', 'url' => $url];
+    }
+
+    return ['label' => 'Khám phá ngay →', 'url' => $url];
+}
+
+/**
+ * Resolve the expected concrete outcome for a milestone.
+ */
+function user_roadmap_resolve_outcome(array $milestone): string
+{
+    $title = $milestone['title'] ?? '';
+    $desc = $milestone['description'] ?? '';
+    $url = $milestone['action_url'] ?? '';
+    $combined = mb_strtolower($title . ' ' . $desc . ' ' . $url);
+
+    if (mb_strpos($combined, 'holland') !== false || mb_strpos($combined, 'riasec') !== false) {
+        return 'Mã 3 chữ cái RIASEC và danh sách ngành nghề tương ứng.';
+    }
+    if (mb_strpos($combined, 'big five') !== false || mb_strpos($combined, 'mbti') !== false || mb_strpos($combined, 'eq') !== false) {
+        return 'Bản đồ 5 nét tính cách và gợi ý môi trường học tập/làm việc phù hợp.';
+    }
+    if (mb_strpos($combined, 'đánh đổi') !== false || mb_strpos($combined, 'ranh giới') !== false) {
+        return 'Bản ghi rõ những điều kiện muốn tránh (áp lực, di chuyển, học phí) để không bị sốc thực tế.';
+    }
+    if (mb_strpos($combined, 'soka') !== false || mb_strpos($combined, 'mirror') !== false) {
+        return 'Góc nhìn khách quan từ bạn bè, thầy cô để đối chiếu với tự nhận thức.';
+    }
+    if (mb_strpos($combined, 'mô phỏng') !== false || mb_strpos($combined, 'thử việc') !== false) {
+        return 'Nhật ký phản tư ghi nhận phản ứng thực tế trước thử thách nghề nghiệp.';
+    }
+    if (mb_strpos($combined, 'thử thách 15') !== false || mb_strpos($combined, '15 phút') !== false) {
+        return 'Ghi chép 2 điểm thú vị và 1 băn khoăn sau khi tìm hiểu một ngày làm việc điển hình.';
+    }
+    if (mb_strpos($combined, 'ngành') !== false || mb_strpos($combined, 'majors') !== false) {
+        return 'Mã ngành đào tạo chuẩn, các trường tuyển sinh và tổ hợp môn tương ứng.';
+    }
+    if (mb_strpos($combined, 'tổ hợp môn') !== false || mb_strpos($combined, 'điểm số') !== false) {
+        return 'Kế hoạch điểm số mục tiêu cho 3 môn then chốt trong học kỳ tới.';
+    }
+    if (mb_strpos($combined, 'điểm chuẩn') !== false || mb_strpos($combined, 'trường') !== false) {
+        return 'Bảng so sánh điểm chuẩn 2 năm gần nhất của 2–3 trường đào tạo mục tiêu.';
+    }
+    if (mb_strpos($combined, 'nguyện vọng') !== false || mb_strpos($combined, '3 phương án') !== false) {
+        return 'Danh mục 3 phương án trường (An toàn, Vừa sức, Thử thách) rõ ràng.';
+    }
+    if (mb_strpos($combined, 'chi phí') !== false || mb_strpos($combined, 'học phí') !== false || mb_strpos($combined, 'học bổng') !== false) {
+        return 'Bảng ước tính học phí, sinh hoạt phí và phương án tài chính dự phòng.';
+    }
+    if (mb_strpos($combined, 'hồ sơ') !== false || mb_strpos($combined, 'tuyển sinh') !== false) {
+        return 'Lịch trình các mốc nộp hồ sơ, thi ĐGNL và hồ sơ xét tuyển đã sẵn sàng.';
+    }
+    if (mb_strpos($combined, 'in') !== false || mb_strpos($combined, 'cố vấn') !== false || mb_strpos($combined, 'chia sẻ') !== false) {
+        return 'Bản in lộ trình hoàn chỉnh kèm góp ý từ giáo viên hoặc người thân.';
+    }
+    if (mb_strpos($combined, 'kỹ năng') !== false || mb_strpos($combined, 'thời gian') !== false) {
+        return 'Quy trình làm việc/học tập cá nhân áp dụng liên tục trong 2 tuần.';
+    }
+    if (mb_strpos($combined, 'câu lạc bộ') !== false || mb_strpos($combined, 'sản phẩm') !== false) {
+        return 'Một sản phẩm học tập nhỏ (bài viết, slide, mô hình) mang dấu ấn cá nhân.';
+    }
+
+    return 'Bản ghi kết quả cụ thể và bài học rút ra để điều chỉnh lộ trình.';
+}
+
+/**
+ * Determine the single next actionable milestone for Hero Banner (Vùng B).
+ */
+function user_roadmap_get_next_action(array $roadmap, string $activeStageKey): ?array
+{
+    $stages = user_roadmap_stages();
+    $grouped = $roadmap['milestones'] ?? [];
+
+    $targetMilestone = null;
+    $targetStageKey = $activeStageKey;
+
+    // Check first incomplete in active stage
+    if (!empty($grouped[$activeStageKey]['items'])) {
+        foreach ($grouped[$activeStageKey]['items'] as $item) {
+            if (empty($item['is_completed'])) {
+                $targetMilestone = $item;
+                $targetStageKey = $activeStageKey;
+                break;
+            }
+        }
+    }
+
+    // If none found in active stage, search earliest incomplete across all stages
+    if (!$targetMilestone) {
+        foreach (array_keys($stages) as $sk) {
+            if (!empty($grouped[$sk]['items'])) {
+                foreach ($grouped[$sk]['items'] as $item) {
+                    if (empty($item['is_completed'])) {
+                        $targetMilestone = $item;
+                        $targetStageKey = $sk;
+                        break 2;
+                    }
+                }
+            }
+        }
+    }
+
+    $rationales = [
+        'discovery' => 'Hiểu rõ sở thích và cách làm việc giúp bạn định hình hướng đi vững chắc, tránh chọn nhầm ngành theo phong trào.',
+        'academic' => 'Nắm chắc tổ hợp môn và điều kiện xét tuyển giúp bạn chủ động kế hoạch điểm số ngay từ bây giờ.',
+        'skills' => 'Trải nghiệm tình huống thực tế giúp bạn kiểm chứng cảm nhận với công việc và phát hiện sớm những điểm cần rèn luyện.',
+        'decision' => 'Chuẩn bị hồ sơ và phương án dự phòng giúp bạn tự tin, an tâm bước vào các mốc tuyển sinh quan trọng.',
+    ];
+
+    if ($targetMilestone) {
+        $action = user_roadmap_resolve_action($targetMilestone['action_url'] ?? '');
+        return [
+            'milestone_id' => (int)$targetMilestone['id'],
+            'stage' => $targetStageKey,
+            'stage_title' => $stages[$targetStageKey]['title'] ?? $targetStageKey,
+            'title' => $targetMilestone['title'],
+            'description' => $targetMilestone['description'] ?? '',
+            'rationale' => $rationales[$targetStageKey] ?? 'Bước hành động cụ thể giúp bạn tiến gần hơn đến mục tiêu nghề nghiệp.',
+            'outcome' => user_roadmap_resolve_outcome($targetMilestone),
+            'action_label' => $action['label'] ?: 'Thực hiện ngay →',
+            'action_url' => $action['url'],
+            'is_all_completed' => false,
+        ];
+    }
+
+    // All milestones completed
+    return [
+        'milestone_id' => 0,
+        'stage' => 'decision',
+        'stage_title' => 'Tổng kết hành trình',
+        'title' => 'Nhìn lại điều đã học và điều chỉnh mục tiêu tiếp theo',
+        'description' => 'Bạn đã hoàn thành các cột mốc trong kế hoạch hiện tại. Hãy trao đổi cùng thầy cô/gia đình và đặt ra mục tiêu mới.',
+        'rationale' => 'Mỗi giai đoạn trưởng thành mở ra những hiểu biết mới về bản thân và cơ hội học tập/nghề nghiệp.',
+        'outcome' => 'Một mục tiêu mới hoặc kế hoạch chi tiết cho năm học tiếp theo.',
+        'action_label' => 'Cập nhật mục tiêu mới ✏️',
+        'action_url' => '#goal-edit-modal',
+        'is_all_completed' => true,
     ];
 }
 
@@ -606,6 +805,23 @@ function user_roadmap_delete_milestone(int $milestoneId, int $userId): void
     user_roadmap_ensure_tables();
     $stmt = db()->prepare('DELETE FROM user_roadmap_milestones WHERE id=? AND user_id=?');
     $stmt->execute([$milestoneId, $userId]);
+}
+
+/**
+ * Update an existing milestone title/description.
+ */
+function user_roadmap_update_milestone(int $milestoneId, int $userId, array $data): void
+{
+    user_roadmap_ensure_tables();
+    $title = trim((string)($data['title'] ?? ''));
+    if ($title === '' || mb_strlen($title) > 255) {
+        throw new InvalidArgumentException('Tiêu đề cột mốc phải từ 1 đến 255 ký tự.');
+    }
+    $desc = trim((string)($data['description'] ?? ''));
+    if (mb_strlen($desc) > 2000) $desc = mb_substr($desc, 0, 2000);
+
+    $stmt = db()->prepare('UPDATE user_roadmap_milestones SET title=?, description=? WHERE id=? AND user_id=?');
+    $stmt->execute([$title, $desc, $milestoneId, $userId]);
 }
 
 /**
