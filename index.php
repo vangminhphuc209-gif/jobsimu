@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1); require __DIR__.'/app/bootstrap.php';
 $page=is_string($_GET['page']??null)?$_GET['page']:'home';
+if($page==='may-chat-api') { require __DIR__.'/app/may-chat-api.php'; exit; }
+if($page==='admin-chatbot') { require __DIR__.'/app/admin-chatbot.php'; exit; }
 if($page==='university-compare') require __DIR__.'/app/university-compare.php';
 if($page==='university-explorer') require __DIR__.'/app/university-explorer.php';
 if(in_array($page,['majors','major-detail'],true)) require __DIR__.'/app/majors-explorer.php';

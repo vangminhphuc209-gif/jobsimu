@@ -20,14 +20,16 @@ foreach (['unknown', ['teacher-group'], '../config.php'] as $bad) {
 expect_conversation(career_conversation_select('')===null, 'General chat mode');
 expect_conversation(career_website_help('XEM KẾT QUẢ HOLLAND')[0]['id']==='report','Vietnamese guide lookup');
 expect_conversation(career_website_help('something unrelated')===[], 'No invented guide');
-$pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
-function db(): PDO {global $pdo;return $pdo;}
-$pdo->exec('CREATE TABLE ai_chat_messages(id INTEGER PRIMARY KEY,user_id INTEGER,role TEXT,message TEXT,model TEXT,created_at TEXT,context_snapshot TEXT)');
-$s=$pdo->prepare('INSERT INTO ai_chat_messages VALUES(?,?,?,?,?,?,?)');
-foreach ([[1,1,'user','general',null],[2,1,'user','teacher',['career_conversation'=>$catalog['teacher-group']]],[3,1,'assistant','teacher reply',['career_conversation'=>$catalog['teacher-group']]],[4,1,'user','developer',['career_conversation'=>$catalog['developer-bug']]],[5,2,'user','other user',['career_conversation'=>$catalog['teacher-group']]]] as [$id,$uid,$role,$message,$context]) {
-    $s->execute([$id,$uid,$role,$message,'fallback','2026-11-16',json_encode($context)]);
+if (in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+    $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
+    function db(): PDO {global $pdo;return $pdo;}
+    $pdo->exec('CREATE TABLE ai_chat_messages(id INTEGER PRIMARY KEY,user_id INTEGER,role TEXT,message TEXT,model TEXT,created_at TEXT,context_snapshot TEXT)');
+    $s=$pdo->prepare('INSERT INTO ai_chat_messages VALUES(?,?,?,?,?,?,?)');
+    foreach ([[1,1,'user','general',null],[2,1,'user','teacher',['career_conversation'=>$catalog['teacher-group']]],[3,1,'assistant','teacher reply',['career_conversation'=>$catalog['teacher-group']]],[4,1,'user','developer',['career_conversation'=>$catalog['developer-bug']]],[5,2,'user','other user',['career_conversation'=>$catalog['teacher-group']]]] as [$id,$uid,$role,$message,$context]) {
+        $s->execute([$id,$uid,$role,$message,'fallback','2026-11-16',json_encode($context)]);
+    }
+    expect_conversation(array_column(career_conversation_history(1,$catalog['teacher-group']),'message')===['teacher','teacher reply'],'Scenario isolation');
+    expect_conversation(count(career_conversation_history(1,$catalog['teacher-group'],2))===1,'No future message in request');
+    expect_conversation(array_column(career_conversation_history(1,null),'message')===['general'],'General history isolation');
 }
-expect_conversation(array_column(career_conversation_history(1,$catalog['teacher-group']),'message')===['teacher','teacher reply'],'Scenario isolation');
-expect_conversation(count(career_conversation_history(1,$catalog['teacher-group'],2))===1,'No future message in request');
-expect_conversation(array_column(career_conversation_history(1,null),'message')===['general'],'General history isolation');
 echo "Career conversation checks passed: catalog, prompts, provenance, fallback, guide lookup, validation and user/scenario isolation.\n";
