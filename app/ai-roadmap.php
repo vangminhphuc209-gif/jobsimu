@@ -138,273 +138,152 @@ $assessmentInsights = user_roadmap_derive_assessment_insights($userId);
 $libraryMilestones = user_roadmap_library_milestones();
 $stages = user_roadmap_stages();
 
-$pageTitle = 'AI & Bản đồ hành trình cá nhân';
+$pageTitle = 'Kế hoạch và Bản đồ hành trình cá nhân';
 require __DIR__ . '/header.php';
 ?>
 <section class="page-head no-print">
-    <div class="container">
-        <span class="eyebrow">Trung tâm 4 · Kết nối hiểu biết với hành động</span>
-        <h1>AI & Bản đồ hành trình cá nhân</h1>
-        <p>Học sinh tự làm chủ lộ trình: đặt mục tiêu riêng, nhận gợi ý từ các bài kiểm tra và chủ động nhờ AI cố vấn khi cần.</p>
+    <div class="container" style="max-width: var(--max-w-content);">
+        <span class="eyebrow">Hành trình của tôi · Kế hoạch cá nhân</span>
+        <h1 style="font-size: var(--text-3xl); font-weight: 800; margin: var(--space-2) 0 var(--space-3); color: var(--text);">Kế hoạch và Bản đồ hành trình cá nhân</h1>
+        <p style="font-size: var(--text-base); color: var(--muted); max-width: 680px; margin: 0; line-height: var(--leading-relaxed);">
+            Học sinh tự làm chủ lộ trình: đặt mục tiêu riêng, theo dõi các mốc hành động và chủ động nhờ AI gợi ý khi cần.
+        </p>
     </div>
 </section>
 
-<div class="container">
+<div class="container" style="max-width: var(--max-w-content); margin-top: var(--space-6); margin-bottom: var(--space-12);">
 
-<!-- KHỐI 1: TỔNG HỢP HỒ SƠ ĐA CHIỀU (GIỮ BẢO TOÀN KIẾN TRÚC) -->
-<section class="card no-print" aria-labelledby="profile-summary">
-    <h2 id="profile-summary">Hồ sơ đa chiều của bạn</h2>
-    <div class="grid-3">
-        <div>
-            <h3>Holland (RIASEC)</h3>
-            <p><strong><?=e($context['holland']['code'] ?? 'Chưa có kết quả')?></strong></p>
-            <a href="<?=url('index.php?page=assessment-report')?>">Xem báo cáo đánh giá →</a>
-        </div>
-        <div>
-            <h3>Tính cách & Thích ứng</h3>
-            <p>MBTI: <?=e($context['psychometrics']['mbti']['code'] ?? 'Chưa thực hiện')?></p>
-            <p>Big Five: <?=isset($context['psychometrics']['big5'])?'Đã có hồ sơ khoa học':'Chưa thực hiện'?></p>
-            <p>EQ: <?=isset($context['psychometrics']['eq'])?'Đã có hồ sơ tự nhận xét':'Chưa thực hiện'?></p>
-        </div>
-        <div>
-            <h3>Bằng chứng trải nghiệm</h3>
-            <p><?=count($context['experiences'])?> trải nghiệm gần nhất được tổng hợp (tối đa 5).</p>
-            <a href="<?=url('index.php?page=simulations')?>">Mở nhật ký trải nghiệm →</a>
-        </div>
-    </div>
-    <p class="muted">Các kết quả chỉ hỗ trợ khám phá, không phải chẩn đoán hay thước đo giá trị của bạn. Trợ lý không tự ý suy đoán khi chưa có dữ liệu quan sát.</p>
-</section>
-
-<!-- KHỐI 2: SUY RA TỪ KẾT QUẢ CÁC BÀI ĐÁNH GIÁ TRƯỚC (YÊU CẦU CỐT LÕI) -->
-<section id="assessment-insights" class="card no-print" style="border: 2px solid #e0e7ff; background: #fafbff;" aria-labelledby="insights-title">
-    <div class="flex flex-wrap items-center justify-between gap-3" style="margin-bottom: 16px;">
-        <div>
-            <span class="eyebrow" style="color: #4f46e5;">Đặc tính cá nhân hóa từ bài đánh giá</span>
-            <h2 id="insights-title" style="margin: 4px 0 0;">🧭 Phân tích & Gợi ý từ các bài kiểm tra của bạn</h2>
-        </div>
-        <div>
-            <span class="badge" style="background: #eef2ff; color: #4338ca; font-weight: 600; padding: 6px 12px; border-radius: 9999px;">
-                Đã hoàn thành <?= $assessmentInsights['tests_count'] ?> dữ liệu đánh giá
-            </span>
-        </div>
-    </div>
-
-    <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px;">
-        <div style="background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
-            <h3 style="font-size: 1.05rem; color: #1e293b; margin-top: 0;">✨ Điểm mạnh & Thiên hướng nhận diện</h3>
-            <?php if (!empty($assessmentInsights['strengths'])): ?>
-                <ul style="padding-left: 20px; margin: 8px 0; color: #334155; line-height: 1.6;">
-                    <?php foreach ($assessmentInsights['strengths'] as $s): ?>
-                        <li><?= e($s) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p class="muted">Chưa có kết quả kiểm tra. Hãy làm bài đánh giá để phát hiện điểm mạnh tự nhiên.</p>
-            <?php endif; ?>
-        </div>
-
-        <div style="background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #e2e8f0;">
-            <h3 style="font-size: 1.05rem; color: #1e293b; margin-top: 0;">⚠️ Vùng cần lưu ý & Ranh giới thực tế</h3>
-            <?php if (!empty($assessmentInsights['growth_areas'])): ?>
-                <ul style="padding-left: 20px; margin: 8px 0; color: #334155; line-height: 1.6;">
-                    <?php foreach ($assessmentInsights['growth_areas'] as $g): ?>
-                        <li><?= e($g) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p class="muted">Hồ sơ cân bằng hoặc chưa hoàn thành khảo sát Cổng đánh đổi.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Gợi ý nghề mục tiêu từ bài đánh giá -->
-    <?php if (!empty($assessmentInsights['suggested_careers'])): ?>
-    <div style="background: #f1f5f9; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
-        <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em;">Nghề tương thích từ kết quả đánh giá (Bấm để chọn làm mục tiêu):</h4>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-            <?php foreach ($assessmentInsights['suggested_careers'] as $c): ?>
-                <button type="button" class="btn btn-outline apply-career-goal" data-career-title="<?= e($c['title']) ?>" style="background: #fff; font-size: 0.9rem;">
-                    🎯 <?= e($c['title']) ?> (Độ khớp: <?= (int)$c['match_percent'] ?>%)
-                </button>
-            <?php endforeach; ?>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Các cột mốc đề xuất tương ứng với điểm mạnh / rào cản -->
-    <div>
-        <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: 12px;">
-            <h3 style="font-size: 1.05rem; margin: 0; color: #1e293b;">📋 Cột mốc hành động gợi ý từ bài kiểm tra:</h3>
-            <?php if (!empty($assessmentInsights['recommended_milestones'])): ?>
-            <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="action" value="apply_all_suggestions">
-                <button type="submit" class="btn btn-primary" style="font-size: 0.85rem; padding: 6px 14px;">
-                    📥 Thêm tất cả gợi ý vào hành trình của tôi
-                </button>
-            </form>
-            <?php endif; ?>
-        </div>
-
-        <?php if (!empty($assessmentInsights['recommended_milestones'])): ?>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
-                <?php foreach ($assessmentInsights['recommended_milestones'] as $rm): ?>
-                    <div style="background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <span class="badge" style="background: #f8fafc; border: 1px solid #e2e8f0; font-size: 0.75rem; color: #64748b; margin-bottom: 6px; display: inline-block;">
-                                <?= e($stages[$rm['stage']]['title'] ?? $rm['stage']) ?>
-                            </span>
-                            <h4 style="margin: 4px 0 8px; font-size: 0.95rem; color: #0f172a;"><?= e($rm['title']) ?></h4>
-                            <p style="margin: 0; font-size: 0.85rem; color: #475569; line-height: 1.5;"><?= e($rm['description']) ?></p>
-                        </div>
-                        <div style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                            <?php if (!empty($rm['action_url'])): ?>
-                                <a href="<?= url($rm['action_url']) ?>" class="btn btn-outline" style="font-size: 0.8rem; padding: 4px 10px;">Thực hiện →</a>
-                            <?php else: ?>
-                                <span></span>
-                            <?php endif; ?>
-                            <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
-                                <?= csrf_field() ?>
-                                <input type="hidden" name="action" value="add_milestone">
-                                <input type="hidden" name="stage" value="<?= e($rm['stage']) ?>">
-                                <input type="hidden" name="title" value="<?= e($rm['title']) ?>">
-                                <input type="hidden" name="description" value="<?= e($rm['description']) ?>">
-                                <input type="hidden" name="action_url" value="<?= e($rm['action_url']) ?>">
-                                <input type="hidden" name="source" value="assessment">
-                                <button type="submit" class="btn btn-outline" style="font-size: 0.8rem; padding: 4px 10px; color: #4338ca; border-color: #c7d2fe;">
-                                    + Thêm vào hành trình
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p class="muted">Chưa có đề xuất cụ thể. Hãy hoàn thành các bài trắc nghiệm để nhận gợi ý chuẩn.</p>
-        <?php endif; ?>
-    </div>
-</section>
-
-<!-- KHỐI 3: HÀNH TRÌNH TỰ CHỦ CỦA BẠN (USER-AUTHORED CAREER ROADMAP) -->
-<section id="user-roadmap" class="card roadmap-print" aria-labelledby="roadmap-main-title" style="margin-top: 24px;">
+<!-- KHỐI 1 (ƯU TIÊN HÀNG ĐẦU): HÀNH TRÌNH TỰ CHỦ CỦA BẠN (USER-AUTHORED CAREER ROADMAP) -->
+<section id="user-roadmap" class="card roadmap-print" aria-labelledby="roadmap-main-title" style="margin-bottom: var(--space-6); border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);">
     <!-- Tiêu đề & Thông tin Hành trình -->
-    <div class="flex flex-wrap items-center justify-between gap-3" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 18px;">
+    <div class="flex flex-wrap items-center justify-between gap-3" style="border-bottom: 1px solid var(--border); padding-bottom: var(--space-4); margin-bottom: var(--space-5);">
         <div>
-            <span class="eyebrow">Bản đồ hành trình tự chủ của bạn</span>
-            <h2 id="roadmap-main-title" style="margin: 4px 0 0;"><?= e(user()['name']) ?> · <?= e($roadmap['target_timeframe']) ?></h2>
-            <p style="margin: 6px 0 0; font-size: 1.05rem; color: #334155;">
-                🎯 <strong>Mục tiêu:</strong> <span id="display-goal-title"><?= e($roadmap['goal_title']) ?></span>
+            <span class="eyebrow" style="color: var(--primary);">Kế hoạch hành động cá nhân</span>
+            <h2 id="roadmap-main-title" style="margin: var(--space-1) 0 0; font-size: var(--text-2xl); font-weight: 700; color: var(--text);">
+                <?= e(user()['name']) ?> · <?= e($roadmap['target_timeframe']) ?>
+            </h2>
+            <div style="margin-top: var(--space-2); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                <span style="font-size: var(--text-base); color: var(--text);">
+                    🎯 <strong>Mục tiêu:</strong> <span id="display-goal-title" style="font-weight: 600;"><?= e($roadmap['goal_title']) ?></span>
+                </span>
                 <?php if (!empty($roadmap['target_career_title'])): ?>
-                    <span style="color: #64748b;">· Nghề hướng tới: <strong style="color: #4f46e5;"><?= e($roadmap['target_career_title']) ?></strong></span>
+                    <span class="badge" style="background: var(--primary-light); color: var(--primary); font-weight: 600; padding: 3px 8px;">
+                        Nghề hướng tới: <?= e($roadmap['target_career_title']) ?>
+                    </span>
                 <?php endif; ?>
-            </p>
+            </div>
+            <?php if (!empty($roadmap['notes'])): ?>
+                <p style="margin: var(--space-2) 0 0; font-size: var(--text-sm); color: var(--muted); font-style: italic;">
+                    "<?= e($roadmap['notes']) ?>"
+                </p>
+            <?php endif; ?>
         </div>
         <div class="flex flex-wrap gap-2 no-print">
-            <button type="button" class="btn btn-outline" id="toggle-goal-edit-btn">✏️ Sửa mục tiêu</button>
-            <button type="button" class="btn btn-outline" id="print-roadmap">🖨️ Xuất PDF / In</button>
+            <button type="button" class="btn btn-outline" id="toggle-goal-edit-btn" style="font-size: var(--text-sm);">✏️ Sửa mục tiêu</button>
+            <button type="button" class="btn btn-outline" id="print-roadmap" style="font-size: var(--text-sm);">🖨️ Xuất PDF / In</button>
         </div>
     </div>
 
     <!-- Form Chỉnh sửa Mục tiêu (Ẩn/Hiện) -->
-    <div id="goal-edit-container" class="no-print" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px; margin-bottom: 24px;">
-        <h3 style="margin-top: 0; font-size: 1.05rem;">Chỉnh sửa mục tiêu & hướng đi của bạn</h3>
+    <div id="goal-edit-container" class="no-print" style="display: none; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-6);">
+        <h3 style="margin-top: 0; font-size: var(--text-base); font-weight: 700; color: var(--text);">Chỉnh sửa mục tiêu & hướng đi của bạn</h3>
         <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="update_goal">
-            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4);">
                 <div class="form-group">
-                    <label for="input-goal-title"><strong>Mục tiêu lớn của bạn</strong></label>
-                    <input class="input" id="input-goal-title" name="goal_title" value="<?= e($roadmap['goal_title']) ?>" required maxlength="255">
+                    <label for="input-goal-title" style="font-size: var(--text-sm); font-weight: 600;">Mục tiêu lớn của bạn *</label>
+                    <input class="input" id="input-goal-title" name="goal_title" value="<?= e($roadmap['goal_title']) ?>" required maxlength="255" style="width: 100%;">
                 </div>
                 <div class="form-group">
-                    <label for="input-career-title"><strong>Nghề đích / Lĩnh vực quan tâm</strong></label>
-                    <input class="input" id="input-career-title" name="target_career_title" value="<?= e($roadmap['target_career_title']) ?>" placeholder="Ví dụ: Lập trình viên, Giáo viên, Dữ liệu..." maxlength="200">
-                </div>
-            </div>
-            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 10px;">
-                <div class="form-group">
-                    <label for="input-timeframe"><strong>Giai đoạn / Khung thời gian</strong></label>
-                    <input class="input" id="input-timeframe" name="target_timeframe" value="<?= e($roadmap['target_timeframe']) ?>" placeholder="Ví dụ: Lớp 10 - 12, Năm 2026-2027..." maxlength="100">
-                </div>
-                <div class="form-group">
-                    <label for="input-notes"><strong>Ghi chú / Động lực cá nhân</strong></label>
-                    <input class="input" id="input-notes" name="notes" value="<?= e($roadmap['notes']) ?>" placeholder="Ghi chú điều bạn muốn đạt được..." maxlength="2000">
+                    <label for="input-career-title" style="font-size: var(--text-sm); font-weight: 600;">Nghề đích / Lĩnh vực quan tâm</label>
+                    <input class="input" id="input-career-title" name="target_career_title" value="<?= e($roadmap['target_career_title']) ?>" placeholder="Ví dụ: Lập trình viên, Giáo viên, Bác sĩ..." maxlength="200" style="width: 100%;">
                 </div>
             </div>
-            <div style="margin-top: 14px; display: flex; gap: 10px;">
-                <button type="submit" class="btn btn-primary">Lưu mục tiêu</button>
-                <button type="button" class="btn btn-outline" id="cancel-goal-edit-btn">Hủy</button>
+            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-top: var(--space-3);">
+                <div class="form-group">
+                    <label for="input-timeframe" style="font-size: var(--text-sm); font-weight: 600;">Giai đoạn / Khung thời gian</label>
+                    <input class="input" id="input-timeframe" name="target_timeframe" value="<?= e($roadmap['target_timeframe']) ?>" placeholder="Ví dụ: Lớp 10 - 12, Năm 2026-2027..." maxlength="100" style="width: 100%;">
+                </div>
+                <div class="form-group">
+                    <label for="input-notes" style="font-size: var(--text-sm); font-weight: 600;">Ghi chú / Động lực cá nhân</label>
+                    <input class="input" id="input-notes" name="notes" value="<?= e($roadmap['notes']) ?>" placeholder="Điều thôi thúc bạn muốn đạt được mục tiêu này..." maxlength="2000" style="width: 100%;">
+                </div>
+            </div>
+            <div style="margin-top: var(--space-4); display: flex; gap: var(--space-2);">
+                <button type="submit" class="btn btn-primary" style="font-size: var(--text-sm);">Lưu mục tiêu</button>
+                <button type="button" class="btn btn-outline" id="cancel-goal-edit-btn" style="font-size: var(--text-sm);">Hủy</button>
             </div>
         </form>
     </div>
 
     <!-- Thanh tiến độ tổng quan -->
-    <div style="margin-bottom: 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px;">
-        <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: 8px;">
-            <span style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">Tiến độ thực hiện hành trình:</span>
-            <span id="progress-text" style="font-weight: 700; color: #4f46e5; font-size: 1.1rem;">
+    <div style="margin-bottom: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4);">
+        <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: var(--space-2);">
+            <span style="font-weight: 700; color: var(--text); font-size: var(--text-base);">Tiến độ thực hiện hành trình:</span>
+            <span id="progress-text" style="font-weight: 700; color: var(--primary); font-size: var(--text-base);">
                 <?= $progress['percent'] ?>% (Hoàn thành <?= $progress['completed'] ?> / <?= $progress['total'] ?> cột mốc)
             </span>
         </div>
-        <div style="width: 100%; height: 12px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
-            <div id="progress-bar-fill" style="width: <?= $progress['percent'] ?>%; height: 100%; background: linear-gradient(90deg, #4f46e5, #10b981); transition: width 0.3s ease;"></div>
+        <div style="width: 100%; height: 10px; background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-full); overflow: hidden;">
+            <div id="progress-bar-fill" style="width: <?= $progress['percent'] ?>%; height: 100%; background: var(--primary); transition: width 0.3s ease;"></div>
         </div>
     </div>
 
-    <!-- KHỐI AI CỐ VẤN HÀNH TRÌNH (CHỈ KÍCH HOẠT KHI USER CHỦ ĐỘNG BẤM NÚT AI) -->
-    <div class="no-print" style="margin-bottom: 28px;">
-        <div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 1px solid #ddd6fe; border-radius: 14px; padding: 18px;">
+    <!-- KHỐI TRỢ LÝ AI CỐ VẤN HÀNH TRÌNH (CHỈ KÍCH HOẠT KHI HỌC SINH CHỦ ĐỘNG YÊU CẦU) -->
+    <div id="ai-copilot-section" class="no-print" style="margin-bottom: var(--space-6);">
+        <div style="background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4);">
             <div class="flex flex-wrap items-center justify-between gap-3">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 1.8rem;">✨</span>
+                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                    <span style="font-size: 1.5rem;" aria-hidden="true">✨</span>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.1rem; color: #4c1d95;">Trợ lý AI Cố Vấn Hành Trình</h3>
-                        <p style="margin: 4px 0 0; font-size: 0.9rem; color: #6b21a8;">
-                            AI chỉ hỗ trợ khi bạn chủ động yêu cầu. Phân tích mục tiêu và đồng hành giải đáp mọi thắc mắc.
+                        <h3 style="margin: 0; font-size: var(--text-base); font-weight: 700; color: var(--text);">Trợ lý AI Cố Vấn Lộ Trình</h3>
+                        <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted);">
+                            AI chỉ hoạt động khi bạn bấm yêu cầu. Phân tích mục tiêu và gợi ý 3 mốc hành động thực tế tiếp theo.
                         </p>
                     </div>
                 </div>
-                <button type="button" class="btn" id="toggle-ai-copilot-btn" style="background: #7c3aed; color: #fff; font-weight: 600; padding: 10px 18px; border-radius: 10px; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);">
+                <button type="button" class="btn btn-outline" id="toggle-ai-copilot-btn" style="border-color: var(--primary); color: var(--primary); font-weight: 600; font-size: var(--text-sm);">
                     ✨ Mở Trợ Lý AI Lộ Trình
                 </button>
             </div>
 
-            <!-- Panel AI On-Demand (Ẩn mặc định, chỉ mở khi user bấm nút) -->
-            <div id="ai-copilot-panel" style="display: none; margin-top: 18px; padding-top: 18px; border-top: 1px dashed #c4b5fd;">
-                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+            <!-- Panel AI On-Demand (Ẩn mặc định) -->
+            <div id="ai-copilot-panel" style="display: none; margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px dashed var(--border);">
+                <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4);">
                     <!-- Option 1: AI Gợi ý Cột mốc thông minh -->
-                    <div style="background: #fff; padding: 16px; border-radius: 10px; border: 1px solid #ddd6fe;">
-                        <h4 style="margin: 0 0 8px; font-size: 1rem; color: #5b21b6;">1. Sinh cột mốc hành động thông minh</h4>
-                        <p style="margin: 0 0 12px; font-size: 0.85rem; color: #64748b;">
-                            AI sẽ đọc mục tiêu hiện tại (<strong><?= e($roadmap['target_career_title'] ?: $roadmap['goal_title']) ?></strong>) cùng hồ sơ đánh giá để sinh 3 cột mốc thực tế nhất.
+                    <div style="background: var(--surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                        <h4 style="margin: 0 0 var(--space-2); font-size: var(--text-sm); font-weight: 700; color: var(--text);">1. Sinh 3 cột mốc hành động theo mục tiêu</h4>
+                        <p style="margin: 0 0 var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
+                            AI phân tích mục tiêu <strong>"<?= e($roadmap['target_career_title'] ?: $roadmap['goal_title']) ?>"</strong> và hồ sơ của bạn để đề xuất 3 bước hành động cụ thể.
                         </p>
-                        <button type="button" class="btn btn-outline" id="btn-request-ai-milestones" style="border-color: #8b5cf6; color: #6d28d9; font-size: 0.9rem;">
+                        <button type="button" class="btn btn-outline" id="btn-request-ai-milestones" style="font-size: var(--text-xs); border-color: var(--primary); color: var(--primary);">
                             ✨ Nhờ AI gợi ý 3 cột mốc mới
                         </button>
-                        <div id="ai-milestones-loading" style="display: none; margin-top: 10px; font-size: 0.85rem; color: #6d28d9;">
+                        <div id="ai-milestones-loading" style="display: none; margin-top: var(--space-2); font-size: var(--text-xs); color: var(--primary);">
                             ⏳ Đang phân tích hồ sơ và tạo cột mốc phù hợp...
                         </div>
-                        <div id="ai-milestones-result" style="margin-top: 14px;"></div>
+                        <div id="ai-milestones-result" style="margin-top: var(--space-3);"></div>
                     </div>
 
                     <!-- Option 2: Hỏi nhanh AI về lộ trình -->
-                    <div style="background: #fff; padding: 16px; border-radius: 10px; border: 1px solid #ddd6fe;">
-                        <h4 style="margin: 0 0 8px; font-size: 1rem; color: #5b21b6;">2. Hỏi đáp nhanh về lộ trình học tập</h4>
-                        <p style="margin: 0 0 12px; font-size: 0.85rem; color: #64748b;">
-                            Hỏi về môn học cần chú trọng, phân bổ thời gian hoặc cách vượt qua rào cản.
+                    <div style="background: var(--surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                        <h4 style="margin: 0 0 var(--space-2); font-size: var(--text-sm); font-weight: 700; color: var(--text);">2. Hỏi đáp nhanh về lộ trình học tập</h4>
+                        <p style="margin: 0 0 var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
+                            Bấm câu hỏi gợi ý để chuyển nhanh xuống khung trò chuyện cố vấn bên dưới.
                         </p>
-                        <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                                <button type="button" class="btn btn-outline quick-ai-ask" data-ask="Với mục tiêu <?= e($roadmap['target_career_title'] ?: 'nghề này') ?>, tôi nên tập trung vào môn học nào trước?" style="font-size: 0.75rem; padding: 4px 8px;">
-                                    Nên tập trung môn gì?
+                        <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                            <div style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
+                                <button type="button" class="btn btn-outline quick-ai-ask" data-ask="Với mục tiêu <?= e($roadmap['target_career_title'] ?: 'nghề này') ?>, tôi nên tập trung vào môn học nào trước?" style="font-size: var(--text-xs); padding: 4px 8px;">
+                                    Tập trung môn gì?
                                 </button>
-                                <button type="button" class="btn btn-outline quick-ai-ask" data-ask="Làm thế nào để biết lộ trình này có quá sức với tôi không?" style="font-size: 0.75rem; padding: 4px 8px;">
-                                    Lộ trình có quá sức?
+                                <button type="button" class="btn btn-outline quick-ai-ask" data-ask="Làm thế nào để biết lộ trình này có vừa sức với học sinh THCS/THPT không?" style="font-size: var(--text-xs); padding: 4px 8px;">
+                                    Lộ trình có vừa sức?
                                 </button>
                             </div>
-                            <div style="margin-top: 8px;">
-                                <a href="#career-chat" class="btn btn-outline" style="font-size: 0.85rem; width: 100%; text-align: center;">
-                                    💬 Chuyển xuống khung trò chuyện AI chi tiết ↓
+                            <div style="margin-top: var(--space-2);">
+                                <a href="#career-chat" class="btn btn-outline" style="font-size: var(--text-xs); width: 100%; text-align: center;">
+                                    💬 Chuyển xuống khung trò chuyện AI ↓
                                 </a>
                             </div>
                         </div>
@@ -421,60 +300,60 @@ require __DIR__ . '/header.php';
             $items = $stageData['items'];
             $libItems = $libraryMilestones[$stageKey] ?? [];
         ?>
-        <div class="stage-card" style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 22px;">
-            <div class="flex flex-wrap items-center justify-between gap-2" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.5rem;"><?= $stageMeta['icon'] ?></span>
+        <div class="stage-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-4);">
+            <div class="flex flex-wrap items-center justify-between gap-2" style="border-bottom: 1px solid var(--border); padding-bottom: var(--space-3); margin-bottom: var(--space-4);">
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                    <span style="font-size: 1.25rem;" aria-hidden="true"><?= $stageMeta['icon'] ?></span>
                     <div>
-                        <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a;"><?= e($stageMeta['title']) ?></h3>
-                        <p style="margin: 2px 0 0; font-size: 0.85rem; color: #64748b;"><?= e($stageMeta['summary']) ?></p>
+                        <h3 style="margin: 0; font-size: var(--text-base); font-weight: 700; color: var(--text);"><?= e($stageMeta['title']) ?></h3>
+                        <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted);"><?= e($stageMeta['summary']) ?></p>
                     </div>
                 </div>
                 <div>
-                    <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.85rem; padding: 4px 10px; border-radius: 9999px;">
+                    <span class="badge" style="background: var(--surface-alt); color: var(--text); font-size: var(--text-xs); padding: 4px 8px; border: 1px solid var(--border);">
                         <?= $stageData['completed_count'] ?> / <?= $stageData['total_count'] ?> hoàn thành
                     </span>
                 </div>
             </div>
 
-            <!-- Danh sách Cột mốc Hiện tại của User -->
-            <div class="milestones-list" id="stage-milestones-<?= $stageKey ?>" style="margin-bottom: 16px;">
+            <!-- Danh sách Cột mốc Hiện tại của User (Checklist dạng thẻ rõ ràng) -->
+            <div class="milestones-list" id="stage-milestones-<?= $stageKey ?>" style="margin-bottom: var(--space-4);">
                 <?php if (empty($items)): ?>
-                    <div class="muted empty-stage-note" style="padding: 12px 0; font-size: 0.9rem; font-style: italic;">
+                    <div class="empty-stage-note" style="padding: var(--space-3); font-size: var(--text-sm); color: var(--muted); font-style: italic; background: var(--surface-alt); border-radius: var(--radius-sm); border: 1px dashed var(--border);">
                         Chưa có cột mốc nào trong giai đoạn này. Hãy chọn từ gợi ý bên dưới hoặc tự thêm cột mốc riêng.
                     </div>
                 <?php else: ?>
                     <?php foreach ($items as $m): ?>
-                    <div class="milestone-item <?= $m['is_completed'] ? 'is-completed' : '' ?>" id="milestone-row-<?= $m['id'] ?>" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 12px 14px; margin-bottom: 10px; border-radius: 8px; border: 1px solid <?= $m['is_completed'] ? '#bbf7d0' : '#e2e8f0' ?>; background: <?= $m['is_completed'] ? '#f0fdf4' : '#fafafa' ?>;">
-                        <div style="display: flex; align-items: flex-start; gap: 12px; flex: 1;">
+                    <div class="milestone-item <?= $m['is_completed'] ? 'is-completed' : '' ?>" id="milestone-row-<?= $m['id'] ?>" style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); margin-bottom: var(--space-2); border-radius: var(--radius-sm); border: 1px solid <?= $m['is_completed'] ? 'var(--success)' : 'var(--border)' ?>; background: <?= $m['is_completed'] ? '#f0fdf4' : 'var(--surface)' ?>;">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-3); flex: 1;">
                             <!-- Checkbox toggle -->
-                            <input type="checkbox" class="milestone-toggle-check" data-id="<?= $m['id'] ?>" <?= $m['is_completed'] ? 'checked' : '' ?> style="width: 20px; height: 20px; margin-top: 3px; cursor: pointer; accent-color: #10b981;">
+                            <input type="checkbox" class="milestone-toggle-check" data-id="<?= $m['id'] ?>" <?= $m['is_completed'] ? 'checked' : '' ?> style="width: 18px; height: 18px; margin-top: 3px; cursor: pointer; accent-color: var(--success);" aria-label="Đánh dấu hoàn thành cột mốc">
                             <div>
-                                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                                    <strong class="milestone-title-text" style="font-size: 0.95rem; color: <?= $m['is_completed'] ? '#15803d' : '#1e293b' ?>; <?= $m['is_completed'] ? 'text-decoration: line-through;' : '' ?>">
+                                <div style="display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;">
+                                    <strong class="milestone-title-text" style="font-size: var(--text-sm); color: <?= $m['is_completed'] ? 'var(--success)' : 'var(--text)' ?>; <?= $m['is_completed'] ? 'text-decoration: line-through;' : '' ?>">
                                         <?= e($m['title']) ?>
                                     </strong>
-                                    <!-- Source Badge -->
+                                    <!-- Source Badge phân biệt nguồn -->
                                     <?php if ($m['source'] === 'assessment'): ?>
-                                        <span class="badge" style="background: #e0e7ff; color: #4338ca; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;">Từ đánh giá</span>
+                                        <span class="badge" style="background: #e0e7ff; color: #4338ca; font-size: 0.7rem; padding: 2px 6px;">Từ đánh giá</span>
                                     <?php elseif ($m['source'] === 'ai'): ?>
-                                        <span class="badge" style="background: #f5f3ff; color: #7c3aed; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;">✨ AI gợi ý</span>
+                                        <span class="badge" style="background: var(--primary-light); color: var(--primary); font-size: 0.7rem; padding: 2px 6px;">✨ AI gợi ý</span>
                                     <?php elseif ($m['source'] === 'custom'): ?>
-                                        <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;">Tự lập</span>
+                                        <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 0.7rem; padding: 2px 6px;">Tự lập</span>
                                     <?php else: ?>
-                                        <span class="badge" style="background: #f1f5f9; color: #64748b; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px;">Gợi ý mẫu</span>
+                                        <span class="badge" style="background: var(--surface-alt); color: var(--muted); font-size: 0.7rem; padding: 2px 6px;">Gợi ý mẫu</span>
                                     <?php endif; ?>
                                 </div>
                                 <?php if (!empty($m['description'])): ?>
-                                    <p style="margin: 4px 0 0; font-size: 0.85rem; color: #64748b; line-height: 1.5;"><?= e($m['description']) ?></p>
+                                    <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);"><?= e($m['description']) ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <!-- Actions -->
-                        <div class="no-print" style="display: flex; align-items: center; gap: 8px;">
+                        <div class="no-print" style="display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0;">
                             <?php if (!empty($m['action_url'])): ?>
-                                <a href="<?= url($m['action_url']) ?>" class="btn btn-outline" style="font-size: 0.75rem; padding: 3px 8px; white-space: nowrap;">
+                                <a href="<?= url($m['action_url']) ?>" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; white-space: nowrap;">
                                     Mở →
                                 </a>
                             <?php endif; ?>
@@ -482,7 +361,7 @@ require __DIR__ . '/header.php';
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete_milestone">
                                 <input type="hidden" name="milestone_id" value="<?= $m['id'] ?>">
-                                <button type="submit" class="btn btn-outline" style="font-size: 0.75rem; padding: 3px 8px; color: #ef4444; border-color: #fca5a5;" title="Xóa cột mốc">
+                                <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; color: var(--danger); border-color: var(--danger);" title="Xóa cột mốc">
                                     ✕
                                 </button>
                             </form>
@@ -492,43 +371,43 @@ require __DIR__ . '/header.php';
                 <?php endif; ?>
             </div>
 
-            <!-- Form Tự Thêm Cột Mốc Mới (Người dùng tự đưa ra hành trình) -->
-            <details class="no-print" style="margin-top: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px;">
-                <summary style="font-weight: 600; font-size: 0.9rem; color: #2563eb; cursor: pointer;">
+            <!-- Form Tự Thêm Cột Mốc Mới -->
+            <details class="no-print" style="margin-top: var(--space-3); background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3);">
+                <summary style="font-weight: 600; font-size: var(--text-xs); color: var(--primary); cursor: pointer;">
                     + Tự viết cột mốc riêng của bạn trong giai đoạn này
                 </summary>
-                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin-top: 12px;">
+                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin-top: var(--space-3);">
                     <?= csrf_field() ?>
                     <input type="hidden" name="action" value="add_milestone">
                     <input type="hidden" name="stage" value="<?= $stageKey ?>">
                     <input type="hidden" name="source" value="custom">
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <label style="font-size: 0.85rem; font-weight: 600;">Tên nhiệm vụ / Cột mốc:</label>
-                        <input class="input" name="title" required maxlength="255" placeholder="Ví dụ: Ôn tập 5 đề thi môn Toán, phỏng vấn một người đi trước...">
+                    <div class="form-group" style="margin-bottom: var(--space-2);">
+                        <label style="font-size: var(--text-xs); font-weight: 600;">Tên nhiệm vụ / Cột mốc *</label>
+                        <input class="input" name="title" required maxlength="255" placeholder="Ví dụ: Ôn tập 5 đề thi môn Toán, phỏng vấn một anh chị đi trước..." style="width: 100%;">
                     </div>
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <label style="font-size: 0.85rem; font-weight: 600;">Mô tả / Hướng dẫn tự đặt:</label>
-                        <textarea class="input" name="description" rows="2" maxlength="2000" placeholder="Chi tiết cách bạn sẽ thực hiện nhiệm vụ này..."></textarea>
+                    <div class="form-group" style="margin-bottom: var(--space-3);">
+                        <label style="font-size: var(--text-xs); font-weight: 600;">Ghi chú thực hiện:</label>
+                        <textarea class="input" name="description" rows="2" maxlength="2000" placeholder="Chi tiết cách bạn sẽ hoàn thành nhiệm vụ này..." style="width: 100%;"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="font-size: 0.85rem; padding: 6px 14px;">
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 5px 12px;">
                         Lưu vào hành trình
                     </button>
                 </form>
             </details>
 
-            <!-- Thư Viện Cột Mốc Mẫu Từ Website (Website Suggests Milestones) -->
-            <details class="no-print" style="margin-top: 10px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 10px 14px;">
-                <summary style="font-weight: 600; font-size: 0.85rem; color: #475569; cursor: pointer;">
-                    💡 Xem gợi ý mẫu từ website cho giai đoạn này (<?= count($libItems) ?> gợi ý)
+            <!-- Thư Viện Cột Mốc Mẫu Từ Website -->
+            <details class="no-print" style="margin-top: var(--space-2); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: var(--space-3);">
+                <summary style="font-weight: 600; font-size: var(--text-xs); color: var(--muted); cursor: pointer;">
+                    💡 Gợi ý mẫu từ thư viện website (<?= count($libItems) ?> mẫu)
                 </summary>
-                <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="margin-top: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2);">
                     <?php foreach ($libItems as $lib): ?>
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #f1f5f9;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); background: var(--surface-alt); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
                         <div>
-                            <strong style="font-size: 0.85rem; color: #334155;"><?= e($lib['title']) ?></strong>
-                            <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;"><?= e($lib['description']) ?></p>
+                            <strong style="font-size: var(--text-xs); color: var(--text);"><?= e($lib['title']) ?></strong>
+                            <p style="margin: 2px 0 0; font-size: var(--text-xs); color: var(--muted);"><?= e($lib['description']) ?></p>
                         </div>
-                        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
+                        <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0; flex-shrink: 0;">
                             <?= csrf_field() ?>
                             <input type="hidden" name="action" value="add_milestone">
                             <input type="hidden" name="stage" value="<?= $stageKey ?>">
@@ -536,7 +415,7 @@ require __DIR__ . '/header.php';
                             <input type="hidden" name="description" value="<?= e($lib['description']) ?>">
                             <input type="hidden" name="action_url" value="<?= e($lib['action_url']) ?>">
                             <input type="hidden" name="source" value="suggested">
-                            <button type="submit" class="btn btn-outline" style="font-size: 0.75rem; padding: 4px 8px; white-space: nowrap;">
+                            <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; white-space: nowrap;">
                                 + Chọn
                             </button>
                         </form>
@@ -548,39 +427,198 @@ require __DIR__ . '/header.php';
         <?php endforeach; ?>
     </div>
 
-    <p class="muted" style="margin-top: 20px;">
+    <p style="margin-top: var(--space-4); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
         Bản đồ hành trình là công cụ hướng dẫn cá nhân, có thể điều chỉnh bất kỳ lúc nào theo sự trưởng thành và điều kiện thực tế của bạn. Hãy chia sẻ với giáo viên hoặc gia đình để nhận thêm lời khuyên.
     </p>
 </section>
 
+<!-- KHỐI 2 (COLLAPSIBLE): PHÂN TÍCH & GỢI Ý TỪ KẾT QUẢ CÁC BÀI ĐÁNH GIÁ TRƯỚC -->
+<details id="assessment-insights" class="card no-print" style="margin-bottom: var(--space-6); border: 1px solid var(--border);" <?= $assessmentInsights['tests_count'] > 0 ? '' : '' ?>>
+    <summary style="cursor: pointer; padding: var(--space-2) 0; display: flex; align-items: center; justify-content: space-between; list-style: none;">
+        <div style="display: flex; align-items: center; gap: var(--space-2);">
+            <span style="font-size: 1.25rem;" aria-hidden="true">🧭</span>
+            <div>
+                <strong style="font-size: var(--text-base); color: var(--text);">Phân tích & Gợi ý từ các bài kiểm tra đã làm</strong>
+                <span class="badge" style="background: var(--primary-light); color: var(--primary); font-size: var(--text-xs); margin-left: var(--space-2);">
+                    <?= $assessmentInsights['tests_count'] ?> dữ liệu đánh giá
+                </span>
+            </div>
+        </div>
+        <span style="font-size: var(--text-xs); color: var(--primary); font-weight: 600;">Xem chi tiết & gợi ý ▼</span>
+    </summary>
+
+    <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+        <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+            <div style="background: var(--surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--text); margin-top: 0;">✨ Điểm mạnh & Thiên hướng nhận diện</h4>
+                <?php if (!empty($assessmentInsights['strengths'])): ?>
+                    <ul style="padding-left: var(--space-4); margin: var(--space-2) 0; color: var(--text); line-height: var(--leading-relaxed); font-size: var(--text-xs);">
+                        <?php foreach ($assessmentInsights['strengths'] as $s): ?>
+                            <li><?= e($s) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p style="font-size: var(--text-xs); color: var(--muted); margin: 0;">Chưa có kết quả kiểm tra. Hãy làm bài đánh giá để phát hiện điểm mạnh tự nhiên.</p>
+                <?php endif; ?>
+            </div>
+
+            <div style="background: var(--surface-alt); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                <h4 style="font-size: var(--text-sm); font-weight: 700; color: var(--text); margin-top: 0;">⚠️ Vùng cần lưu ý & Ranh giới thực tế</h4>
+                <?php if (!empty($assessmentInsights['growth_areas'])): ?>
+                    <ul style="padding-left: var(--space-4); margin: var(--space-2) 0; color: var(--text); line-height: var(--leading-relaxed); font-size: var(--text-xs);">
+                        <?php foreach ($assessmentInsights['growth_areas'] as $g): ?>
+                            <li><?= e($g) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p style="font-size: var(--text-xs); color: var(--muted); margin: 0;">Hồ sơ cân bằng hoặc chưa hoàn thành khảo sát Cổng đánh đổi.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Gợi ý nghề mục tiêu từ bài đánh giá -->
+        <?php if (!empty($assessmentInsights['suggested_careers'])): ?>
+        <div style="background: var(--surface-alt); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: var(--space-4);">
+            <h4 style="margin: 0 0 var(--space-2); font-size: var(--text-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Nghề tương thích từ kết quả đánh giá (Bấm để chọn làm mục tiêu):</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <?php foreach ($assessmentInsights['suggested_careers'] as $c): ?>
+                    <button type="button" class="btn btn-outline apply-career-goal" data-career-title="<?= e($c['title']) ?>" style="background: var(--surface); font-size: var(--text-xs);">
+                        🎯 <?= e($c['title']) ?> (Độ khớp: <?= (int)$c['match_percent'] ?>%)
+                    </button>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Các cột mốc đề xuất tương ứng với điểm mạnh / rào cản -->
+        <div>
+            <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom: var(--space-3);">
+                <h4 style="font-size: var(--text-sm); font-weight: 700; margin: 0; color: var(--text);">📋 Cột mốc hành động gợi ý từ bài kiểm tra:</h4>
+                <?php if (!empty($assessmentInsights['recommended_milestones'])): ?>
+                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="apply_all_suggestions">
+                    <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 5px 12px;">
+                        📥 Thêm tất cả gợi ý vào hành trình của tôi
+                    </button>
+                </form>
+                <?php endif; ?>
+            </div>
+
+            <?php if (!empty($assessmentInsights['recommended_milestones'])): ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3);">
+                    <?php foreach ($assessmentInsights['recommended_milestones'] as $rm): ?>
+                        <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <span class="badge" style="background: var(--surface-alt); border: 1px solid var(--border); font-size: 0.7rem; color: var(--muted); margin-bottom: 4px; display: inline-block;">
+                                    <?= e($stages[$rm['stage']]['title'] ?? $rm['stage']) ?>
+                                </span>
+                                <h5 style="margin: 2px 0 4px; font-size: var(--text-sm); color: var(--text); font-weight: 700;"><?= e($rm['title']) ?></h5>
+                                <p style="margin: 0; font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);"><?= e($rm['description']) ?></p>
+                            </div>
+                            <div style="margin-top: var(--space-3); display: flex; align-items: center; justify-content: space-between; gap: var(--space-2);">
+                                <?php if (!empty($rm['action_url'])): ?>
+                                    <a href="<?= url($rm['action_url']) ?>" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px;">Thực hiện →</a>
+                                <?php else: ?>
+                                    <span></span>
+                                <?php endif; ?>
+                                <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="action" value="add_milestone">
+                                    <input type="hidden" name="stage" value="<?= e($rm['stage']) ?>">
+                                    <input type="hidden" name="title" value="<?= e($rm['title']) ?>">
+                                    <input type="hidden" name="description" value="<?= e($rm['description']) ?>">
+                                    <input type="hidden" name="action_url" value="<?= e($rm['action_url']) ?>">
+                                    <input type="hidden" name="source" value="assessment">
+                                    <button type="submit" class="btn btn-outline" style="font-size: var(--text-xs); padding: 3px 8px; color: var(--primary); border-color: var(--primary);">
+                                        + Thêm vào hành trình
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p style="font-size: var(--text-xs); color: var(--muted);">Chưa có đề xuất cụ thể. Hãy hoàn thành các bài trắc nghiệm để nhận gợi ý chuẩn.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</details>
+
+<!-- KHỐI 3 (COLLAPSIBLE): TỔNG HỢP HỒ SƠ ĐA CHIỀU (THAM KHẢO) -->
+<details id="profile-summary" class="card no-print" style="margin-bottom: var(--space-6); border: 1px solid var(--border);">
+    <summary style="cursor: pointer; padding: var(--space-2) 0; display: flex; align-items: center; justify-content: space-between; list-style: none;">
+        <div style="display: flex; align-items: center; gap: var(--space-2);">
+            <span style="font-size: 1.25rem;" aria-hidden="true">📊</span>
+            <div>
+                <strong style="font-size: var(--text-base); color: var(--text);">Hồ sơ đa chiều của bạn (RIASEC, MBTI, Big Five, Trải nghiệm)</strong>
+                <span class="badge" style="background: var(--surface-alt); color: var(--muted); font-size: var(--text-xs); margin-left: var(--space-2);">
+                    Tham khảo
+                </span>
+            </div>
+        </div>
+        <span style="font-size: var(--text-xs); color: var(--primary); font-weight: 600;">Xem hồ sơ ▼</span>
+    </summary>
+
+    <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+        <div class="grid-3" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-4);">
+            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Holland (RIASEC)</h4>
+                <p style="font-size: var(--text-base); font-weight: 700; color: var(--primary); margin: 0 0 var(--space-2);"><?= e($context['holland']['code'] ?? 'Chưa có kết quả') ?></p>
+                <a href="<?= url('index.php?page=assessment-report') ?>" style="font-size: var(--text-xs); color: var(--primary);">Xem báo cáo đánh giá →</a>
+            </div>
+            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Tính cách & Thích ứng</h4>
+                <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 4px;">MBTI: <strong><?= e($context['psychometrics']['mbti']['code'] ?? 'Chưa làm') ?></strong></p>
+                <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 4px;">Big Five: <?= isset($context['psychometrics']['big5']) ? '<span style="color:var(--success);">Đã có hồ sơ</span>' : 'Chưa làm' ?></p>
+                <p style="font-size: var(--text-xs); color: var(--text); margin: 0;">EQ: <?= isset($context['psychometrics']['eq']) ? '<span style="color:var(--success);">Đã có hồ sơ</span>' : 'Chưa làm' ?></p>
+            </div>
+            <div style="background: var(--surface-alt); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <h4 style="margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;">Bằng chứng trải nghiệm</h4>
+                <p style="font-size: var(--text-xs); color: var(--text); margin: 0 0 var(--space-2);"><?= count($context['experiences']) ?> trải nghiệm gần nhất được tổng hợp.</p>
+                <a href="<?= url('index.php?page=simulations') ?>" style="font-size: var(--text-xs); color: var(--primary);">Mở phòng trải nghiệm nghề →</a>
+            </div>
+        </div>
+        <p style="margin-top: var(--space-3); font-size: var(--text-xs); color: var(--muted); line-height: var(--leading-relaxed);">
+            Các kết quả chỉ hỗ trợ khám phá, không phải chẩn đoán hay thước đo giá trị của bạn. Trợ lý không tự ý suy đoán khi chưa có dữ liệu quan sát.
+        </p>
+    </div>
+</details>
+
 <!-- KHỐI 4: GÓC NGƯỜI TRONG NGHỀ & CHATBOT HƯỚNG NGHIỆP (BẢO TOÀN KIẾN TRÚC & TESTS) -->
 <?php require __DIR__ . '/career-conversations-view.php'; ?>
 
-<section id="career-chat" class="card no-print" aria-labelledby="chat-title">
-    <h2 id="chat-title"><?= e($scenario ? 'Cùng khám phá: ' . $scenario['title'] : 'Trao đổi với trợ lý hướng nghiệp') ?></h2>
-    <p class="muted">
-        Khi AI được cấu hình, câu hỏi và hội thoại gần đây trong mục đang chọn được gửi tới nhà cung cấp AI đã cấu hình. Chat thông thường kèm tóm tắt đánh giá/trải nghiệm; chat tình huống chỉ kèm hồ sơ nếu bạn chọn bên dưới. Không có AI thì hệ thống hiển thị gợi ý dự phòng.
+<section id="career-chat" class="card no-print" aria-labelledby="chat-title" style="margin-top: var(--space-6); border: 1px solid var(--border);">
+    <h2 id="chat-title" style="margin-top: 0; font-size: var(--text-xl); font-weight: 700; color: var(--text);">
+        <?= e($scenario ? 'Cùng khám phá: ' . $scenario['title'] : 'Trao đổi với trợ lý hướng nghiệp') ?>
+    </h2>
+    <p style="font-size: var(--text-xs); color: var(--muted); margin: var(--space-1) 0 var(--space-2); line-height: var(--leading-relaxed);">
+        Khi AI được cấu hình, câu hỏi và hội thoại trong mục đang chọn được gửi tới nhà cung cấp AI. Chat thông thường kèm tóm tắt đánh giá/trải nghiệm; chat tình huống chỉ kèm hồ sơ nếu bạn chọn bên dưới. Nếu không có kết nối AI, hệ thống hiển thị gợi ý dự phòng chuẩn mực.
     </p>
-    <p>
-        <strong><?= max(0, 10 - $used) ?> / 10 lượt còn lại hôm nay</strong> · Đặt lại lúc 00:00 theo giờ Việt Nam. Lượt dùng dự phòng vẫn tính vào hạn mức.
+    <p style="font-size: var(--text-xs); color: var(--text); margin-bottom: var(--space-4);">
+        <strong><?= max(0, 10 - $used) ?> / 10 lượt còn lại hôm nay</strong> · Đặt lại lúc 00:00 theo giờ Việt Nam.
     </p>
 
-    <div class="chat-history" aria-label="Lịch sử hội thoại">
+    <div class="chat-history" aria-label="Lịch sử hội thoại" style="margin-bottom: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3);">
         <?php if (!$messages): ?>
-            <p class="muted">Bắt đầu bằng một câu hỏi về hồ sơ, lộ trình học tập hoặc bước tiếp theo của bạn.</p>
+            <p style="font-size: var(--text-sm); color: var(--muted); font-style: italic;">Bắt đầu bằng một câu hỏi về hồ sơ, lộ trình học tập hoặc bước tiếp theo của bạn.</p>
         <?php endif; ?>
         <?php foreach ($messages as $chat): ?>
-            <article class="card chat-message">
-                <strong><?= $chat['role'] === 'user' ? 'Bạn' : ($chat['model'] === 'fallback' ? 'Gợi ý dự phòng' : ($chat['model'] === 'unavailable' ? 'Trạng thái AI' : 'Trợ lý AI · ' . e($chat['model']))) ?></strong>
-                <small class="muted"> · <?= e($chat['created_at']) ?></small>
-                <p style="white-space:pre-wrap;overflow-wrap:anywhere"><?= e($chat['message']) ?></p>
+            <article class="card chat-message" style="background: <?= $chat['role'] === 'user' ? 'var(--surface-alt)' : 'var(--surface)' ?>; border: 1px solid var(--border); padding: var(--space-3); border-radius: var(--radius-sm);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <strong style="font-size: var(--text-xs); color: <?= $chat['role'] === 'user' ? 'var(--text)' : 'var(--primary)' ?>;">
+                        <?= $chat['role'] === 'user' ? 'Bạn' : ($chat['model'] === 'fallback' ? 'Gợi ý dự phòng' : ($chat['model'] === 'unavailable' ? 'Trạng thái AI' : 'Trợ lý AI · ' . e($chat['model']))) ?>
+                    </strong>
+                    <small style="font-size: 0.7rem; color: var(--muted);"><?= e($chat['created_at']) ?></small>
+                </div>
+                <p style="white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed);"><?= e($chat['message']) ?></p>
             </article>
         <?php endforeach; ?>
     </div>
 
-    <div class="flex flex-wrap gap-3" aria-label="Câu hỏi gợi ý">
+    <div class="flex flex-wrap gap-2" aria-label="Câu hỏi gợi ý" style="margin-bottom: var(--space-4);">
         <?php foreach (($scenario ? career_conversation_prompts($scenario) : ['Tôi nên tập trung môn học nào cho lộ trình này?', 'MBTI và Big Five của tôi có ý nghĩa gì với nghề này?', 'Gợi ý thử thách 15 phút thực tế cho tôi.']) as $chip): ?>
-            <button type="button" class="btn btn-outline" data-chat-prompt="<?= e($chip) ?>"><?= e($chip) ?></button>
+            <button type="button" class="btn btn-outline" data-chat-prompt="<?= e($chip) ?>" style="font-size: var(--text-xs); padding: 4px 10px;"><?= e($chip) ?></button>
         <?php endforeach; ?>
     </div>
 
@@ -589,14 +627,14 @@ require __DIR__ . '/header.php';
         <input type="hidden" name="chat_nonce" value="<?= e($_SESSION['four_hub_chat_nonce']) ?>">
         <input type="hidden" name="scenario" value="<?= e($scenario['id'] ?? '') ?>">
         <?php if ($scenario): ?>
-            <p><label><input type="checkbox" name="include_profile" value="1"> Kèm tóm tắt đánh giá/trải nghiệm của tôi để liên hệ với tình huống (tùy chọn).</label></p>
+            <p style="font-size: var(--text-xs); margin-bottom: var(--space-2);"><label><input type="checkbox" name="include_profile" value="1"> Kèm tóm tắt đánh giá/trải nghiệm của tôi để liên hệ với tình huống (tùy chọn).</label></p>
         <?php endif; ?>
-        <div class="form-group">
-            <label for="career-question">Câu hỏi của bạn</label>
-            <textarea class="input" id="career-question" name="message" rows="4" maxlength="2000" required <?= $used >= 10 ? 'disabled' : '' ?>></textarea>
+        <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label for="career-question" style="font-size: var(--text-xs); font-weight: 600; display: block; margin-bottom: var(--space-1);">Câu hỏi của bạn</label>
+            <textarea class="input" id="career-question" name="message" rows="3" maxlength="2000" required <?= $used >= 10 ? 'disabled' : '' ?> placeholder="Hỏi về nghề nghiệp, môn học hoặc bước đi tiếp theo..." style="width: 100%;"></textarea>
         </div>
-        <button class="btn btn-primary" type="submit" <?= $used >= 10 ? 'disabled' : '' ?>>Gửi câu hỏi</button>
-        <p id="chat-send-status" role="status"></p>
+        <button class="btn btn-primary" type="submit" <?= $used >= 10 ? 'disabled' : '' ?> style="font-size: var(--text-sm);">Gửi câu hỏi</button>
+        <p id="chat-send-status" role="status" style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-2);"></p>
     </form>
 </section>
 
@@ -703,12 +741,12 @@ if (btnAiMilestones) {
                 let html = '<div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">';
                 data.data.suggestions.forEach(item => {
                     html += `
-                        <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                        <div style="background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                             <div>
-                                <strong style="font-size: 0.9rem; color: #581c87;">${item.title}</strong>
-                                <p style="margin: 2px 0 0; font-size: 0.8rem; color: #6b21a8;">${item.description}</p>
+                                <strong style="font-size: var(--text-xs); color: var(--text);">${item.title}</strong>
+                                <p style="margin: 2px 0 0; font-size: var(--text-xs); color: var(--muted);">${item.description}</p>
                             </div>
-                            <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0;">
+                            <form method="post" action="<?= url('index.php?page=ai-roadmap') ?>" style="margin: 0; flex-shrink: 0;">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="add_milestone">
                                 <input type="hidden" name="stage" value="${item.stage}">
@@ -716,7 +754,7 @@ if (btnAiMilestones) {
                                 <input type="hidden" name="description" value="${item.description}">
                                 <input type="hidden" name="action_url" value="${item.action_url || ''}">
                                 <input type="hidden" name="source" value="ai">
-                                <button type="submit" class="btn btn-primary" style="font-size: 0.75rem; padding: 4px 8px; background: #7c3aed; white-space: nowrap;">
+                                <button type="submit" class="btn btn-primary" style="font-size: var(--text-xs); padding: 4px 8px; white-space: nowrap;">
                                     + Thêm
                                 </button>
                             </form>
@@ -726,10 +764,10 @@ if (btnAiMilestones) {
                 html += '</div>';
                 if (aiResult) aiResult.innerHTML = html;
             } else {
-                if (aiResult) aiResult.innerHTML = '<p class="muted" style="color: #dc2626;">Chưa thể sinh gợi ý từ AI lúc này. Vui lòng thử lại sau.</p>';
+                if (aiResult) aiResult.innerHTML = '<p style="color: var(--danger); font-size: var(--text-xs);">Chưa thể sinh gợi ý từ AI lúc này. Vui lòng thử lại sau.</p>';
             }
         } catch (e) {
-            if (aiResult) aiResult.innerHTML = '<p class="muted" style="color: #dc2626;">Đã xảy ra lỗi kết nối. Hãy thử lại.</p>';
+            if (aiResult) aiResult.innerHTML = '<p style="color: var(--danger); font-size: var(--text-xs);">Đã xảy ra lỗi kết nối. Hãy thử lại.</p>';
         } finally {
             btnAiMilestones.disabled = false;
             if (aiLoading) aiLoading.style.display = 'none';
@@ -766,17 +804,17 @@ document.querySelectorAll('.milestone-toggle-check').forEach(chk => {
                     if (isCompleted) {
                         row.classList.add('is-completed');
                         row.style.background = '#f0fdf4';
-                        row.style.borderColor = '#bbf7d0';
+                        row.style.borderColor = 'var(--success)';
                         if (titleText) {
-                            titleText.style.color = '#15803d';
+                            titleText.style.color = 'var(--success)';
                             titleText.style.textDecoration = 'line-through';
                         }
                     } else {
                         row.classList.remove('is-completed');
-                        row.style.background = '#fafafa';
-                        row.style.borderColor = '#e2e8f0';
+                        row.style.background = 'var(--surface)';
+                        row.style.borderColor = 'var(--border)';
                         if (titleText) {
-                            titleText.style.color = '#1e293b';
+                            titleText.style.color = 'var(--text)';
                             titleText.style.textDecoration = 'none';
                         }
                     }
