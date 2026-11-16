@@ -1,24 +1,282 @@
 <?php
 declare(strict_types=1);
+
 $me = user();
-$completedTests = 0; $activityCount = 0; $hasRoadmap = false;
+$completedTests = 0; 
+$activityCount = 0; 
+$hasRoadmap = false;
+$latestHolland = null;
+
 if ($me) {
     $latest = four_hub_latest_psychometrics((int)$me['id']);
-    $s = db()->prepare('SELECT id FROM assessments WHERE user_id=? AND constraint_answers IS NOT NULL ORDER BY completed_at DESC,id DESC LIMIT 1');
-    $s->execute([$me['id']]); $hasHolland = (bool)$s->fetchColumn();
-    $completedTests = count($latest) + (int)$hasHolland;
-    $s = db()->prepare('SELECT COUNT(*) FROM simulation_attempts WHERE user_id=?'); $s->execute([$me['id']]);
-    $activityCount = (int)$s->fetchColumn(); $hasRoadmap = $hasHolland;
+    $s = db()->prepare('SELECT id,result_code FROM assessments WHERE user_id=? AND constraint_answers IS NOT NULL ORDER BY completed_at DESC,id DESC LIMIT 1');
+    $s->execute([$me['id']]); 
+    $latestHolland = $s->fetch() ?: null;
+    $completedTests = count($latest) + ($latestHolland ? 1 : 0);
+    
+    $s = db()->prepare('SELECT COUNT(*) FROM simulation_attempts WHERE user_id=?'); 
+    $s->execute([$me['id']]);
+    $activityCount = (int)$s->fetchColumn(); 
+    $hasRoadmap = (bool)$latestHolland;
 }
+
 $hubs = [
-    ['01', 'knowledge-hub', 'Kiến thức & Tuyển sinh', 'Hiểu nghề trước khi chọn nghề.', 'Đọc hồ sơ nghề, tìm hiểu lộ trình học và tra cứu các nguồn tuyển sinh.', 'Bắt đầu khám phá', '◈'],
-    ['02', 'assessment-hub', 'Đánh giá bản thân', 'Lắng nghe sở thích của mình.', 'Holland, xu hướng tính cách và tự phản tư cảm xúc giúp bạn có thêm góc nhìn.', $me ? $completedTests . '/3 bài đánh giá đã có kết quả' : 'Khám phá 3 góc nhìn', '◎'],
-    ['03', 'simulations', 'Trải nghiệm nghề', 'Thử làm, rồi tự cảm nhận.', 'Một tiết dạy trong không gian 3D và các tình huống tương tác của nhiều nghề.', $me ? $activityCount . ' lượt mô phỏng 2D đã lưu' : 'Mô phỏng 3D & tình huống 2D', '◇'],
-    ['04', 'ai-roadmap', 'AI & Bản đồ hành trình', 'Biến khám phá thành bước đi.', 'Đối chiếu kết quả, trao đổi với trợ lý và tạo lộ trình có thể in ra để cùng thảo luận.', $hasRoadmap ? 'Đã có dữ liệu Holland cho lộ trình' : 'Lộ trình theo dữ liệu bạn cung cấp', '✦'],
+    [
+        'step' => '01',
+        'route' => 'careers',
+        'title' => 'Khám phá kiến thức',
+        'lead' => 'Hiểu rõ thế giới việc làm trước khi đưa ra lựa chọn.',
+        'desc' => 'Tra cứu 27+ hồ sơ nghề thực tế, 150+ ngành đào tạo chuẩn và các trường đại học, cao đẳng trên cả nước.',
+        'status' => $me ? 'Đang mở thư viện' : '27+ nghề · 150+ ngành',
+        'icon' => '📚'
+    ],
+    [
+        'step' => '02',
+        'route' => 'assessment-hub',
+        'title' => 'Hiểu bản thân',
+        'lead' => 'Lắng nghe sở thích, tính cách và năng lực tự thân.',
+        'desc' => 'Đánh giá 6 nhóm sở thích Holland (RIASEC), 5 nét tính cách Big Five và khả năng thích ứng nghề nghiệp.',
+        'status' => $me ? ($completedTests > 0 ? "Đã làm $completedTests bài đánh giá" : 'Chưa có bài kiểm tra') : '6 công cụ đo lường',
+        'icon' => '🧭'
+    ],
+    [
+        'step' => '03',
+        'route' => 'simulations',
+        'title' => 'Trải nghiệm nghề',
+        'lead' => 'Thử sức giải quyết tình huống thực tế rồi tự cảm nhận.',
+        'desc' => 'Phòng mô phỏng tình huống 2D tương tác và góc nhìn thực tế của nghề giáo viên, lập trình viên, y tế.',
+        'status' => $me ? ($activityCount > 0 ? "Đã thử $activityCount lượt mô phỏng" : 'Chưa thử tình huống') : '4–6 phút / thử thách',
+        'icon' => '🎮'
+    ],
+    [
+        'step' => '04',
+        'route' => 'ai-roadmap',
+        'title' => 'Xây dựng hành trình',
+        'lead' => 'Biến hiểu biết cá nhân thành các bước đi cụ thể.',
+        'desc' => 'Tự đặt mục tiêu nghề nghiệp, theo dõi danh sách mốc hành động cho năm học và nhận cố vấn từ AI khi cần.',
+        'status' => $me ? ($hasRoadmap ? 'Lộ trình đang hoạt động' : 'Tạo lộ trình cá nhân') : 'Kế hoạch hành động',
+        'icon' => '🗺️'
+    ],
 ];
-$pageTitle = 'Hành trình hướng nghiệp 360'; require ROOT_PATH.'/app/header.php';
+
+// Featured careers for guest discovery
+$stmt = db()->query("SELECT id,title,icon,short_description FROM careers WHERE status='published' AND slug IN ('giao-vien-thcs','lap-trinh-vien-frontend','bac-si-da-khoa') ORDER BY id LIMIT 3");
+$featuredCareers = $stmt->fetchAll();
+
+$pageTitle = 'Hướng Nghiệp 360 · Nền tảng định hướng nghề nghiệp';
+require ROOT_PATH . '/app/header.php';
 ?>
-<section class="hub-hero"><div class="container hub-hero-layout"><div><span class="hub-kicker">HƯỚNG NGHIỆP 360 · DÀNH CHO HỌC SINH VIỆT NAM</span><h1>Hiểu mình hôm nay.<br><em>Chủ động ngày mai.</em></h1><p>Mỗi lựa chọn bắt đầu từ một lần khám phá. Tìm hiểu nghề, nhìn lại bản thân, thử trải nghiệm và xây dựng hành trình của riêng bạn.</p><a class="btn btn-primary btn-lg" href="<?=url('index.php?page=knowledge-hub')?>">Bắt đầu từ khám phá nghề →</a><a class="btn btn-outline btn-lg" href="<?=url('index.php?page=assessment-hub')?>">Khám phá bản thân</a></div><aside class="hub-compass" aria-label="Bốn bước khám phá nghề nghiệp"><span class="hub-kicker">HÀNH TRÌNH CỦA BẠN</span><?php foreach($hubs as $hub):?><a href="<?=url('index.php?page='.$hub[1])?>"><span><?=$hub[0]?></span><div><strong><?=e($hub[2])?></strong><small><?=e($hub[3])?></small></div><b aria-hidden="true">↗</b></a><?php endforeach;?></aside></div></section>
-<section class="container hub-section"><div class="hub-section-heading"><div><span class="eyebrow">4 TRUNG TÂM · MỘT HÀNH TRÌNH</span><h2><?= $me ? 'Tiếp tục khám phá, '.e($me['name']) : 'Bạn muốn tìm hiểu điều gì hôm nay?' ?></h2></div><?php if($me):?><a href="<?=url('index.php?page=dashboard')?>">Hồ sơ & lịch sử →</a><?php endif;?></div><div class="hub-grid"><?php foreach($hubs as $hub):?><a class="card hub-card" href="<?=url('index.php?page='.$hub[1])?>"><div class="hub-card-top"><span class="hub-symbol"><?=$hub[6]?></span><span class="muted">/ <?=$hub[0]?></span></div><h3><?=e($hub[2])?></h3><p><?=e($hub[4])?></p><div class="hub-card-status"><?=e($hub[5])?> <span aria-hidden="true">→</span></div></a><?php endforeach;?></div><p class="hub-notice">Các bài đánh giá và mô phỏng là công cụ khám phá, không quyết định thay bạn. Hãy trao đổi thêm với gia đình, giáo viên và người trong nghề.</p></section>
-<section class="container hub-section"><div class="card"><span class="eyebrow">BẢN THỬ · TRÒ CHUYỆN THEO TÌNH HUỐNG</span><h2>Góc người trong nghề</h2><p>Thử xử lý 9 tình huống của giáo viên, lập trình viên và người thiết kế đồ họa. AI mô phỏng để cùng khám phá; chưa phải giao lưu với người thật.</p><a class="btn btn-primary" href="<?=url('index.php?page=ai-roadmap#career-conversations')?>">Chọn tình huống →</a></div></section>
-<?php require ROOT_PATH.'/app/footer.php'; exit;
+
+<?php if ($me): ?>
+<!-- ================= LOGGED-IN HERO & NEXT STEPS ================= -->
+<section class="page-head">
+  <div class="container">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <span class="badge badge-purple mb-2">Không gian cá nhân</span>
+        <h1 class="page-title mb-1">Chào mừng trở lại, <?=e($me['name'])?> 👋</h1>
+        <p class="page-subtitle">Hôm nay bạn muốn tiếp tục hành trình khám phá nào?</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a class="btn btn-primary btn-sm" href="<?=url('index.php?page=dashboard')?>">
+          Hồ sơ của tôi →
+        </a>
+        <a class="btn btn-outline btn-sm" href="<?=url('index.php?page=ai-roadmap')?>">
+          Bản đồ hành trình →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-8 space-y-8">
+  <!-- Next Recommended Action Card -->
+  <div class="card p-6 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 border border-purple-200/80">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <span class="text-xs font-bold text-brand-700 uppercase tracking-wide flex items-center gap-1.5 mb-1">
+          <span>🎯</span> Bước gợi ý tiếp theo cho bạn
+        </span>
+        <?php if (!$latestHolland): ?>
+          <h2 class="text-lg font-bold text-slate-900">Bắt đầu bằng khảo sát sở thích nghề nghiệp (5–7 phút)</h2>
+          <p class="text-sm text-slate-600 mt-1 max-w-2xl">
+            Hoàn thành 30 câu hỏi để nhận mã Holland (RIASEC) và danh sách các nhóm nghề tương đồng với bạn nhất.
+          </p>
+        <?php elseif ($activityCount === 0): ?>
+          <h2 class="text-lg font-bold text-slate-900">Mã Holland của bạn là <?=e($latestHolland['result_code'])?> · Hãy thử 1 tình huống mô phỏng</h2>
+          <p class="text-sm text-slate-600 mt-1 max-w-2xl">
+            Thay vì chỉ đọc mô tả, hãy đóng vai và giải quyết 4 tình huống nghề nghiệp trong 5 phút để kiểm chứng mức độ phù hợp.
+          </p>
+        <?php else: ?>
+          <h2 class="text-lg font-bold text-slate-900">Cập nhật Kế hoạch hành động và mục tiêu năm học</h2>
+          <p class="text-sm text-slate-600 mt-1 max-w-2xl">
+            Bạn đã có kết quả đánh giá và lượt trải nghiệm mô phỏng. Hãy biến khám phá này thành các mốc hành động cụ thể trong Bản đồ hành trình.
+          </p>
+        <?php endif; ?>
+      </div>
+      <div>
+        <?php if (!$latestHolland): ?>
+          <a class="btn btn-primary" href="<?=url('index.php?page=assessment')?>">
+            Làm bài khảo sát ngay →
+          </a>
+        <?php elseif ($activityCount === 0): ?>
+          <a class="btn btn-primary" href="<?=url('index.php?page=simulations')?>">
+            Thử phòng mô phỏng →
+          </a>
+        <?php else: ?>
+          <a class="btn btn-primary" href="<?=url('index.php?page=ai-roadmap')?>">
+            Mở Bản đồ hành trình →
+          </a>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Pillars Section -->
+  <section aria-labelledby="hubs-heading">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 id="hubs-heading" class="text-xl font-bold text-slate-900">4 Giai đoạn định hướng nghề nghiệp</h2>
+        <p class="text-xs text-slate-500">Khám phá theo nhịp độ của bạn, không có ràng buộc ép buộc.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <?php foreach ($hubs as $hub): ?>
+        <a class="card p-5 flex flex-col justify-between hover:border-brand-300 transition-all text-decoration-none group" href="<?=url('index.php?page='.$hub['route'])?>">
+          <div>
+            <div class="flex items-center justify-between text-xs mb-3">
+              <span class="text-2xl p-2 bg-slate-50 rounded-xl border border-slate-100"><?=$hub['icon']?></span>
+              <span class="badge badge-subtle font-bold">Giai đoạn <?=$hub['step']?></span>
+            </div>
+            <h3 class="font-bold text-base text-slate-900 group-hover:text-brand-600 transition-colors mb-1">
+              <?=e($hub['title'])?>
+            </h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2"><?=e($hub['lead'])?></p>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              <?=e($hub['desc'])?>
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500 group-hover:text-brand-600">
+            <span><?=e($hub['status'])?></span>
+            <span>→</span>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  </section>
+</div>
+
+<?php else: ?>
+<!-- ================= GUEST WELCOME EXPERIENCE ================= -->
+<section class="hub-hero">
+  <div class="container py-12 md:py-16">
+    <div class="max-w-3xl">
+      <span class="badge badge-purple mb-3">Nền tảng hướng nghiệp dành cho học sinh Việt Nam</span>
+      <h1 class="page-title text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+        Hiểu mình hôm nay.<br>
+        <span class="text-brand-600">Chủ động thiết kế tương lai.</span>
+      </h1>
+      <p class="text-base md:text-lg text-slate-600 leading-relaxed mb-6">
+        Mỗi lựa chọn bắt đầu từ một lần khám phá. Tìm hiểu nghề nghiệp, lắng nghe bản thân qua các công cụ đo lường tiêu chuẩn, thử sức qua tình huống thực tế và xây dựng lộ trình của riêng bạn.
+      </p>
+      <div class="flex flex-wrap items-center gap-3">
+        <a class="btn btn-primary btn-lg" href="<?=url('index.php?page=careers')?>">
+          Bắt đầu khám phá nghề →
+        </a>
+        <a class="btn btn-outline btn-lg" href="<?=url('index.php?page=register')?>">
+          Tạo tài khoản miễn phí
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container py-8 space-y-12">
+  <!-- 4-Stage Journey Guide -->
+  <section aria-labelledby="journey-heading">
+    <div class="text-center max-w-xl mx-auto mb-8">
+      <span class="badge badge-purple mb-2">Hành trình 4 giai đoạn</span>
+      <h2 id="journey-heading" class="text-2xl font-bold text-slate-900 mb-2">Hướng đi rõ ràng cho học sinh</h2>
+      <p class="text-sm text-slate-600">
+        Từ bước tò mò tìm hiểu đến kế hoạch hành động thực tế, bạn luôn có công cụ hỗ trợ đáng tin cậy.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <?php foreach ($hubs as $hub): ?>
+        <div class="card p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-2xl p-2 bg-slate-50 rounded-xl border border-slate-100"><?=$hub['icon']?></span>
+              <span class="badge badge-subtle font-bold">Bước <?=$hub['step']?></span>
+            </div>
+            <h3 class="font-bold text-base text-slate-900 mb-1"><?=e($hub['title'])?></h3>
+            <p class="text-xs font-semibold text-brand-600 mb-2"><?=e($hub['lead'])?></p>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4"><?=e($hub['desc'])?></p>
+          </div>
+          <div class="pt-3 border-t border-slate-100">
+            <a class="btn btn-outline btn-sm w-full" href="<?=url('index.php?page='.$hub['route'])?>">
+              Khám phá →
+            </a>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </section>
+
+  <!-- Featured Careers Preview -->
+  <?php if (!empty($featuredCareers)): ?>
+  <section aria-labelledby="featured-heading">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 id="featured-heading" class="text-xl font-bold text-slate-900">Một số nghề nghiệp tiêu biểu</h2>
+        <p class="text-xs text-slate-500">Mỗi hồ sơ nghề đều có mô tả chi tiết, môn học liên quan và tình huống mô phỏng.</p>
+      </div>
+      <a class="btn btn-outline btn-sm" href="<?=url('index.php?page=careers')?>">
+        Xem tất cả 27+ nghề →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <?php foreach ($featuredCareers as $fc): ?>
+        <div class="card p-5 flex flex-col justify-between hover:border-brand-300 transition-all">
+          <div>
+            <span class="text-3xl p-2 bg-slate-50 rounded-xl border border-slate-100 inline-block mb-3"><?=e($fc['icon'] ?: '💼')?></span>
+            <h3 class="font-bold text-base text-slate-900 mb-1">
+              <a href="<?=url('index.php?page=career&id='.(int)$fc['id'])?>" class="hover:text-brand-600">
+                <?=e($fc['title'])?>
+              </a>
+            </h3>
+            <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed mb-4">
+              <?=e($fc['short_description'])?>
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-400">Có mô phỏng thực tế</span>
+            <a class="text-xs font-bold text-brand-600 hover:underline" href="<?=url('index.php?page=career&id='.(int)$fc['id'])?>">
+              Chi tiết nghề →
+            </a>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </section>
+  <?php endif; ?>
+
+  <!-- Honest Disclosure Banner -->
+  <div class="notice-box">
+    <div class="flex items-start gap-3">
+      <span class="text-xl">🌿</span>
+      <div class="text-xs text-slate-600 leading-relaxed">
+        <strong>Cam kết trung thực sư phạm:</strong> Mọi bài trắc nghiệm và mô phỏng trên JobSimu là công cụ hỗ trợ học sinh tự phản tư và khám phá, <strong>không đưa ra kết luận cố định hay phán quyết thay bạn</strong>. Hãy luôn thảo luận kết quả cùng gia đình, thầy cô và những người đang làm nghề thực tế trước khi đưa ra quyết định quan trọng.
+      </div>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
+<?php 
+require ROOT_PATH . '/app/footer.php'; 
+exit;
+
