@@ -835,6 +835,7 @@ function hnv_search_majors(PDO $db, array $filters, int $page = 1, int $perPage 
     $fieldId = trim((string)($filters['field'] ?? ''));
     $subgroupId = trim((string)($filters['subgroup'] ?? ''));
     $status = trim((string)($filters['status'] ?? 'all'));
+    $sort = trim((string)($filters['sort'] ?? 'popular'));
 
     $where = [];
     $args = [];
@@ -875,11 +876,18 @@ function hnv_search_majors(PDO $db, array $filters, int $page = 1, int $perPage 
 
     $whereSql = $where ? (' WHERE ' . implode(' AND ', $where)) : '';
 
+    $orderBy = match ($sort) {
+        'az' => 'm.name ASC, m.id ASC',
+        'za' => 'm.name DESC, m.id DESC',
+        default => 'source_url_count DESC, m.name ASC, m.id ASC',
+    };
+
     $selectBase = 'SELECT m.id, m.name, m.field_id, m.subgroup_id, f.name AS field_name, s.name AS subgroup_name,
                           m.source_url, m.catalogue_url, m.detail_status, m.has_article_body,
                           m.source_major_code_candidate, m.official_major_code, m.observed_major_codes_json,
                           m.editorial_description, m.description_status, m.code_verification_status,
                           m.editorial_status, m.verification_status, m.retrieved_at,
+                          m.listed_school_count,
                           (SELECT COUNT(*) FROM major_institution_source_links l WHERE l.major_id = m.id) AS link_count,
                           (SELECT COUNT(DISTINCT l.institution_source_id) FROM major_institution_source_links l WHERE l.major_id = m.id) AS source_url_count,
                           (SELECT MIN(l.source_news_year) FROM major_institution_source_links l WHERE l.major_id = m.id) AS min_year,
@@ -890,7 +898,7 @@ function hnv_search_majors(PDO $db, array $filters, int $page = 1, int $perPage 
                    JOIN major_fields f ON f.id = m.field_id
                    JOIN major_subgroups s ON s.id = m.subgroup_id
                    LEFT JOIN major_review_queue q ON q.major_id = m.id'
-                   . $whereSql . ' ORDER BY m.name ASC, m.id ASC';
+                   . $whereSql . ' ORDER BY ' . $orderBy;
 
     if ($hasDiacritics) {
         $stmt = $db->prepare($selectBase);

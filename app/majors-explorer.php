@@ -99,7 +99,9 @@ if ($majorId !== '') {
             <?php endif; ?>
             <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
                 <span class="status-pill status-pill-<?= e($sourceMeta['tone']) ?>"><?= e($sourceMeta['label']) ?></span>
-                <span class="status-pill status-pill-<?= e($descMeta['tone']) ?>"><?= e($descMeta['label']) ?></span>
+                <?php if ($hasApprovedDesc): ?>
+                    <span class="status-pill status-pill-ok">Bài phân tích hướng nghiệp JobSimu</span>
+                <?php endif; ?>
                 <?php if ($hasVerifiedCode): ?>
                     <span class="status-pill status-pill-ok">Mã ngành chính thức đã xác minh: <?= e($major['official_major_code']) ?></span>
                 <?php elseif ($codeStatus === 'conflict'): ?>
@@ -185,42 +187,21 @@ if ($majorId !== '') {
             </p>
         </div>
 
-        <div class="card" style="margin-top:20px">
-            <h2>Mô tả ngành đào tạo (Nội dung biên tập JobSimu)</h2>
-            <?php if ($hasApprovedDesc): ?>
-                <div style="margin-bottom:10px">
-                    <span class="status-pill status-pill-ok">Đã duyệt công khai trên JobSimu</span>
-                    <?php if (!empty($major['description_updated_at'])): ?>
-                        <small class="muted" style="margin-left:8px">Cập nhật: <?= e(hnv_format_vn_datetime($major['description_updated_at'])) ?></small>
-                    <?php endif; ?>
+        <?php if ($hasApprovedDesc): ?>
+            <div class="card" style="margin-top:20px">
+                <h2>Giới thiệu ngành đào tạo</h2>
+                <div style="white-space:pre-wrap;line-height:1.75;margin-top:10px"><?= e($major['editorial_description']) ?></div>
+            </div>
+        <?php elseif ($topicsPresent): ?>
+            <div class="card" style="margin-top:20px">
+                <h2>Chủ đề đào tạo &amp; nghiên cứu</h2>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+                    <?php foreach ($topicsPresent as $tCode): ?>
+                        <span class="tag" style="font-size:0.9rem;padding:6px 12px"><?= e($topicLabels[$tCode] ?? $tCode) ?></span>
+                    <?php endforeach; ?>
                 </div>
-                <div style="white-space:pre-wrap;line-height:1.75"><?= e($major['editorial_description']) ?></div>
-            <?php else: ?>
-                <div class="alert alert-warning" role="note">
-                    <?php if ($descStatus === 'draft'): ?>
-                        <strong>Mô tả JobSimu đang ở trạng thái bản nháp nội bộ, chưa được duyệt công khai.</strong> Bạn có thể tham khảo trực tiếp liên kết gốc bên dưới trong khi ban biên tập hoàn tất rà soát.
-                    <?php elseif ($major['detail_status'] === 'not_linked_by_source'): ?>
-                        <strong>Chưa có mô tả cho ngành này.</strong> Nguồn tham khảo chỉ liệt kê tên ngành ở trang danh mục và chưa cung cấp trang chi tiết.
-                    <?php elseif ($major['detail_status'] !== 'fetched'): ?>
-                        <strong>Chưa có mô tả cho ngành này.</strong> Trang chi tiết tại nguồn hiện chưa đọc được đầy đủ cấu trúc (<?= e($sourceMeta['label']) ?>).
-                    <?php elseif (empty($major['has_article_body'])): ?>
-                        <strong>Chưa có mô tả cho ngành này.</strong> Trang nguồn có đường dẫn nhưng chưa có phần nội dung giới thiệu đọc được.
-                    <?php else: ?>
-                        <strong>Chưa có mô tả được biên tập và duyệt trên JobSimu.</strong> Hệ thống không sao chép toàn văn bài viết từ trang bên thứ ba và không dùng AI tạo mô tả giả khi thiếu dữ liệu biên tập. Bạn có thể đọc trực tiếp bài giới thiệu gốc tại liên kết nguồn bên dưới.
-                    <?php endif; ?>
-                </div>
-                <?php if ($topicsPresent): ?>
-                    <div style="margin-top:10px">
-                        <span class="muted"><small>Chủ đề được ghi nhận có mặt tại trang nguồn tham khảo:</small></span>
-                        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
-                            <?php foreach ($topicsPresent as $tCode): ?>
-                                <span class="tag"><?= e($topicLabels[$tCode] ?? $tCode) ?></span>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php endif; ?>
 
         <div class="card" style="margin-top:20px">
             <h2>Nguồn tham khảo &amp; tình trạng dữ liệu</h2>
@@ -427,6 +408,11 @@ $allowedStatuses = ['all', 'ready', 'description_approved', 'source_ready', 'mis
 if (!in_array($statusFilter, $allowedStatuses, true)) {
     $statusFilter = 'all';
 }
+$sort = is_string($_GET['sort'] ?? null) ? trim($_GET['sort']) : 'popular';
+$allowedSorts = ['popular', 'az', 'za'];
+if (!in_array($sort, $allowedSorts, true)) {
+    $sort = 'popular';
+}
 $pageNum = max(1, (int)($_GET['p'] ?? 1));
 $perPage = 24;
 
@@ -458,6 +444,7 @@ $result = hnv_search_majors($db, [
     'field' => $fieldId,
     'subgroup' => $subgroupId,
     'status' => $statusFilter,
+    'sort' => $sort,
 ], $pageNum, $perPage);
 
 $majors = $result['items'];
@@ -465,17 +452,44 @@ $total = $result['total'];
 $currentPage = $result['page'];
 $totalPages = $result['total_pages'];
 
-$buildCatalogUrl = static function (array $overrides = []) use ($q, $fieldId, $subgroupId, $statusFilter): string {
+$buildCatalogUrl = static function (array $overrides = []) use ($q, $fieldId, $subgroupId, $statusFilter, $sort): string {
     $params = array_filter([
         'page' => 'majors',
         'q' => $overrides['q'] ?? $q,
         'field' => $overrides['field'] ?? $fieldId,
         'subgroup' => $overrides['subgroup'] ?? $subgroupId,
         'status' => ($overrides['status'] ?? $statusFilter) !== 'all' ? ($overrides['status'] ?? $statusFilter) : '',
+        'sort' => ($overrides['sort'] ?? $sort) !== 'popular' ? ($overrides['sort'] ?? $sort) : '',
         'p' => isset($overrides['p']) && (int)$overrides['p'] > 1 ? (string)(int)$overrides['p'] : '',
     ], static fn($v): bool => $v !== '');
     return url('index.php?' . http_build_query($params));
 };
+
+$fieldIcons = [
+    'Máy tính và công nghệ thông tin' => '💻',
+    'Kinh doanh và quản lý' => '💼',
+    'Sức khoẻ' => '🏥',
+    'Kỹ thuật' => '⚙️',
+    'Công nghệ kỹ thuật' => '🔧',
+    'Khoa học giáo dục và đào tạo giáo viên' => '👨‍🏫',
+    'Pháp luật' => '⚖️',
+    'Nhân văn' => '🌐',
+    'Khoa học xã hội và hành vi' => '🧠',
+    'Báo chí và thông tin' => '📰',
+    'Nghệ thuật' => '🎨',
+    'Kiến trúc và xây dựng' => '🏗️',
+    'Du lịch, khách sạn, thể thao và dịch vụ cá nhân' => '🏨',
+    'Nông, lâm nghiệp và thuỷ sản' => '🌾',
+    'An ninh, Quốc phòng' => '🛡️',
+    'Khoa học tự nhiên' => '🔬',
+    'Khoa học sự sống' => '🧬',
+    'Toán và thống kê' => '📊',
+    'Môi trường và bảo vệ môi trường' => '🌱',
+    'Sản xuất và chế biến' => '🏭',
+    'Dịch vụ vận tải' => '🚚',
+    'Dịch vụ xã hội' => '🤝',
+    'Thú y' => '🐾',
+];
 
 $pageTitle = 'Danh mục Ngành đào tạo & Nguồn trường';
 require __DIR__ . '/header.php';
@@ -490,15 +504,44 @@ require __DIR__ . '/header.php';
             <a class="btn btn-outline" href="<?= url('index.php?page=knowledge-hub') ?>">← Thư viện nghề &amp; kiến thức</a>
         </div>
         <div class="majors-stats-bar">
-            <div class="majors-stat-box"><strong><?= number_format($stats['majors'], 0, ',', '.') ?></strong><span>Ngành đào tạo (<?= number_format($stats['fields']) ?> lĩnh vực · <?= number_format($stats['subgroups']) ?> nhóm)</span></div>
-            <div class="majors-stat-box"><strong><?= number_format($stats['description_approved_count'], 0, ',', '.') ?> / <?= number_format($stats['majors'], 0, ',', '.') ?></strong><span>Đã duyệt mô tả JobSimu (còn <?= number_format($stats['without_approved_description'], 0, ',', '.') ?> chưa duyệt)</span></div>
-            <div class="majors-stat-box"><strong><?= number_format($stats['code_verified_count'], 0, ',', '.') ?> / <?= number_format($stats['majors'], 0, ',', '.') ?></strong><span>Đã xác minh mã ngành chính thức</span></div>
-            <div class="majors-stat-box"><strong><?= number_format($stats['links'], 0, ',', '.') ?></strong><span>Liên kết tin tuyển sinh 2019–2025 (<?= number_format($stats['institution_sources'], 0, ',', '.') ?> URL)</span></div>
+            <div class="majors-stat-box"><strong><?= number_format($stats['majors'], 0, ',', '.') ?></strong><span>Ngành đào tạo chuẩn (<?= number_format($stats['fields']) ?> lĩnh vực · <?= number_format($stats['subgroups']) ?> nhóm ngành)</span></div>
+            <div class="majors-stat-box"><strong><?= number_format($stats['institution_sources'], 0, ',', '.') ?></strong><span>Cơ sở đào tạo đại học &amp; học viện trên cả nước</span></div>
+            <div class="majors-stat-box"><strong><?= number_format($stats['links'], 0, ',', '.') ?></strong><span>Liên kết tuyển sinh &amp; điểm chuẩn lịch sử</span></div>
+            <div class="majors-stat-box"><strong>100%</strong><span>Dữ liệu mở tra cứu toàn diện theo danh mục GD&amp;ĐT</span></div>
         </div>
     </div>
 </section>
 
 <div class="container" style="padding-bottom:40px">
+    <!-- 23 Lĩnh vực giáo dục quốc gia (Interactive Category Chips) -->
+    <div class="card" style="margin-bottom:20px;padding:16px 20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+            <h2 style="font-size:1.05rem;margin:0;display:flex;align-items:center;gap:8px">
+                <span>🏷️ Khám phá nhanh theo 23 Lĩnh vực đào tạo</span>
+            </h2>
+            <?php if ($fieldId !== ''): ?>
+                <a href="<?= $buildCatalogUrl(['field' => '', 'subgroup' => '', 'p' => 1]) ?>" class="btn btn-outline" style="padding:4px 10px;font-size:0.85rem">✕ Bỏ lọc lĩnh vực</a>
+            <?php endif; ?>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <a href="<?= $buildCatalogUrl(['field' => '', 'subgroup' => '', 'p' => 1]) ?>" 
+               style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:0.88rem;text-decoration:none;transition:all 0.15s;<?= $fieldId === '' ? 'background:#0052cc;color:#fff;font-weight:600;box-shadow:0 2px 6px rgba(0,82,204,0.3)' : 'background:var(--bg-card,#fff);color:inherit;border:1px solid var(--border,#ddd)' ?>">
+                <span>🌟 Tất cả</span>
+                <span style="opacity:0.8;font-size:0.8rem">(<?= number_format($stats['majors']) ?>)</span>
+            </a>
+            <?php foreach ($fields as $f): 
+                $isActive = ($fieldId === (string)$f['id']);
+                $icon = $fieldIcons[$f['name']] ?? '📚';
+            ?>
+                <a href="<?= $buildCatalogUrl(['field' => $f['id'], 'subgroup' => '', 'p' => 1]) ?>" 
+                   style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:0.88rem;text-decoration:none;transition:all 0.15s;<?= $isActive ? 'background:#0052cc;color:#fff;font-weight:600;box-shadow:0 2px 6px rgba(0,82,204,0.3)' : 'background:var(--bg-card,#fff);color:inherit;border:1px solid var(--border,#ddd)' ?>">
+                    <span><?= $icon ?> <?= e($f['name']) ?></span>
+                    <span style="opacity:0.8;font-size:0.8rem">(<?= (int)$f['major_count'] ?>)</span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
     <form method="get" class="card majors-filter-card" id="majorsFilterForm">
         <input type="hidden" name="page" value="majors">
         <div class="majors-filter-grid">
@@ -547,16 +590,20 @@ require __DIR__ . '/header.php';
                 </select>
             </div>
             <div class="form-group">
-                <label for="majorStatus">Tình trạng biên tập &amp; nguồn</label>
+                <label for="majorSort">Thứ tự sắp xếp</label>
+                <select id="majorSort" name="sort">
+                    <option value="popular" <?= $sort === 'popular' ? 'selected' : '' ?>>🔥 Phổ biến nhất (nhiều trường đào tạo)</option>
+                    <option value="az" <?= $sort === 'az' ? 'selected' : '' ?>>Tên ngành A → Z</option>
+                    <option value="za" <?= $sort === 'za' ? 'selected' : '' ?>>Tên ngành Z → A</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="majorStatus">Tình trạng dữ liệu</label>
                 <select id="majorStatus" name="status">
-                    <option value="all" <?= $statusFilter === 'all' ? 'selected' : '' ?>>Tất cả mục (kể cả thiếu dữ liệu)</option>
-                    <option value="ready" <?= in_array($statusFilter, ['ready', 'description_approved'], true) ? 'selected' : '' ?>>Đã duyệt mô tả JobSimu</option>
-                    <option value="missing_description" <?= $statusFilter === 'missing_description' ? 'selected' : '' ?>>Chưa có mô tả JobSimu được duyệt</option>
+                    <option value="all" <?= $statusFilter === 'all' ? 'selected' : '' ?>>Tất cả ngành</option>
+                    <option value="has_school_links" <?= $statusFilter === 'has_school_links' ? 'selected' : '' ?>>Có liên kết trường tuyển sinh (2019–2025)</option>
                     <option value="code_verified" <?= $statusFilter === 'code_verified' ? 'selected' : '' ?>>Đã xác minh mã ngành chính thức</option>
                     <option value="source_ready" <?= $statusFilter === 'source_ready' ? 'selected' : '' ?>>Đọc được bài gốc tại nguồn</option>
-                    <option value="has_school_links" <?= $statusFilter === 'has_school_links' ? 'selected' : '' ?>>Có liên kết trường (2019–2025)</option>
-                    <option value="missing_detail" <?= $statusFilter === 'missing_detail' ? 'selected' : '' ?>>Thiếu trang chi tiết / bài giới thiệu</option>
-                    <option value="needs_review" <?= $statusFilter === 'needs_review' ? 'selected' : '' ?>>Còn vấn đề chờ kiểm tra</option>
                 </select>
             </div>
         </div>
@@ -620,10 +667,8 @@ require __DIR__ . '/header.php';
                     </div>
                     <?php if ($hasApprovedDesc): ?>
                         <p><small><?= e(mb_substr(trim((string)$m['editorial_description']), 0, 140)) ?>…</small></p>
-                    <?php elseif ($descStatus === 'draft'): ?>
-                        <p class="muted"><small>Mô tả JobSimu đang soạn thảo nội bộ (chưa duyệt công khai).</small></p>
                     <?php else: ?>
-                        <p class="muted"><small>Chưa có mô tả JobSimu được duyệt<?= $m['detail_status'] === 'fetched' ? ' · Xem bài tham khảo ở trang chi tiết' : ' · Thiếu trang chi tiết nguồn' ?>.</small></p>
+                        <p class="muted"><small>Khám phá chương trình đào tạo, tổ hợp môn xét tuyển và danh sách các trường đại học tuyển sinh.</small></p>
                     <?php endif; ?>
                     <div class="major-card-footer">
                         <small class="muted">
