@@ -11,6 +11,7 @@ if(in_array($page,['knowledge-hub','careers'],true)) require __DIR__.'/app/knowl
 if(in_array($page,['assessment-hub','test-big5','test-caas','test-mbti','test-eq','assessment-report'],true)) require __DIR__.'/app/assessment-hub.php';
 if(in_array($page,['ai-roadmap','ai-chat'],true)) require __DIR__.'/app/ai-roadmap.php';
 if($page==='simulation-3d') require __DIR__.'/app/simulation-3d.php';
+if($page==='soka-mirror') { require __DIR__.'/app/soka-mirror.php'; exit; }
 if(in_array($page,['career','simulations','simulation','simulation-result'],true)) require __DIR__.'/app/simulation-controller.php';
 if($page==='constraints') require __DIR__.'/app/constraints.php';
 if($page==='result'){require_login();$check=db()->prepare('SELECT constraint_answers FROM assessments WHERE id=? AND user_id=?');$check->execute([(int)($_GET['id']??0),user()['id']]);$savedConstraints=$check->fetchColumn();if($savedConstraints===false)exit('Không tìm thấy kết quả.');if(!$savedConstraints)redirect('index.php?page=constraints&id='.(int)($_GET['id']??0));}

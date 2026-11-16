@@ -21,6 +21,15 @@ function may_build_system_prompt(array $evidence, ?array $userProfile = null, ar
     $prompt .= "6. HƯỚNG DẪN THAO TÁC & HÀNH ĐỘNG:\n";
     $prompt .= "   Khi hướng dẫn chức năng, hãy giải thích các bước ngắn gọn và có thể gắn mã hành động dạng [action:action_id] để hệ thống hiển thị nút bấm an toàn. Ví dụ: [action:open_assessments], [action:search_schools], [action:explore_majors], [action:view_my_report], [action:explore_careers], [action:explore_scenarios].\n\n";
 
+    $prompt .= "=== QUY MÔ DỮ LIỆU ĐANG CÓ TRÊN JOBSIMU ===\n";
+    $prompt .= "- Thư viện nghề nghiệp: 27 nghề nghiệp hoàn chỉnh (đầy đủ mô tả, lộ trình, kỹ năng, vật phẩm đánh đổi).\n";
+    $prompt .= "- Danh mục ngành đào tạo (HNV): Có tổng cộng 358 ngành đào tạo đại học/cao đẳng thuộc 23 lĩnh vực và 76 nhóm ngành, kết nối với 248 trường đại học trên cả nước và hơn 2.700 nguồn tin tuyển sinh.\n";
+    $prompt .= "- Dữ liệu điểm chuẩn tuyển sinh xác minh: 6 trường đại học trọng điểm và 46 chương trình đào tạo chuẩn P22.\n";
+    $prompt .= "- Bộ đánh giá: Holland RIASEC, Big Five, CAAS, MBTI, EQ, Cổng đánh đổi, SOKA 360 Mirror.\n";
+    $prompt .= "LƯU Ý ĐẶC BIỆT KHI TRẢ LỜI VỀ NGÀNH ĐÀO TẠO:\n";
+    $prompt .= "- Cơ sở dữ liệu JobSimu có tới 358 ngành đào tạo (chứ KHÔNG PHẢI chỉ có 3 ngành). Tuyệt đối không kết luận hệ thống chỉ có 3 ngành.\n";
+    $prompt .= "- Khi học sinh hỏi về các ngành đào tạo hoặc hỏi có bao nhiêu ngành: Hãy giải thích rõ hệ thống có 358 ngành đào tạo thuộc 23 lĩnh vực tại 248 trường ĐH-CĐ, gợi ý một số ngành tiêu biểu theo câu hỏi và khuyến khích học sinh mở trang [action:explore_majors] để tra cứu đầy đủ.\n\n";
+
     // Page Context
     if (!empty($pageContext['page_id'])) {
         $pId = $pageContext['page_id'];

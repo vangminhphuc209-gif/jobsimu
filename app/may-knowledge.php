@@ -78,54 +78,154 @@ function may_search_careers(string $query, int $limit = 3, ?PDO $pdo = null): ar
 }
 
 /**
- * Search training majors from `majors` and `training_majors`.
+ * Search training majors from `training_majors` (358 HNV majors) and `majors`.
  */
-function may_search_majors(string $query, int $limit = 3, ?PDO $pdo = null): array {
+function may_search_majors(string $query, int $limit = 4, ?PDO $pdo = null): array {
     $pdo = $pdo ?? db();
     $tokens = may_tokenize_query($query);
     if (empty($tokens)) return [];
 
-    $clauses = [];
-    $params = [];
-    foreach ($tokens as $t) {
-        $clauses[] = "(m.name LIKE ? OR m.code LIKE ? OR m.description LIKE ?)";
-        $term = '%' . $t . '%';
-        $params[] = $term;
-        $params[] = $term;
-        $params[] = $term;
-    }
-
-    $sql = "SELECT m.id, m.code, m.name, m.description,
-            GROUP_CONCAT(DISTINCT c.title SEPARATOR ', ') AS related_careers
-            FROM majors m
-            LEFT JOIN career_major_paths cmp ON cmp.major_id = m.id
-            LEFT JOIN careers c ON c.id = cmp.career_id AND c.status = 'published'
-            WHERE (" . implode(' OR ', $clauses) . ")
-            GROUP BY m.id
-            LIMIT " . (int)$limit;
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $rows = $stmt->fetchAll();
-
     $results = [];
-    foreach ($rows as $r) {
-        $summary = $r['description'] ?: 'Ngành đào tạo chuyên môn cung cấp nền tảng kiến thức nghề nghiệp.';
-        if (!empty($r['related_careers'])) {
-            $summary .= ' (Hướng nghề nghiệp liên quan: ' . $r['related_careers'] . ')';
-        }
+    $lower = mb_strtolower(trim($query));
+
+    // Detect general catalog inquiry
+    $isGeneral = in_array($lower, [
+        'ngành đào tạo', 'ngành', 'các ngành', 'danh sách ngành', 'tìm ngành',
+        'có những ngành nào', 'các ngành học', 'những ngành nào', 'bao nhiêu ngành',
+        'danh mục ngành', 'tất cả ngành', 'ngành học', 'học ngành gì'
+    ], true) || preg_match('/(có những ngành nào|bao nhiêu ngành|danh sách ngành|các ngành đào tạo|danh mục ngành|tổng hợp ngành)/iu', $query);
+
+    if ($isGeneral) {
         $results[] = [
-            'id' => 'major-' . ($r['code'] ?: $r['id']),
+            'id' => 'majors-catalog-overview',
             'type' => 'major',
-            'title' => 'Ngành ' . $r['name'] . ($r['code'] ? ' (Mã: ' . $r['code'] . ')' : ''),
-            'source' => 'Danh mục ngành đào tạo JobSimu',
+            'title' => 'Tổng quan Danh mục 358 Ngành đào tạo JobSimu',
+            'source' => 'Danh mục ngành đào tạo JobSimu (HNV)',
             'year' => '2024-2025',
             'status' => 'verified',
-            'summary' => $summary,
-            'url' => 'index.php?page=majors&search=' . urlencode($r['code'] ?: $r['name']),
-            'major_code' => $r['code']
+            'summary' => 'Hệ thống JobSimu hiện có tổng cộng 358 ngành đào tạo đại học/cao đẳng thuộc 23 lĩnh vực (như Máy tính & CNTT, Kinh doanh & Quản lý, Pháp luật, Kỹ thuật, Khoa học sức khỏe, Sư phạm...) và 76 nhóm ngành, kết nối với 248 trường đại học trên cả nước và hơn 2.700 dữ liệu tuyển sinh liên kết. Học sinh có thể tra cứu toàn bộ danh mục tại mục [action:explore_majors].',
+            'url' => 'index.php?page=majors',
+            'major_code' => null
         ];
     }
+
+    // 1. Search in training_majors (358 HNV training majors)
+    try {
+        $rawTerm = '%' . trim($query) . '%';
+        $clauses = [];
+        $params = [];
+        foreach ($tokens as $t) {
+            $clauses[] = "(tm.name LIKE ? OR COALESCE(tm.source_major_code_candidate, '') LIKE ? OR COALESCE(tm.official_major_code, '') LIKE ? OR f.name LIKE ? OR s.name LIKE ?)";
+            $term = '%' . $t . '%';
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+            $params[] = $term;
+        }
+
+        $sql = "SELECT tm.id, tm.name, tm.official_major_code, tm.source_major_code_candidate,
+                       tm.listed_school_count, tm.editorial_description,
+                       f.name AS field_name, s.name AS subgroup_name,
+                       CASE
+                           WHEN tm.name = ? THEN 100
+                           WHEN tm.name LIKE ? THEN 80
+                           WHEN tm.source_major_code_candidate = ? OR tm.official_major_code = ? THEN 95
+                           ELSE 20
+                       END AS match_score
+                FROM training_majors tm
+                LEFT JOIN major_fields f ON f.id = tm.field_id
+                LEFT JOIN major_subgroups s ON s.id = tm.subgroup_id
+                WHERE (" . implode(' OR ', $clauses) . ")
+                ORDER BY match_score DESC, tm.listed_school_count DESC
+                LIMIT " . (int)$limit;
+
+        $stmt = $pdo->prepare($sql);
+        $execParams = array_merge([trim($query), $rawTerm, trim($query), trim($query)], $params);
+        $stmt->execute($execParams);
+        $tmRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($tmRows as $r) {
+            $code = $r['official_major_code'] ?: ($r['source_major_code_candidate'] ?: '');
+            $summary = 'Lĩnh vực: ' . ($r['field_name'] ?: 'Chưa phân loại') . ' · Nhóm ngành: ' . ($r['subgroup_name'] ?: 'Đại học');
+            if (!empty($r['listed_school_count'])) {
+                $summary .= ' · Có ' . $r['listed_school_count'] . ' trường đại học/cao đẳng đào tạo';
+            }
+            if (!empty($r['editorial_description'])) {
+                $summary .= ' | ' . $r['editorial_description'];
+            }
+            $results[] = [
+                'id' => 'tm-' . $r['id'],
+                'type' => 'major',
+                'title' => 'Ngành ' . $r['name'] . ($code ? ' (Mã: ' . $code . ')' : ''),
+                'source' => 'Danh mục ngành đào tạo JobSimu (HNV)',
+                'year' => '2024-2025',
+                'status' => 'verified',
+                'summary' => $summary,
+                'url' => 'index.php?page=majors&id=' . rawurlencode($r['id']),
+                'major_code' => $code
+            ];
+            if (count($results) >= $limit) return $results;
+        }
+    } catch (Throwable $e) {
+        // Fallback gracefully if training_majors table is not available
+    }
+
+    // 2. Also search legacy majors table if space remains
+    if (count($results) < $limit) {
+        try {
+            $mClauses = [];
+            $mParams = [];
+            foreach ($tokens as $t) {
+                $mClauses[] = "(m.name LIKE ? OR m.code LIKE ? OR m.description LIKE ?)";
+                $mTerm = '%' . $t . '%';
+                $mParams[] = $mTerm;
+                $mParams[] = $mTerm;
+                $mParams[] = $mTerm;
+            }
+            $mSql = "SELECT m.id, m.code, m.name, m.description,
+                            GROUP_CONCAT(DISTINCT c.title SEPARATOR ', ') AS related_careers
+                     FROM majors m
+                     LEFT JOIN career_major_paths cmp ON cmp.major_id = m.id
+                     LEFT JOIN careers c ON c.id = cmp.career_id AND c.status = 'published'
+                     WHERE (" . implode(' OR ', $mClauses) . ")
+                     GROUP BY m.id
+                     LIMIT " . (int)($limit - count($results));
+            $mStmt = $pdo->prepare($mSql);
+            $mStmt->execute($mParams);
+            foreach ($mStmt->fetchAll(PDO::FETCH_ASSOC) as $r) {
+                $code = $r['code'] ?: '';
+                $alreadyAdded = false;
+                foreach ($results as $ex) {
+                    if ((!empty($code) && $ex['major_code'] === $code) || str_contains($ex['title'], $r['name'])) {
+                        $alreadyAdded = true;
+                        break;
+                    }
+                }
+                if ($alreadyAdded) continue;
+
+                $summary = $r['description'] ?: 'Ngành đào tạo chuyên môn cung cấp nền tảng kiến thức nghề nghiệp.';
+                if (!empty($r['related_careers'])) {
+                    $summary .= ' (Hướng nghề nghiệp liên quan: ' . $r['related_careers'] . ')';
+                }
+                $results[] = [
+                    'id' => 'major-' . ($r['code'] ?: $r['id']),
+                    'type' => 'major',
+                    'title' => 'Ngành ' . $r['name'] . ($code ? ' (Mã: ' . $code . ')' : ''),
+                    'source' => 'Danh mục ngành đào tạo JobSimu',
+                    'year' => '2024-2025',
+                    'status' => 'verified',
+                    'summary' => $summary,
+                    'url' => 'index.php?page=majors&q=' . urlencode($r['code'] ?: $r['name']),
+                    'major_code' => $code
+                ];
+                if (count($results) >= $limit) return $results;
+            }
+        } catch (Throwable $e) {
+            // Ignore
+        }
+    }
+
     return $results;
 }
 
@@ -336,19 +436,47 @@ function may_retrieve_evidence(string $query, array $context = [], ?PDO $pdo = n
             ];
         }
     } elseif ($pageId === 'majors' && $entityId !== '') {
-        $stmt = $pdo->prepare("SELECT id, code, name, description FROM majors WHERE code = ? OR id = ?");
-        $stmt->execute([$entityId, (int)$entityId]);
+        $stmt = $pdo->prepare("SELECT tm.id, tm.name, tm.official_major_code, tm.source_major_code_candidate, tm.listed_school_count, tm.editorial_description, f.name as field_name, s.name as subgroup_name
+                FROM training_majors tm
+                LEFT JOIN major_fields f ON f.id = tm.field_id
+                LEFT JOIN major_subgroups s ON s.id = tm.subgroup_id
+                WHERE tm.id = ? OR tm.official_major_code = ? OR tm.source_major_code_candidate = ?");
+        $stmt->execute([$entityId, $entityId, $entityId]);
         if ($row = $stmt->fetch()) {
+            $code = $row['official_major_code'] ?: ($row['source_major_code_candidate'] ?: '');
+            $summary = 'Lĩnh vực: ' . ($row['field_name'] ?: 'Chưa phân loại') . ' · Nhóm ngành: ' . ($row['subgroup_name'] ?: 'Đại học');
+            if (!empty($row['listed_school_count'])) {
+                $summary .= ' · Có ' . $row['listed_school_count'] . ' trường đại học/cao đẳng đào tạo';
+            }
+            if (!empty($row['editorial_description'])) {
+                $summary .= ' | ' . $row['editorial_description'];
+            }
             $items[] = [
-                'id' => 'major-' . ($row['code'] ?: $row['id']),
+                'id' => 'tm-' . $row['id'],
                 'type' => 'major',
-                'title' => 'Ngành ' . $row['name'] . ' (Trang bạn đang xem)',
-                'source' => 'Danh mục ngành đào tạo JobSimu',
+                'title' => 'Ngành ' . $row['name'] . ($code ? ' (Mã: ' . $code . ')' : '') . ' (Trang bạn đang xem)',
+                'source' => 'Danh mục ngành đào tạo JobSimu (HNV)',
                 'year' => '2024-2025',
                 'status' => 'verified',
-                'summary' => $row['description'],
-                'url' => 'index.php?page=majors&search=' . urlencode($row['code'] ?: $row['name'])
+                'summary' => $summary,
+                'url' => 'index.php?page=majors&id=' . rawurlencode($row['id']),
+                'major_code' => $code
             ];
+        } else {
+            $stmt = $pdo->prepare("SELECT id, code, name, description FROM majors WHERE code = ? OR id = ?");
+            $stmt->execute([$entityId, (int)$entityId]);
+            if ($row = $stmt->fetch()) {
+                $items[] = [
+                    'id' => 'major-' . ($row['code'] ?: $row['id']),
+                    'type' => 'major',
+                    'title' => 'Ngành ' . $row['name'] . ' (Trang bạn đang xem)',
+                    'source' => 'Danh mục ngành đào tạo JobSimu',
+                    'year' => '2024-2025',
+                    'status' => 'verified',
+                    'summary' => $row['description'],
+                    'url' => 'index.php?page=majors&q=' . urlencode($row['code'] ?: $row['name'])
+                ];
+            }
         }
     }
 

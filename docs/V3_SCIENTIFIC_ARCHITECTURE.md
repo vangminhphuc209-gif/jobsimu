@@ -49,34 +49,40 @@ function big5_questions(): array {
 ```
 
 ### 1.2. Thang đo Năng Lực Thích Ứng Nghề Nghiệp CAAS (12 câu)
-*Nguồn gốc: Savickas & Porfeli (2012) — Career Adapt-Abilities Scale (CAAS)*  
-*Thang đo: 1 (Rất yếu / Chưa bao giờ) đến 5 (Rất mạnh / Thường xuyên)*
+*Nguồn gốc: Savickas & Porfeli (2012) — Career Adapt-Abilities Scale (CAAS-SF)*  
+*Thang đo: 1 (Hầu như không đúng) đến 5 (Rất đúng). Gồm 4 phân nhóm (Concern, Control, Curiosity, Confidence), mỗi phân nhóm có 2 câu thuận (`+`) và 1 câu đảo chiều (`-`) chống thiên kiến đồng thuận.*
 
 ```php
 function caas_questions(): array {
     return [
         // Concern (Quan tâm & Chuẩn bị tương lai)
-        'c01' => ['axis' => 'concern', 'text' => 'Nghĩ về tương lai nghề nghiệp của mình sẽ ra sao.'],
-        'c02' => ['axis' => 'concern', 'text' => 'Nhận thức được những lựa chọn học tập hôm nay sẽ định hình ngày mai.'],
-        'c03' => ['axis' => 'concern', 'text' => 'Chuẩn bị trước cho các kỳ thi và các mốc chuyển cấp sắp tới.'],
+        'c01' => ['axis' => 'concern', 'pole' => '+', 'text' => 'Tôi thường hình dung rõ những điều mình cần chuẩn bị từ bây giờ cho mục tiêu nghề nghiệp sau này.'],
+        'c02' => ['axis' => 'concern', 'pole' => '+', 'text' => 'Tôi nhận thức rằng những lựa chọn môn học và kỹ năng hôm nay sẽ định hình tương lai của mình.'],
+        'c03' => ['axis' => 'concern', 'pole' => '-', 'text' => 'Tôi hiếm khi nghĩ trước về kế hoạch sau khi tốt nghiệp mà để đến đâu tính đến đó.'],
 
         // Control (Tự chủ & Chịu trách nhiệm quyết định)
-        'c04' => ['axis' => 'control', 'text' => 'Tự đưa ra quyết định dựa trên chính kiến và mục tiêu của bản thân.'],
-        'c05' => ['axis' => 'control', 'text' => 'Chịu trách nhiệm về hành động và kết quả học tập của chính mình.'],
-        'c06' => ['axis' => 'control', 'text' => 'Bảo vệ niềm tin và những giá trị mà mình cho là quan trọng.'],
+        'c04' => ['axis' => 'control', 'pole' => '+', 'text' => 'Khi đứng trước các lựa chọn học tập, tôi chủ động tự tìm hiểu và chịu trách nhiệm với quyết định của mình.'],
+        'c05' => ['axis' => 'control', 'pole' => '+', 'text' => 'Tôi kiên định bảo vệ những giá trị và mục tiêu học tập phù hợp với bản thân.'],
+        'c06' => ['axis' => 'control', 'pole' => '-', 'text' => 'Tôi thường để người khác quyết định thay hướng đi vì thấy mình khó tự đưa ra lựa chọn.'],
 
         // Curiosity (Tò mò khám phá & Tìm kiếm cơ hội)
-        'c07' => ['axis' => 'curiosity', 'text' => 'Khám phá và tìm hiểu về các cơ hội nghề nghiệp xung quanh mình.'],
-        'c08' => ['axis' => 'curiosity', 'text' => 'Tìm kiếm thông tin từ nhiều nguồn về ngành nghề mình quan tâm trước khi chọn.'],
-        'c09' => ['axis' => 'curiosity', 'text' => 'Tò mò quan sát cách những người làm nghề giải quyết công việc hàng ngày.'],
+        'c07' => ['axis' => 'curiosity', 'pole' => '+', 'text' => 'Tôi chủ động tìm kiếm cơ hội quan sát thực tế hoặc thử sức trước khi kết luận mình hợp nghề nào.'],
+        'c08' => ['axis' => 'curiosity', 'pole' => '+', 'text' => 'Khi tìm hiểu một ngành nghề, tôi luôn đặt câu hỏi sâu về cả cơ hội lẫn những góc khuất khó khăn của nghề đó.'],
+        'c09' => ['axis' => 'curiosity', 'pole' => '-', 'text' => 'Tôi ngại thử nghiệm những cách học mới hoặc tìm hiểu các lĩnh vực ngoài vùng quen thuộc của mình.'],
 
         // Confidence (Tự tin vượt khó & Giải quyết rào cản)
-        'c10' => ['axis' => 'confidence', 'text' => 'Nỗ lực làm tốt nhất phần việc của mình kể cả khi gặp bài tập phức tạp.'],
-        'c11' => ['axis' => 'confidence', 'text' => 'Kiên trì rèn luyện và khắc phục những kỹ năng mà mình còn hạn chế.'],
-        'c12' => ['axis' => 'confidence', 'text' => 'Tin tưởng rằng mình có thể vượt qua các trở ngại trên con đường đã chọn.']
+        'c10' => ['axis' => 'confidence', 'pole' => '+', 'text' => 'Khi gặp một kỹ năng mới chưa làm tốt, tôi tin mình có thể rèn luyện từng bước để làm chủ được nó.'],
+        'c11' => ['axis' => 'confidence', 'pole' => '+', 'text' => 'Tôi chú trọng làm việc cẩn trọng, đúng quy trình và nỗ lực tìm giải pháp khi gặp trở ngại.'],
+        'c12' => ['axis' => 'confidence', 'pole' => '-', 'text' => 'Khi vấp phải một bài toán hay thử thách khó, tôi thường dễ nản lòng và nghi ngờ khả năng của bản thân.']
     ];
 }
 ```
+
+**Quy tắc tính điểm và kiểm định chất lượng phản hồi CAAS:**
+- **Đảo chiều câu hỏi:** Đối với 4 câu nghịch (`c03`, `c06`, `c09`, `c12` có `pole = '-'`), điểm đóng góp được đảo ngược: $X_{\text{reversed}} = 6 - X_{\text{raw}}$ (tương ứng với giá trị trung tâm $-(X_{\text{raw}} - 3)$).
+- **Điểm chuẩn hóa (0–100):** Với 2 câu thuận và 1 câu nghịch, tổng điểm thô $\text{RawScore} \in [3, 15]$:
+  $$\text{Score} = \text{round}\left(50 + 25 \times \frac{\sum_{i=1}^3 (X_i - 3) \times \text{pole}_i}{3}\right) = \text{round}\left(\frac{\text{RawScore} - 3}{12} \times 100\right)$$
+- **Kiểm định mâu thuẫn (Contradiction Check):** So sánh trung bình câu thuận ($X_{\text{pos}}$) và trung bình câu nghịch thô ($X_{\text{neg}}$). Nếu học sinh đồng thời chọn điểm cao ($\ge 4.0$) hoặc điểm thấp ($\le 2.0$) ở cả hai chiều trong $\ge 2$ phân nhóm, kết quả sẽ bị gắn cờ `inconsistent` (thiên kiến đồng thuận/chọn bừa).
 
 ### 1.3. Bảng Kiểm Tra Sự Đánh Đổi Thực Tế (Realistic Job Sacrifice Checklist)
 *Thay thế các câu hỏi thể lực tự khai hình thức cũ trong `app/constraints.php`*

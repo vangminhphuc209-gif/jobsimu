@@ -17,7 +17,7 @@ function run_four_hub_migrations(): void
     }
     try {
         if ($driver === 'mysql') {
-            foreach (['2026_11_four_hubs_upgrade.sql', '2026_12_scientific_psychometrics_v3.sql'] as $migrationFile) {
+            foreach (['2026_11_four_hubs_upgrade.sql', '2026_12_scientific_psychometrics_v3.sql', '2026_14_user_custom_roadmap.sql'] as $migrationFile) {
                 $path = ROOT_PATH . '/database/migrations/' . $migrationFile;
                 if (!is_file($path)) throw new RuntimeException('Migration file is missing: ' . $migrationFile);
                 $sql = file_get_contents($path);
@@ -54,6 +54,10 @@ function four_hub_sqlite_schema(): array
         'CREATE INDEX IF NOT EXISTS idx_soka_user ON soka_mirror_requests(user_id)',
         "CREATE TABLE IF NOT EXISTS soka_mirror_responses (id INTEGER PRIMARY KEY AUTOINCREMENT,request_id INTEGER NOT NULL,user_id INTEGER NOT NULL,rater_role TEXT NOT NULL DEFAULT 'peer' CHECK(rater_role IN ('peer','teacher','parent','mentor')),ratings_json TEXT NOT NULL,strength_note VARCHAR(300) NULL,blindspot_note VARCHAR(300) NULL,submitted_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(request_id) REFERENCES soka_mirror_requests(id) ON DELETE CASCADE,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
         'CREATE INDEX IF NOT EXISTS idx_soka_resp_user ON soka_mirror_responses(user_id,submitted_at)',
+        "CREATE TABLE IF NOT EXISTS user_roadmaps (id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER NOT NULL,target_career_id INTEGER,target_career_title VARCHAR(200),goal_title VARCHAR(255) NOT NULL DEFAULT 'Khám phá và định hình hướng đi tương lai',target_timeframe VARCHAR(100) NOT NULL DEFAULT 'Lớp 10 - 12',notes TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
+        'CREATE INDEX IF NOT EXISTS idx_roadmap_user ON user_roadmaps(user_id)',
+        "CREATE TABLE IF NOT EXISTS user_roadmap_milestones (id INTEGER PRIMARY KEY AUTOINCREMENT,roadmap_id INTEGER NOT NULL,user_id INTEGER NOT NULL,stage TEXT NOT NULL DEFAULT 'discovery' CHECK(stage IN ('discovery','academic','skills','decision')),title VARCHAR(255) NOT NULL,description TEXT,action_url VARCHAR(255),is_completed INTEGER NOT NULL DEFAULT 0,completed_at TEXT,source TEXT NOT NULL DEFAULT 'suggested' CHECK(source IN ('suggested','assessment','custom','ai')),sort_order INTEGER NOT NULL DEFAULT 0,created_at TEXT DEFAULT CURRENT_TIMESTAMP,FOREIGN KEY(roadmap_id) REFERENCES user_roadmaps(id) ON DELETE CASCADE,FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE)",
+        'CREATE INDEX IF NOT EXISTS idx_milestone_user_stage ON user_roadmap_milestones(user_id,stage,is_completed)',
     ];
 }
 

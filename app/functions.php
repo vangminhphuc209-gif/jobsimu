@@ -568,7 +568,7 @@ function career_constraint_fit(array $career, array $answers, array $efficacySco
     $adjustment = 0;
     $notes = [];
     $provided = array_filter($answers, fn($value) => is_array($value) ? !empty($value) : !in_array($value, ['unknown','any','skip',''], true));
-    if (!$profile || !$provided) {
+    if (!$profile || (!$provided && empty($efficacyScores) && empty($big5Scores))) {
         return ['label'=>'Chưa đối chiếu điều kiện','class'=>'neutral','notes'=>[],'adjustment'=>0,'group'=>$profile['group'] ?? ''];
     }
     if (isset($answers['budget']) && isset($profile['cost']) && $answers['budget'] !== 'unknown' && ($answers['scholarship'] ?? '') !== 'yes' && (int)$answers['budget'] < (int)$profile['cost']) {
@@ -606,6 +606,39 @@ function career_constraint_fit(array $career, array $answers, array $efficacySco
         if (in_array($sacKey, $avoidSacrifices, true)) {
             $adjustment -= 6;
             $notes[] = 'Cảnh báo đánh đổi thực tế: Nghề này thường xuyên đòi hỏi [' . ($sacrificeLabels[$sacKey] ?? $sacKey) . '] mà bạn đang muốn tránh.';
+        }
+    }
+
+    // SCCT Self-Efficacy cross-reference: warning when primary RIASEC domain self-efficacy < 45%
+    if (!empty($efficacyScores)) {
+        $weights = is_array($career['riasec_weights'] ?? null)
+            ? $career['riasec_weights']
+            : (json_decode($career['riasec_weights'] ?? '{}', true) ?: []);
+        if (!empty($weights)) {
+            arsort($weights);
+            $primaryType = array_key_first($weights);
+            if ($primaryType && isset($efficacyScores[$primaryType]) && (int)$efficacyScores[$primaryType] < 45) {
+                $adjustment -= 3;
+                $notes[] = 'Cảnh báo tự hiệu quả (SCCT): Mức độ tự tin ở nhóm kỹ năng cốt lõi (' . $primaryType . ') của nghề hiện còn thấp (' . (int)$efficacyScores[$primaryType] . '%); nên rèn luyện qua các bước thực hành nhỏ.';
+            }
+        }
+    }
+
+    // Big Five trait profile cross-reference:
+    // Warning when Emotional Stability N < 40 for careers with emotional_labor_crisis or strict_physical_discipline
+    // Warning when Conscientiousness C < 40 for careers with debugging_detail_grind or high_academic_duration
+    if (!empty($big5Scores)) {
+        if (isset($big5Scores['N']) && (int)$big5Scores['N'] < 40) {
+            if (in_array('emotional_labor_crisis', $jobSacrifices, true) || in_array('strict_physical_discipline', $jobSacrifices, true)) {
+                $adjustment -= 3;
+                $notes[] = 'Cảnh báo tính cách (Big Five): Điểm Ổn định cảm xúc (N=' . (int)$big5Scores['N'] . '%) dưới 40 trong khi nghề có áp lực cảm xúc hoặc kỷ luật khắt khe; cần chú ý chuẩn bị tâm lý và rèn luyện kỹ năng điều hòa căng thẳng.';
+            }
+        }
+        if (isset($big5Scores['C']) && (int)$big5Scores['C'] < 40) {
+            if (in_array('debugging_detail_grind', $jobSacrifices, true) || in_array('high_academic_duration', $jobSacrifices, true)) {
+                $adjustment -= 3;
+                $notes[] = 'Cảnh báo tính cách (Big Five): Điểm Tận tâm (C=' . (int)$big5Scores['C'] . '%) dưới 40 trong khi nghề đòi hỏi tính tỉ mỉ cao hoặc đào tạo dài năm; nên xây dựng thói quen làm việc theo danh mục kiểm tra (checklist).';
+            }
         }
     }
 
@@ -695,11 +728,83 @@ function calculate_self_insight_discrepancy(int $userId): array {
         }
     }
 
+    // SOKA 360° Mirror Discrepancy Engine (v3.0.0)
+    $sokaResponses = [];
+    try {
+        $sokaStmt = db()->prepare('SELECT * FROM soka_mirror_responses WHERE user_id=? ORDER BY submitted_at DESC');
+        $sokaStmt->execute([$userId]);
+        $sokaResponses = $sokaStmt->fetchAll() ?: [];
+    } catch (Throwable $e) {}
+
+    $sokaCount = count($sokaResponses);
+    $peerAverages = [];
+    if ($sokaCount > 0) {
+        $dimSums = ['C' => 0.0, 'E' => 0.0, 'A' => 0.0, 'N' => 0.0, 'O' => 0.0, 'analysis' => 0.0];
+        $dimCounts = ['C' => 0, 'E' => 0, 'A' => 0, 'N' => 0, 'O' => 0, 'analysis' => 0];
+
+        foreach ($sokaResponses as $resp) {
+            $ratings = json_decode($resp['ratings_json'] ?? '{}', true) ?: [];
+            foreach ($dimSums as $k => $val) {
+                if (isset($ratings[$k]) && is_numeric($ratings[$k])) {
+                    $raw = max(1, min(5, (float)$ratings[$k]));
+                    // Normalize 1..5 scale to 0..100
+                    $norm = ($raw - 1.0) / 4.0 * 100.0;
+                    $dimSums[$k] += $norm;
+                    $dimCounts[$k]++;
+                }
+            }
+        }
+
+        $sokaLabels = [
+            'C' => 'Tính cẩn trọng & đúng hẹn (Conscientiousness)',
+            'E' => 'Giao tiếp & tương tác nhóm (Extraversion)',
+            'A' => 'Lắng nghe & hỗ trợ bạn bè (Agreeableness)',
+            'N' => 'Bình tĩnh trước áp lực (Emotional Stability)',
+            'O' => 'Góc nhìn sáng tạo & đổi mới (Openness)',
+            'analysis' => 'Tư duy phân tích có căn cứ (Analytical Thinking)',
+        ];
+
+        // Self-scores mapped to the 6 dimensions
+        $selfScores = [
+            'C' => (int)($big5['C'] ?? ($scores['C'] ?? 50)),
+            'E' => (int)($big5['E'] ?? ($scores['E'] ?? 50)),
+            'A' => (int)($big5['A'] ?? ($scores['S'] ?? 50)),
+            'N' => (int)($big5['N'] ?? 50),
+            'O' => (int)($big5['O'] ?? ($scores['A'] ?? 50)),
+            'analysis' => (int)($efficacy['I'] ?? ($scores['I'] ?? 50)),
+        ];
+
+        foreach ($dimSums as $dim => $sum) {
+            if ($dimCounts[$dim] > 0) {
+                $peerAvg = round($sum / $dimCounts[$dim]);
+                $peerAverages[$dim] = (int)$peerAvg;
+                $selfScore = $selfScores[$dim];
+                $diff = $selfScore - $peerAvg;
+
+                if ($diff >= 25) {
+                    $findings[] = [
+                        'type' => 'soka_peer_blind_spot',
+                        'title' => 'Điểm mù 360° (SOKA Blind Spot): ' . ($sokaLabels[$dim] ?? $dim),
+                        'detail' => 'Bạn tự đánh giá mình khá cao (' . $selfScore . '%), nhưng người quan sát xung quanh (trung bình ' . $sokaCount . ' phản hồi) chỉ chấm ' . (int)$peerAvg . '%. Có thể bạn ít bộc lộ hành vi này ra ngoài hơn bạn nghĩ.'
+                    ];
+                } elseif ($diff <= -25) {
+                    $findings[] = [
+                        'type' => 'soka_peer_hidden_strength',
+                        'title' => 'Tiềm năng Ẩn 360° (Hidden Strength): ' . ($sokaLabels[$dim] ?? $dim),
+                        'detail' => 'Người khác nhận thấy đây là điểm mạnh nổi bật của bạn (' . (int)$peerAvg . '% qua ' . $sokaCount . ' phản hồi), dù bạn tự đánh giá khiêm tốn (' . $selfScore . '%). Hãy tự tin phát huy thế mạnh này!'
+                    ];
+                }
+            }
+        }
+    }
+
     return [
         'findings' => $findings,
         'has_big5' => !empty($big5),
         'has_caas' => !empty($caas),
         'simulation_count' => count($activities),
+        'soka_response_count' => $sokaCount,
+        'soka_peer_averages' => $peerAverages,
     ];
 }
 
@@ -819,12 +924,15 @@ function generate_assessment_ai(int $assessmentId, int $userId): array {
     $assessment['sim_telemetry'] = $simStmt->fetchAll();
     $assessment['multi_source_context'] = four_hub_ai_context($userId);
 
+    $psych = four_hub_latest_psychometrics($userId);
+    $validBig5 = (($psych['big5']['validity_flag'] ?? '') === 'valid') ? ($psych['big5']['scores'] ?? []) : [];
+
     $scores=json_decode($assessment['scores'],true)?:[];
     $s=db()->prepare('SELECT c.*,m.match_percent,m.rank_order FROM assessment_matches m JOIN careers c ON c.id=m.career_id WHERE m.assessment_id=? ORDER BY m.rank_order');
     $s->execute([$assessmentId]);
     $matches=$s->fetchAll();
     foreach($matches as &$match) {
-        $match['constraint_fit']=career_constraint_fit($match,$assessment['constraint_answers'],$assessment['efficacy_scores']);
+        $match['constraint_fit']=career_constraint_fit($match, $assessment['constraint_answers'], $assessment['efficacy_scores'], $validBig5);
     }
     unset($match);
     $result=ai_advice($scores,$matches,$assessment);

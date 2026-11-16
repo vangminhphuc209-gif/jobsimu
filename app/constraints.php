@@ -110,7 +110,7 @@ require __DIR__.'/header.php';
 
 <section class="card constraints-section">
     <h2>2. Cổng Đánh đổi Thực tế (Realistic Job Sacrifice Gate)</h2>
-    <p class="muted">Mỗi nghề đều có "chi phí cơ hội" và mặt trái đặc thù. Hãy đánh dấu những áp lực mà bạn <b>CẢM THẤY KHÔNG PHÙ HỢP HOẶC MUỐN TRÁNH</b> (chọn tối đa 2 mục):</p>
+    <p class="muted">Mỗi nghề đều có "chi phí cơ hội" và mặt trái đặc thù. Hãy đánh dấu những áp lực mà bạn <b>CẢM THẤY KHÔNG PHÙ HỢP HOẶC MUỐN TRÁNH</b> (chọn tối đa 3 mục):</p>
     <div style="display:grid;gap:10px;margin-top:12px">
     <?php foreach (realistic_sacrifice_labels() as $sKey => $sLabel): ?>
         <label style="display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;cursor:pointer">
@@ -124,4 +124,19 @@ require __DIR__.'/header.php';
 <section class="card constraints-section"><h2>3. Khả năng đầu tư và lộ trình đào tạo</h2><div class="form-row"><div class="form-group"><label for="budget">Gia đình có thể dự trù học phí khoảng bao nhiêu mỗi năm?</label><select class="input" id="budget" name="budget"><option value="unknown">Chưa rõ / chưa muốn trả lời</option><option value="0">Dưới 20 triệu đồng</option><option value="1">20–50 triệu đồng</option><option value="2">50–100 triệu đồng</option><option value="3">Trên 100 triệu đồng</option></select></div><div class="form-group"><label for="scholarship">Bạn có muốn ưu tiên học bổng hoặc vừa học vừa làm?</label><select class="input" id="scholarship" name="scholarship"><option value="unknown">Chưa rõ</option><option value="yes">Có, hãy gợi ý thêm phương án</option><option value="no">Chưa cần</option></select></div></div><div class="form-row"><div class="form-group"><label for="study_path">Bạn đang nghiêng về lộ trình nào?</label><select class="input" id="study_path" name="study_path"><option value="any">Chưa quyết định</option><option value="university">Đại học</option><option value="college">Cao đẳng</option><option value="vocational">Trung cấp / học nghề</option></select></div><div class="form-group"><label for="study_years">Bạn sẵn sàng dành bao lâu cho đào tạo ban đầu?</label><select class="input" id="study_years" name="study_years"><option value="any">Linh hoạt / chưa rõ</option><option value="short">Khoảng 1–3 năm</option><option value="long">4 năm trở lên</option></select></div></div><div class="form-row"><div class="form-group"><label for="activity">Bạn thấy thoải mái với công việc vận động thực địa ở mức nào?</label><select class="input" id="activity" name="activity"><option value="any">Chưa rõ</option><option value="low">Ưu tiên vận động nhẹ</option><option value="medium">Có thể đứng/đi lại thường xuyên</option><option value="high">Thoải mái với vận động cường độ cao</option></select></div><div class="form-group"><label for="portfolio">Bạn sẵn sàng luyện năng khiếu hoặc làm portfolio nếu ngành yêu cầu?</label><select class="input" id="portfolio" name="portfolio"><option value="unknown">Chưa rõ</option><option value="yes">Có, mình sẵn sàng luyện</option><option value="no">Chưa muốn theo lộ trình này</option></select></div></div><p class="form-hint">Mức đầu tư trong gợi ý nghề chỉ là ước lượng tương đối, không phải học phí của một trường cụ thể.</p></section>
 
 <div class="constraints-actions"><a class="btn btn-outline" href="<?=url('index.php?page=assessment')?>">← Làm lại Holland</a><button class="btn btn-outline" type="submit" name="skip_survey" value="1">Bỏ qua khảo sát</button><button class="btn btn-primary btn-lg" type="submit">Phân tích Ma trận SCCT & Xem kết quả →</button></div></form><p class="form-hint mt-4">Danh mục nhóm ngành tham khảo: <a href="https://huongnghiepviet.com/nganh-nghe" target="_blank" rel="noopener">Hướng Nghiệp Việt</a>.</p></div></div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const maxAllowed = 3;
+    const checkboxes = document.querySelectorAll('input[name="avoid_sacrifices[]"]');
+    checkboxes.forEach(function(cb) {
+        cb.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('input[name="avoid_sacrifices[]"]:checked').length;
+            if (checkedCount > maxAllowed) {
+                this.checked = false;
+                alert('Bạn chỉ có thể chọn tối đa 3 áp lực muốn tránh.');
+            }
+        });
+    });
+});
+</script>
 <?php require __DIR__.'/footer.php'; exit; ?>
