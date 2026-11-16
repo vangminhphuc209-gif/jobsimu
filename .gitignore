@@ -8,6 +8,7 @@ config.php
 *.sql.bak
 *.dump
 *.sqlite
+database/backups/
 
 # Logs & Traces
 *.log
