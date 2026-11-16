@@ -116,4 +116,52 @@ return [
         'sacrifices' => ['emotional_labor_crisis'],
         'big5_weights' => ['O' => 70, 'C' => 75, 'E' => 75, 'A' => 95, 'N' => 80],
     ],
+    'chuyen-vien-an-ninh-mang' => [
+        'group' => 'Máy tính và công nghệ thông tin', 'cost' => 3, 'years' => 4,
+        'paths' => ['university', 'college'], 'physical' => 'low', 'portfolio' => false,
+        'sacrifices' => ['debugging_detail_grind'],
+        'big5_weights' => ['O' => 80, 'C' => 90, 'E' => 45, 'A' => 50, 'N' => 75],
+    ],
+    'ky-su-du-lieu' => [
+        'group' => 'Máy tính và công nghệ thông tin', 'cost' => 3, 'years' => 4,
+        'paths' => ['university', 'college'], 'physical' => 'low', 'portfolio' => false,
+        'sacrifices' => ['debugging_detail_grind'],
+        'big5_weights' => ['O' => 85, 'C' => 90, 'E' => 45, 'A' => 50, 'N' => 75],
+    ],
+    'chuyen-vien-logistics' => [
+        'group' => 'Kinh doanh và quản lý', 'cost' => 2, 'years' => 4,
+        'paths' => ['university', 'college'], 'physical' => 'medium', 'portfolio' => false,
+        'sacrifices' => ['debugging_detail_grind'],
+        'big5_weights' => ['O' => 70, 'C' => 90, 'E' => 75, 'A' => 65, 'N' => 75],
+    ],
+    'ky-su-nong-nghiep' => [
+        'group' => 'Nông, lâm nghiệp và thủy sản', 'cost' => 2, 'years' => 4,
+        'paths' => ['university', 'college'], 'physical' => 'high', 'portfolio' => false,
+        'sacrifices' => ['debugging_detail_grind'],
+        'big5_weights' => ['O' => 75, 'C' => 85, 'E' => 50, 'A' => 65, 'N' => 75],
+    ],
+    'bac-si-thu-y' => [
+        'group' => 'Nông, lâm nghiệp và thủy sản', 'cost' => 3, 'years' => 5,
+        'paths' => ['university'], 'physical' => 'medium', 'portfolio' => false, 'license' => true,
+        'sacrifices' => ['high_academic_duration', 'emotional_labor_crisis'],
+        'big5_weights' => ['O' => 70, 'C' => 90, 'E' => 50, 'A' => 85, 'N' => 80],
+    ],
+    'chuyen-vien-phan-tich-du-lieu' => [
+        'group' => 'Máy tính và công nghệ thông tin', 'cost' => 2, 'years' => 4,
+        'paths' => ['university', 'college'], 'physical' => 'low', 'portfolio' => false,
+        'sacrifices' => ['debugging_detail_grind'],
+        'big5_weights' => ['O' => 85, 'C' => 95, 'E' => 50, 'A' => 55, 'N' => 75],
+    ],
+    'ky-thuat-vien-moi-truong' => [
+        'group' => 'Khoa học môi trường và kỹ thuật', 'cost' => 2, 'years' => 3,
+        'paths' => ['college', 'vocational', 'university'], 'physical' => 'high', 'portfolio' => false,
+        'sacrifices' => ['debugging_detail_grind'],
+        'big5_weights' => ['O' => 65, 'C' => 85, 'E' => 50, 'A' => 65, 'N' => 75],
+    ],
+    'chuyen-vien-quan-tri-du-lich' => [
+        'group' => 'Du lịch, khách sạn và dịch vụ', 'cost' => 2, 'years' => 4,
+        'paths' => ['university', 'college'], 'physical' => 'medium', 'portfolio' => false,
+        'sacrifices' => ['emotional_labor_crisis', 'creative_rejection_deadline'],
+        'big5_weights' => ['O' => 80, 'C' => 75, 'E' => 90, 'A' => 85, 'N' => 80],
+    ],
 ];
