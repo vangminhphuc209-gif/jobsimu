@@ -120,11 +120,14 @@ function may_build_action_button(string $actionId, ?array $user = null, array $p
 
     // Dynamic major action
     if ($actionId === 'view_major' && !empty($params['major_code'])) {
-        $code = urlencode(trim((string)$params['major_code']));
+        $rawCode = trim((string)$params['major_code']);
+        $url = str_starts_with($rawCode, 'hnv-')
+            ? 'index.php?page=majors&id=' . rawurlencode($rawCode)
+            : 'index.php?page=majors&search=' . rawurlencode($rawCode);
         return [
-            'id' => 'view_major_' . $code,
+            'id' => 'view_major_' . rawurlencode($rawCode),
             'label' => 'Xem chi tiết ngành này',
-            'url' => 'index.php?page=majors&search=' . $code,
+            'url' => $url,
             'icon' => '🎓',
             'login_required' => false
         ];

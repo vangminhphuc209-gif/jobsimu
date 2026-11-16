@@ -419,7 +419,7 @@ if ($majorId !== '') {
 }
 
 // Catalog list mode
-$q = is_string($_GET['q'] ?? null) ? trim(mb_substr($_GET['q'], 0, 120)) : '';
+$q = is_string($_GET['q'] ?? null) ? trim(mb_substr($_GET['q'], 0, 120)) : (is_string($_GET['search'] ?? null) ? trim(mb_substr($_GET['search'], 0, 120)) : '');
 $fieldId = is_string($_GET['field'] ?? null) ? trim(mb_substr($_GET['field'], 0, 32)) : '';
 $subgroupId = is_string($_GET['subgroup'] ?? null) ? trim(mb_substr($_GET['subgroup'], 0, 32)) : '';
 $statusFilter = is_string($_GET['status'] ?? null) ? trim($_GET['status']) : 'all';
