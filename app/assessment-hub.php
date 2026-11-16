@@ -38,6 +38,12 @@ $latestPsych = four_hub_latest_psychometrics($studentId);
 $statement = db()->prepare('SELECT * FROM assessments WHERE user_id=? ORDER BY completed_at DESC,id DESC LIMIT 1');
 $statement->execute([$studentId]);
 $latestHolland = $statement->fetch() ?: null;
+$sokaRespCount = 0;
+try {
+    $sokaCountStmt = db()->prepare('SELECT COUNT(*) FROM soka_mirror_responses WHERE user_id=?');
+    $sokaCountStmt->execute([$studentId]);
+    $sokaRespCount = (int)$sokaCountStmt->fetchColumn();
+} catch (Throwable $e) {}
 
 $titleByType = [
     'big5' => 'Big Five (Mini-IPIP) · 5 Nhân tố Tính cách Khoa học',
@@ -57,6 +63,7 @@ require __DIR__.'/header.php';
     ['title'=>'Holland (SCCT-RIASEC) · Sở thích & Tự hiệu quả','desc'=>'30 câu hỏi có chuẩn hóa nội tại (Ipsative Z-score), kết hợp đánh giá Tự hiệu quả SCCT và Cổng Đánh đổi Thực tế.','route'=>'assessment','done'=>$latestHolland && !empty($latestHolland['constraint_answers']),'tag'=>'Trụ cột chính · O*NET & SCCT'],
     ['title'=>'Big Five (Mini-IPIP) · 5 Nhân tố Tính cách','desc'=>'20 câu chuẩn International Personality Item Pool (O-C-E-A-N) có câu hỏi đảo chiều chống thiên kiến đồng thuận.','route'=>'test-big5','done'=>isset($latestPsych['big5']),'tag'=>'Chuẩn khoa học · IPIP'],
     ['title'=>'CAAS · Khả năng Thích ứng Nghề nghiệp','desc'=>'12 câu đo lường 4 nguồn lực tâm lý xã hội (Concern, Control, Curiosity, Confidence — Savickas & Porfeli).','route'=>'test-caas','done'=>isset($latestPsych['caas']),'tag'=>'Chuẩn khoa học · CAAS-SF'],
+    ['title'=>'SOKA 360° Mirror · Góc nhìn Người quan sát','desc'=>'Mời bạn bè, thầy cô hoặc phụ huynh gửi đánh giá quan sát 6 hành vi thực tế để nhận diện điểm mù và tiềm năng ẩn.','route'=>'soka-mirror','done'=>$sokaRespCount > 0,'tag'=>'Góc nhìn 360° · SOKA'],
     ['title'=>'MBTI rút gọn · Xu hướng tự mô tả (Tham khảo)','desc'=>'12 câu tự mô tả về cách tương tác, tiếp nhận thông tin và lựa chọn.','route'=>'test-mbti','done'=>isset($latestPsych['mbti']),'tag'=>'Tự phản tư'],
     ['title'=>'EQ · Tự phản tư cảm xúc (Tham khảo)','desc'=>'10 tình huống tự phản tư về cảm xúc, động lực và hợp tác.','route'=>'test-eq','done'=>isset($latestPsych['eq']),'tag'=>'Tự phản tư'],
     ['title'=>'Báo cáo & Phát hiện Điểm mù (SOKA / SCCT)','desc'=>'Đối chiếu đa nguồn giữa Tự khai (RIASEC, Big Five, CAAS) và Hành vi thực tế trong Phòng mô phỏng.','route'=>'assessment-report','done'=>false,'tag'=>'Báo cáo tổng hợp'],
@@ -254,10 +261,13 @@ require __DIR__.'/header.php';
             <?php endforeach; ?>
             </ul>
         <?php else: ?>
-            <p>Chưa phát hiện độ lệch lớn, hoặc bạn cần hoàn thành thêm bài Big Five / CAAS và ít nhất 1 Phòng mô phỏng nghề để hệ thống đối chiếu Tự khai với Hành vi thực tế.</p>
+            <p>Chưa phát hiện độ lệch lớn, hoặc bạn cần hoàn thành thêm bài Big Five / CAAS, nhận đánh giá 360° từ bạn bè và ít nhất 1 Phòng mô phỏng nghề để hệ thống đối chiếu Tự khai với Hành vi thực tế.</p>
         <?php endif; ?>
-        <a class="btn btn-primary" href="<?=e(url('index.php?page=simulations'))?>">Kiểm chứng tại Phòng mô phỏng →</a>
-        <p><a href="<?=e(url('index.php?page=ai-roadmap'))?>">Mở AI Phản biện & Bản đồ hành trình →</a></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            <a class="btn btn-primary" href="<?=e(url('index.php?page=simulations'))?>">Kiểm chứng tại Phòng mô phỏng →</a>
+            <a class="btn btn-outline" href="<?=e(url('index.php?page=soka-mirror'))?>">Mời đánh giá 360° (SOKA) →</a>
+        </div>
+        <p class="mt-3"><a href="<?=e(url('index.php?page=ai-roadmap'))?>">Mở AI Phản biện & Bản đồ hành trình →</a></p>
     </section>
 </div>
 

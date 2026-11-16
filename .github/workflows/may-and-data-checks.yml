@@ -1,0 +1,62 @@
+name: May Chatbot & HNV Data Verification
+on:
+  pull_request:
+    paths:
+      - 'app/may-*.php'
+      - 'app/chat-providers.php'
+      - 'jobsimu_hnv_data/**'
+      - 'tests/may-*'
+      - 'tests/chat-providers-test.php'
+      - 'tests/test_hnv_extractor.py'
+      - '.github/workflows/may-and-data-checks.yml'
+  push:
+    branches: [main, 'feat/**']
+    paths:
+      - 'app/may-*.php'
+      - 'app/chat-providers.php'
+      - 'jobsimu_hnv_data/**'
+      - 'tests/may-*'
+      - 'tests/chat-providers-test.php'
+      - 'tests/test_hnv_extractor.py'
+      - '.github/workflows/may-and-data-checks.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, mbstring, ctype
+          coverage: none
+
+      - name: Lint May Chatbot & Chat Providers
+        run: |
+          set -e
+          for file in app/may-*.php app/chat-providers.php; do
+            php -l "$file"
+          done
+
+      - name: Run May Chatbot & Chat Providers Tests
+        run: |
+          set -e
+          php tests/may-knowledge-test.php
+          php tests/may-actions-test.php
+          php tests/may-chat-test.php
+          php tests/chat-providers-test.php
+          php tests/soka-and-constraint-test.php
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run HNV Data Extractor Tests
+        run: |
+          python3 -m unittest tests/test_hnv_extractor.py
