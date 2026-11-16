@@ -1,0 +1,191 @@
+[
+  {
+    "id": "teacher-group",
+    "career": "Giáo viên",
+    "title": "Nhóm học tập chỉ có hai bạn làm việc",
+    "scene": "Trong hoạt động nhóm, hai học sinh làm gần hết nhiệm vụ. Những bạn khác ít tham gia; còn 10 phút trước khi hết tiết.",
+    "starter": "Em sẽ hỏi riêng từng bạn về phần việc đang làm trước khi phân chia lại nhiệm vụ.",
+    "discussion": [
+      "Hỏi ngắn từng bạn có thể giúp phân biệt chưa hiểu nhiệm vụ với chưa được giao việc; cần giới hạn thời gian để nhóm còn thực hành.",
+      "Chia vai ngay có thể giúp nhóm bắt đầu nhanh, nhưng nên kiểm tra các bạn đã hiểu phần việc mới chưa."
+    ],
+    "follow_up": "Điều gì có thể khiến một bạn ít tham gia dù vẫn quan tâm bài học?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Giáo viên",
+      "url": "https://www.onetonline.org/link/summary/25-2022.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "teacher-lesson",
+    "career": "Giáo viên",
+    "title": "Giáo án kỹ nhưng lớp chưa hiểu",
+    "scene": "Bạn đã chuẩn bị ví dụ và trình chiếu. Khi giao bài tập, nhiều học sinh hỏi lại cùng một bước; tiết học còn 15 phút.",
+    "starter": "Em sẽ dùng một câu hỏi ngắn để tìm bước cả lớp đang vướng.",
+    "discussion": [
+      "Kiểm tra một bước cụ thể giúp chọn lại cách giải thích; nên thu phản hồi từ nhiều bạn để tránh suy ra cả lớp từ một người.",
+      "Đưa thêm ví dụ có thể hữu ích, nhưng nếu chưa biết chỗ vướng thì ví dụ mới có thể vẫn khó hiểu."
+    ],
+    "follow_up": "Nếu chỉ có hai học sinh trả lời đúng, em đã biết đủ về cả lớp chưa?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Giáo viên",
+      "url": "https://www.onetonline.org/link/summary/25-2022.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "teacher-workload",
+    "career": "Giáo viên",
+    "title": "Soạn bài và chấm bài cùng đến hạn",
+    "scene": "Ngày mai bạn có tiết mới cần chuẩn bị; một tập bài cần trả trong tuần. Thời gian làm việc còn lại hôm nay có hạn.",
+    "starter": "Em muốn ưu tiên công việc theo hạn và mức ảnh hưởng tới buổi học ngày mai.",
+    "discussion": [
+      "Liệt kê hạn thực tế rồi chia khối công việc giúp nhìn rõ phần có thể dời; cần trao đổi sớm nếu không đáp ứng cam kết.",
+      "Cố làm mọi việc trong một tối có thể xong trước mắt nhưng khó duy trì; có thể nhờ đồng nghiệp góp ý học liệu sẵn có."
+    ],
+    "follow_up": "Em cần hỏi ai để biết việc nào có thể điều chỉnh thời hạn?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Giáo viên",
+      "url": "https://www.onetonline.org/link/summary/25-2022.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "developer-bug",
+    "career": "Lập trình viên",
+    "title": "Lỗi xuất hiện sát giờ bàn giao",
+    "scene": "Bản thử website có lỗi ở biểu mẫu đăng ký. Nhóm dự kiến trình diễn chiều nay; chưa rõ lỗi ảnh hưởng bao nhiêu trường hợp.",
+    "starter": "Em sẽ ghi lại cách tái hiện lỗi và báo cho người phụ trách.",
+    "discussion": [
+      "Tái hiện lỗi và mô tả ảnh hưởng giúp nhóm quyết định sửa, thu hẹp trình diễn hay dời lịch; không nên che giấu lỗi.",
+      "Sửa vội mà bỏ kiểm tra có thể tạo lỗi khác; cần thống nhất ai kiểm tra lại trước khi bàn giao."
+    ],
+    "follow_up": "Em cần bằng chứng gì trước khi nói rằng lỗi đã được sửa?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Lập trình viên",
+      "url": "https://www.onetonline.org/link/summary/15-1252.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "developer-scope",
+    "career": "Lập trình viên",
+    "title": "Yêu cầu mới khi đã gần xong",
+    "scene": "Bạn gần hoàn thành một chức năng theo bản mô tả. Người dùng đề nghị thêm báo cáo mới nhưng vẫn muốn giữ lịch bàn giao.",
+    "starter": "Em sẽ hỏi mục tiêu của báo cáo và ước lượng phần việc trước khi nhận lời.",
+    "discussion": [
+      "Làm rõ nhu cầu và phạm vi giúp đề xuất bản tối thiểu hoặc lịch bổ sung; cần ghi lại điều đã thống nhất.",
+      "Nhận tất cả ngay giúp cuộc trao đổi dễ chịu nhưng có thể gây trễ hoặc giảm thời gian kiểm thử."
+    ],
+    "follow_up": "Có cách nào đáp ứng nhu cầu quan trọng nhất trước không?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Lập trình viên",
+      "url": "https://www.onetonline.org/link/summary/15-1252.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "developer-review",
+    "career": "Lập trình viên",
+    "title": "Nhận nhiều góp ý khi review code",
+    "scene": "Đồng nghiệp đề nghị sửa tên biến, tách hàm và thêm kiểm tra lỗi trong phần bạn vừa viết. Bạn chưa hiểu lý do của vài góp ý.",
+    "starter": "Em muốn hỏi ví dụ cụ thể cho góp ý mà mình chưa hiểu.",
+    "discussion": [
+      "Hỏi lý do và thử một thay đổi nhỏ giúp học tiêu chí chung; có thể phân biệt lỗi cần sửa với sở thích trình bày.",
+      "Sửa hết mà chưa hiểu có thể nhanh lần này nhưng khó tự xử lý lần sau; bỏ qua góp ý cũng làm mất cơ hội kiểm tra chất lượng."
+    ],
+    "follow_up": "Em sẽ diễn đạt câu hỏi thế nào để cùng tìm lời giải?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Lập trình viên",
+      "url": "https://www.onetonline.org/link/summary/15-1252.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "designer-brief",
+    "career": "Thiết kế đồ họa",
+    "title": "Khách hàng chỉ nói “ấn tượng hơn”",
+    "scene": "Bạn nhận yêu cầu làm poster cho một sự kiện. Khách hàng muốn thiết kế ấn tượng nhưng chưa nói rõ người xem và nơi sử dụng.",
+    "starter": "Em sẽ hỏi đối tượng xem, thông điệp chính và kích thước sử dụng.",
+    "discussion": [
+      "Làm rõ người xem và mục đích tạo tiêu chí đánh giá; vài ví dụ tham khảo có thể giúp hai bên hiểu nhau.",
+      "Bắt đầu vẽ ngay có thể tạo ý tưởng nhanh nhưng dễ phải sửa nhiều nếu khác mục tiêu."
+    ],
+    "follow_up": "Thông tin nào em cần trước khi chọn hình ảnh và bố cục?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Thiết kế đồ họa",
+      "url": "https://www.onetonline.org/link/summary/27-1024.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "designer-feedback",
+    "career": "Thiết kế đồ họa",
+    "title": "Hai người duyệt muốn hai hướng khác nhau",
+    "scene": "Một người muốn poster nhiều thông tin, người còn lại muốn thật tối giản. Hạn gửi bản duyệt là ngày mai.",
+    "starter": "Em sẽ xác định ai chốt và hỏi thông tin nào bắt buộc phải có.",
+    "discussion": [
+      "Thống nhất người quyết định và thứ tự ưu tiên giúp tránh sửa qua lại; có thể trình hai phương án có giải thích.",
+      "Ghép mọi yêu cầu vào một bản có thể làm thông điệp khó đọc; cần kiểm tra ở kích thước hiển thị thực tế."
+    ],
+    "follow_up": "Em sẽ giải thích đánh đổi giữa lượng chữ và khả năng đọc như thế nào?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Thiết kế đồ họa",
+      "url": "https://www.onetonline.org/link/summary/27-1024.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  },
+  {
+    "id": "designer-export",
+    "career": "Thiết kế đồ họa",
+    "title": "File đẹp trên màn hình nhưng khó đọc khi in",
+    "scene": "Bản poster thử in có chữ nhỏ khó đọc; bạn còn thời gian sửa trước khi gửi file chính thức.",
+    "starter": "Em sẽ kiểm tra lại kích thước chữ ở bản in thực tế.",
+    "discussion": [
+      "Kiểm tra ở môi trường sử dụng giúp phát hiện vấn đề mà màn hình phóng to che khuất; xác nhận yêu cầu file với nơi nhận.",
+      "Chỉ tăng độ phân giải có thể không giải quyết chữ quá nhỏ; cần chỉnh thứ bậc thông tin và thử lại."
+    ],
+    "follow_up": "Em nên kiểm tra những gì trước lần xuất file cuối?",
+    "kind": "hypothetical",
+    "review_status": "pilot_unreviewed",
+    "version": 1,
+    "source": {
+      "title": "O*NET OnLine — Thiết kế đồ họa",
+      "url": "https://www.onetonline.org/link/summary/27-1024.00",
+      "checked_at": "2026-11-16",
+      "scope": "Tham khảo nhóm nhiệm vụ nghề tại Hoa Kỳ; không phải nguồn cho câu chuyện, lời chứng thực hoặc quy định tại Việt Nam."
+    }
+  }
+]
