@@ -60,22 +60,9 @@ if (is_post()) {
     $durationSec = (int)($existingValidity['duration_seconds'] ?? 0);
     $scientific = score_assessment_scientific($rawAnswers, $questions, $cleanEfficacy, $durationSec);
 
-    $latestPsych = four_hub_latest_psychometrics((int)user()['id']);
-    $big5Scores = $latestPsych['big5']['scores'] ?? [];
-
-    $matches = career_matches(
-        json_decode($assessment['scores'], true) ?: $scientific['raw_scores'],
-        6,
-        $answers,
-        [
-            'ipsative_scores' => $scientific['ipsative_scores'],
-            'efficacy_scores' => $scientific['efficacy_scores'],
-            'big5_scores' => $big5Scores,
-        ]
-    );
-
     db()->beginTransaction();
     try {
+        recommendations_lock_user((int)user()['id']);
         $save = db()->prepare('UPDATE assessments SET constraint_answers=?,efficacy_scores=?,ipsative_z_scores=?,validity_metrics=?,ai_advice=NULL,ai_status=\'pending\',ai_model=NULL,ai_error=NULL,ai_generated_at=NULL WHERE id=? AND user_id=?');
         $save->execute([
             json_encode($answers, JSON_UNESCAPED_UNICODE),
@@ -85,11 +72,7 @@ if (is_post()) {
             $assessmentId,
             user()['id']
         ]);
-        db()->prepare('DELETE FROM assessment_matches WHERE assessment_id=?')->execute([$assessmentId]);
-        $insert = db()->prepare('INSERT INTO assessment_matches(assessment_id,career_id,match_percent,rank_order) VALUES(?,?,?,?)');
-        foreach ($matches as $i => $career) {
-            $insert->execute([$assessmentId, $career['id'], $career['match_percent'], $i + 1]);
-        }
+        recommendations_rebuild_locked((int)user()['id'], $assessmentId);
         db()->commit();
     } catch (Throwable $e) {
         if (db()->inTransaction()) db()->rollBack();
