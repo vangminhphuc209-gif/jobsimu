@@ -5,21 +5,239 @@ if ($page === 'simulations') require ROOT_PATH.'/app/simulation-hub.php';
 
 if ($page === 'career') {
     $id = (int)($_GET['id'] ?? 0);
-    $s = db()->prepare("SELECT * FROM careers WHERE id=? AND status='published'"); $s->execute([$id]); $job = $s->fetch();
+    $s = db()->prepare("SELECT * FROM careers WHERE id=? AND status='published'"); 
+    $s->execute([$id]); 
+    $job = $s->fetch();
     if (!$job) { http_response_code(404); exit('Không tìm thấy nghề.'); }
-    $fav=false; if(user()){$s = db()->prepare('SELECT 1 FROM favorites WHERE user_id=? AND career_id=?'); $s->execute([user()['id'],$id]); $fav=(bool)$s->fetchColumn();}
-    $simulationUrl=safe_external_url($job['simulation_url']); $game=simulation_for_career($job); $pageTitle=$job['title'];
-    require ROOT_PATH . '/app/header.php'; ?>
-    <section class="page-head"><div class="container"><span class="eyebrow">Hồ sơ nghề nghiệp</span><h1><?=e($job['icon'].' '.$job['title'])?></h1><p><?=e($job['short_description'])?></p></div></section>
-    <div class="container career-detail"><article class="card">
-        <?php if($game):?><div class="career-game-banner"><div><span class="ai-badge">🎮 Chơi trực tiếp · 4 tình huống</span><h2><?=e($game['title'])?></h2><p><?=e($game['brief'])?></p><div class="sim-setting"><span>🎭 <?=e($game['role'])?></span><span>⏱ 4–6 phút</span></div></div><a class="btn btn-primary btn-lg" href="<?=url('index.php?page=simulation&id='.$job['id'])?>">Bắt đầu mô phỏng →</a></div><?php endif;?>
-        <div class="detail-section"><h3>Tổng quan công việc</h3><p><?=nl2br(e($job['description']))?></p></div><div class="detail-section"><h3>🏢 Môi trường làm việc</h3><p><?=nl2br(e($job['work_environment']))?></p></div><div class="detail-section"><h3>🧩 Kỹ năng quan trọng</h3><p><?=nl2br(e($job['skills']))?></p></div><div class="detail-section"><h3>📚 Môn học nên chú ý</h3><p><?=nl2br(e($job['subjects']))?></p></div><div class="detail-section"><h3>🎓 Lộ trình học tập</h3><p><?=nl2br(e($job['education_path']))?></p><a href="<?=url('index.php?page=university-explorer')?>" class="btn btn-outline">Tìm trường và chương trình đào tạo →</a></div>
-    </article><aside><div class="card side-card"><div class="career-icon"><?=e($job['icon'])?></div><h3><?=e($job['title'])?></h3><p><b>Thu nhập tham khảo</b><br><?=e($job['salary_range'])?></p><p><b>Triển vọng</b><br><?=e($job['outlook'])?></p>
-        <?php if($game):?><a class="btn btn-primary btn-lg w-full" href="<?=url('index.php?page=simulation&id='.$job['id'])?>">🎮 Chơi mô phỏng nghề</a><?php endif;?>
-        <?php if($simulationUrl):?><a class="btn btn-outline w-full mt-3" href="<?=e($simulationUrl)?>" target="_blank" rel="noopener noreferrer">↗ <?=e($job['simulation_label'])?></a><?php endif;?>
-        <?php if(user()):?><form method="post" action="<?=url('index.php?page=favorite')?>" style="margin-top:10px"><?=csrf_field()?><input type="hidden" name="career_id" value="<?=$job['id']?>"><button class="btn btn-outline w-full"><?=$fav?'♥ Đã lưu nghề này':'♡ Lưu vào yêu thích'?></button></form><?php endif;?><a class="btn w-full mt-3" href="<?=url('index.php?page=assessment')?>">Kiểm tra độ phù hợp</a>
-    </div></aside></div>
-    <?php require ROOT_PATH . '/app/footer.php'; exit;
+    
+    $fav = false; 
+    if (user()) {
+        $s = db()->prepare('SELECT 1 FROM favorites WHERE user_id=? AND career_id=?'); 
+        $s->execute([user()['id'], $id]); 
+        $fav = (bool)$s->fetchColumn();
+    }
+    
+    $simulationUrl = safe_external_url($job['simulation_url'] ?? ''); 
+    $game = simulation_for_career($job);
+    
+    // Linked majors from verified catalog
+    $sMajor = db()->prepare('SELECT m.id, m.code, m.name FROM career_major_paths cmp JOIN majors m ON m.id=cmp.major_id WHERE cmp.career_id=? ORDER BY m.name');
+    $sMajor->execute([$id]);
+    $linkedMajors = $sMajor->fetchAll();
+    
+    // RIASEC weights
+    $weights = json_decode($job['riasec_weights'] ?? '[]', true);
+    if (!is_array($weights)) $weights = [];
+    arsort($weights);
+    
+    $pageTitle = $job['title'] . ' · Hồ sơ nghề nghiệp';
+    require ROOT_PATH . '/app/header.php';
+    ?>
+    <section class="page-head">
+      <div class="container">
+        <nav class="breadcrumb mb-3" aria-label="Đường dẫn trang">
+          <a href="<?=url('index.php?page=home')?>">Trang chủ</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="<?=url('index.php?page=careers')?>">Khám phá nghề</a>
+          <span class="breadcrumb-sep">/</span>
+          <span aria-current="page"><?=e($job['title'])?></span>
+        </nav>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <span class="text-3xl p-2 bg-white rounded-xl shadow-sm border border-slate-100"><?=e($job['icon'] ?: '💼')?></span>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <h1 class="page-title mb-0"><?=e($job['title'])?></h1>
+              <?php foreach(array_slice(array_keys($weights), 0, 2) as $rk): ?>
+                <span class="badge badge-purple"><?=e($rk.' · '.(riasec_labels()[$rk] ?? $rk))?></span>
+              <?php endforeach; ?>
+            </div>
+            <p class="page-subtitle mt-1"><?=e($job['short_description'])?></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Main Content (8 cols) -->
+        <div class="lg:col-span-8 space-y-6">
+
+          <!-- 1. Nghề này làm gì -->
+          <section class="card content-card" aria-labelledby="sec-overview">
+            <h2 id="sec-overview" class="section-title flex items-center gap-2">
+              <span>🎯</span> 1. Nghề này làm gì?
+            </h2>
+            <div class="prose text-slate-700 leading-relaxed">
+              <?=nl2br(e($job['description']))?>
+            </div>
+          </section>
+
+          <!-- 2. Một ngày làm việc & Môi trường -->
+          <section class="card content-card" aria-labelledby="sec-environment">
+            <h2 id="sec-environment" class="section-title flex items-center gap-2">
+              <span>🏢</span> 2. Một ngày làm việc & Môi trường
+            </h2>
+            <div class="prose text-slate-700 leading-relaxed">
+              <?=nl2br(e($job['work_environment']))?>
+            </div>
+          </section>
+
+          <!-- 3. Kỹ năng cần có & Môn học bổ trợ -->
+          <section class="card content-card" aria-labelledby="sec-skills">
+            <h2 id="sec-skills" class="section-title flex items-center gap-2">
+              <span>🧩</span> 3. Kỹ năng quan trọng & Môn học bổ trợ
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <h3 class="font-bold text-sm text-slate-900 mb-2 flex items-center gap-1.5">
+                  <span>💡</span> Kỹ năng cốt lõi
+                </h3>
+                <div class="text-sm text-slate-700 leading-relaxed">
+                  <?=nl2br(e($job['skills']))?>
+                </div>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <h3 class="font-bold text-sm text-slate-900 mb-2 flex items-center gap-1.5">
+                  <span>📚</span> Môn học nên chú ý
+                </h3>
+                <div class="text-sm text-slate-700 leading-relaxed">
+                  <?=nl2br(e($job['subjects']))?>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. Lộ trình học tham khảo -->
+          <section class="card content-card" aria-labelledby="sec-path">
+            <h2 id="sec-path" class="section-title flex items-center gap-2">
+              <span>🎓</span> 4. Lộ trình học tham khảo
+            </h2>
+            <div class="prose text-slate-700 leading-relaxed mb-4">
+              <?=nl2br(e($job['education_path']))?>
+            </div>
+
+            <?php if (!empty($linkedMajors)): ?>
+              <div class="mt-4 pt-4 border-t border-slate-100">
+                <h3 class="font-bold text-sm text-slate-900 mb-2">Ngành đào tạo phù hợp trên JOBSIMU:</h3>
+                <div class="flex flex-wrap gap-2">
+                  <?php foreach ($linkedMajors as $lm): ?>
+                    <a href="<?=url('index.php?page=majors&major_id='.(int)$lm['id'])?>" class="badge badge-subtle hover:border-brand-300 transition-colors">
+                      <?=e($lm['name'])?> <?=$lm['code']?'('.e($lm['code']).')':''?> →
+                    </a>
+                  <?php endforeach; ?>
+                </div>
+              </div>
+            <?php endif; ?>
+
+            <div class="mt-4 flex flex-wrap gap-3">
+              <a href="<?=url('index.php?page=university-explorer')?>" class="btn btn-outline btn-sm">
+                Tra cứu trường đào tạo →
+              </a>
+              <a href="<?=url('index.php?page=majors')?>" class="btn btn-outline btn-sm">
+                Khám phá danh mục ngành →
+              </a>
+            </div>
+          </section>
+
+          <!-- 5. Trải nghiệm liên quan -->
+          <section class="card content-card" aria-labelledby="sec-experience">
+            <h2 id="sec-experience" class="section-title flex items-center gap-2">
+              <span>🎮</span> 5. Trải nghiệm thực tế & Thử thách
+            </h2>
+            
+            <?php if ($game): ?>
+              <div class="simulation-feature-banner p-5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="badge badge-purple">Mô phỏng tương tác 2D</span>
+                    <span class="text-xs text-slate-500">⏱ 4–6 phút</span>
+                  </div>
+                  <h3 class="font-bold text-lg text-slate-900"><?=e($game['title'])?></h3>
+                  <p class="text-sm text-slate-600 mt-1"><?=e($game['brief'])?></p>
+                  <p class="text-xs text-slate-500 mt-1">Vai trò: <strong><?=e($game['role'])?></strong></p>
+                </div>
+                <a class="btn btn-primary whitespace-nowrap" href="<?=url('index.php?page=simulation&id='.(int)$job['id'])?>">
+                  Bắt đầu thử thách →
+                </a>
+              </div>
+            <?php endif; ?>
+
+            <?php if ($simulationUrl): ?>
+              <div class="mt-4 p-4 rounded-xl border border-slate-200 bg-white flex items-center justify-between gap-3">
+                <div>
+                  <h4 class="font-bold text-sm text-slate-900"><?=e($job['simulation_label'] ?: 'Trải nghiệm bên ngoài')?></h4>
+                  <p class="text-xs text-slate-500">Trải nghiệm tương tác hoặc video thực tế mở trong tab mới.</p>
+                </div>
+                <a class="btn btn-outline btn-sm" href="<?=e($simulationUrl)?>" target="_blank" rel="noopener noreferrer">
+                  Khám phá ↗
+                </a>
+              </div>
+            <?php endif; ?>
+
+            <div class="mt-4 p-4 rounded-xl bg-amber-50/60 border border-amber-200/80 text-xs text-amber-900">
+              💡 <strong>Gợi ý trải nghiệm thực tế:</strong> Hãy thử phỏng vấn một người đang làm nghề này trong 15 phút, hoặc theo dõi một video "A Day in the Life" để đối chiếu hình dung của bạn với thực tế công việc.
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Sidebar (4 cols) -->
+        <aside class="lg:col-span-4 space-y-5">
+          <div class="card p-5 sticky top-20">
+            <div class="text-center pb-4 border-b border-slate-100">
+              <span class="text-5xl inline-block mb-2"><?=e($job['icon'] ?: '💼')?></span>
+              <h3 class="font-bold text-xl text-slate-900"><?=e($job['title'])?></h3>
+              <span class="text-xs text-slate-400">Thông tin tổng hợp nghề</span>
+            </div>
+
+            <div class="py-4 space-y-4 text-sm border-b border-slate-100">
+              <div>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Mức thu nhập tham khảo</span>
+                <p class="font-bold text-slate-800 mt-0.5"><?=e($job['salary_range'] ?: 'Đang cập nhật')?></p>
+                <span class="text-[11px] text-slate-400">Ước tính theo khảo sát thị trường lao động</span>
+              </div>
+
+              <div>
+                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Triển vọng & Xu hướng</span>
+                <p class="font-bold text-slate-800 mt-0.5"><?=e($job['outlook'] ?: 'Đang cập nhật')?></p>
+                <span class="text-[11px] text-slate-400">Tham khảo xu hướng chuyển dịch việc làm</span>
+              </div>
+            </div>
+
+            <div class="pt-4 space-y-3">
+              <?php if ($game): ?>
+                <a class="btn btn-primary w-full" href="<?=url('index.php?page=simulation&id='.(int)$job['id'])?>">
+                  🎮 Chơi mô phỏng nghề
+                </a>
+              <?php endif; ?>
+
+              <?php if (user()): ?>
+                <form method="post" action="<?=url('index.php?page=favorite')?>">
+                  <?=csrf_field()?>
+                  <input type="hidden" name="career_id" value="<?=$job['id']?>">
+                  <button type="submit" class="btn btn-outline w-full">
+                    <?=$fav ? '♥ Đã lưu nghề này' : '♡ Lưu vào danh sách yêu thích'?>
+                  </button>
+                </form>
+              <?php endif; ?>
+
+              <a class="btn btn-outline w-full" href="<?=url('index.php?page=assessment')?>">
+                Kiểm tra độ phù hợp với bạn
+              </a>
+
+              <a class="btn btn-ghost w-full text-xs text-slate-500" href="<?=url('index.php?page=careers')?>">
+                ← Trở lại Thư viện nghề
+              </a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+    <?php 
+    require ROOT_PATH . '/app/footer.php'; 
+    exit;
 }
 
 require_login();
