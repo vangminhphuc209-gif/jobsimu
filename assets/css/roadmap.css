@@ -1,0 +1,1021 @@
+/* assets/css/roadmap.css - Bảng phong cách chuyên dụng cho Lộ trình cá nhân JobSimu */
+
+/* 0. Design tokens & Root Variables */
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --surface: #ffffff;
+  --surface-alt: #f8fafc;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+}
+
+/* Base button and input styles missing from Tailwind purge */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  min-height: 40px;
+  line-height: 1.25;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  color: #ffffff;
+  border-color: #4f46e5;
+  box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2);
+}
+
+.btn-primary:hover {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+
+.btn-outline {
+  background: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-outline:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.input, select.input, textarea.input {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #0f172a;
+  background: #ffffff;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus, select.input:focus, textarea.input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.page-head {
+  padding: 32px 0 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.page-head h1 {
+  font-size: 1.875rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin: 6px 0 !important;
+  letter-spacing: -0.02em;
+}
+
+.page-head p {
+  font-size: 0.9375rem !important;
+  color: #64748b !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4f46e5;
+}
+
+/* 1. Layout tổng quan Lộ trình */
+.roadmap-container {
+  max-width: 1180px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: var(--space-6) var(--space-4) var(--space-12);
+}
+
+/* 2. Vùng A: Mục tiêu của tôi */
+.roadmap-goal-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  position: relative;
+}
+
+.roadmap-goal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.roadmap-goal-info {
+  flex: 1;
+  min-width: 280px;
+}
+
+.roadmap-goal-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text);
+  margin: var(--space-1) 0;
+  line-height: var(--leading-tight);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.roadmap-goal-timeframe {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+}
+
+.roadmap-goal-notes {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  font-style: italic;
+  margin-top: var(--space-2);
+  line-height: var(--leading-relaxed);
+}
+
+.roadmap-goal-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Overall Progress Indicator */
+.roadmap-progress-bar-wrap {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.roadmap-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.roadmap-progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.roadmap-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 3. Vùng B: Việc nên làm tiếp theo (Next Action Hero) */
+.roadmap-next-card {
+  background: linear-gradient(135deg, #fbfbfe 0%, #f5f3ff 100%);
+  border: 2px solid #ddd6fe;
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-8);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.roadmap-next-content {
+  flex: 1;
+  min-width: 280px;
+}
+
+.roadmap-next-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid #c4b5fd;
+  margin-bottom: var(--space-2);
+}
+
+.roadmap-next-title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+  line-height: var(--leading-tight);
+}
+
+.roadmap-next-reason {
+  font-size: var(--text-sm);
+  color: #4b5563;
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-3);
+}
+
+.roadmap-next-outcome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: #ffffff;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid #e9d5ff;
+  font-size: var(--text-xs);
+  color: #6b21a8;
+  font-weight: 500;
+}
+
+.roadmap-next-action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.roadmap-next-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+  transition: all 0.2s ease;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.roadmap-next-cta:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+}
+
+/* 4. Vùng C: Bố cục 2 cột (Giai đoạn & Công việc) */
+.roadmap-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* Sidebar: Bộ chọn 4 Giai đoạn */
+.stage-sidebar {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.stage-sidebar-title {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  margin: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.stage-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-2) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stage-nav-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid transparent;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  min-height: 52px;
+  text-decoration: none;
+}
+
+.stage-nav-btn:hover {
+  background: var(--surface-alt);
+  border-color: var(--border);
+}
+
+.stage-nav-btn.is-active {
+  background: var(--primary-light);
+  border-color: #c7d2fe;
+}
+
+.stage-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stage-nav-number {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-alt);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.stage-nav-btn.is-active .stage-nav-number {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.stage-nav-text {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.stage-nav-btn.is-active .stage-nav-text {
+  color: var(--primary);
+}
+
+.stage-nav-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--surface-alt);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.stage-nav-btn.is-active .stage-nav-badge {
+  background: #ffffff;
+  color: var(--primary);
+  border-color: #c7d2fe;
+}
+
+/* Cột phải: Nội dung giai đoạn đang chọn */
+.stage-main-panel {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.stage-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.stage-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.stage-header-title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 var(--space-1);
+}
+
+.stage-header-desc {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.stage-target-outcome-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Nút Thêm công việc duy nhất */
+.stage-action-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.add-task-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-add-task {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  transition: all 0.2s ease;
+}
+
+.btn-add-task:hover {
+  background: var(--primary-hover);
+}
+
+.add-task-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 240px;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+  padding: 6px;
+  z-index: 40;
+  display: none;
+}
+
+.add-task-menu.is-open {
+  display: block;
+}
+
+.add-task-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  min-height: 40px;
+}
+
+.add-task-menu-item:hover {
+  background: var(--surface-alt);
+  color: var(--primary);
+}
+
+/* Task Cards List */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.task-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.task-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.task-card.is-completed {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  opacity: 0.85;
+}
+
+.task-card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+/* Accessible Checkbox Target >= 44px hit-box */
+.task-checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-top: -6px;
+  margin-left: -8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid #cbd5e1;
+  accent-color: var(--success);
+  cursor: pointer;
+  outline-offset: 3px;
+}
+
+.task-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.task-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.task-card.is-completed .task-title {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* Source Badges */
+.task-source-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.badge-source-custom {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.badge-source-suggested {
+  background: var(--surface-alt);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.badge-source-assessment {
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
+.badge-source-ai {
+  background: #f5f3ff;
+  color: #6d28d9;
+  border: 1px solid #ddd6fe;
+}
+
+.task-desc {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  line-height: var(--leading-relaxed);
+  margin: 4px 0 var(--space-2);
+}
+
+/* Expected Outcome Box */
+.task-outcome-box {
+  background: var(--surface-alt);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text);
+  margin-top: var(--space-2);
+  line-height: 1.4;
+}
+
+.task-outcome-label {
+  font-weight: 700;
+  color: var(--primary);
+  margin-right: 4px;
+}
+
+/* Card Bottom Actions */
+.task-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--border);
+  flex-wrap: wrap;
+}
+
+.task-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  border: 1px solid #c7d2fe;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  min-height: 38px;
+  transition: all 0.15s ease;
+}
+
+.task-action-btn:hover {
+  background: #e0e7ff;
+  border-color: #a5b4fc;
+}
+
+.task-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.task-menu-btn:hover {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+/* 5. Vùng D: Trợ giúp & Phản tư (Help & Reflection) */
+.roadmap-reflection-bar {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.reflection-bar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.reflection-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.btn-reflection-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+  min-height: 40px;
+  transition: all 0.15s ease;
+}
+
+.btn-reflection-action:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* 6. Modals / Drawers for Add Task, Templates & AI Help */
+.roadmap-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.roadmap-modal-backdrop.is-open {
+  display: grid;
+}
+
+.roadmap-modal {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.25);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--space-6);
+  position: relative;
+}
+
+.roadmap-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.roadmap-modal-title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.roadmap-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+/* Template Item Preview Box */
+.template-item-card {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.template-item-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.template-item-desc {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 6px;
+}
+
+/* 7. Responsive Styles for Tablet & Mobile */
+@media (max-width: 900px) {
+  .roadmap-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .stage-sidebar {
+    padding: var(--space-2);
+  }
+
+  .stage-nav-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .stage-nav-btn {
+    min-height: 48px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .stage-nav-list {
+    grid-template-columns: 1fr;
+  }
+
+  .roadmap-goal-header {
+    flex-direction: column;
+  }
+
+  .roadmap-next-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .roadmap-next-action-area {
+    align-items: stretch;
+  }
+
+  .roadmap-next-cta {
+    width: 100%;
+  }
+
+  .stage-main-panel {
+    padding: var(--space-4);
+  }
+
+  .task-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-action-btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* 8. Print Styles */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .nav,
+  .footer,
+  .no-print,
+  #mayChatTrigger,
+  #mayChatWindow,
+  .stage-sidebar,
+  .roadmap-goal-actions,
+  .stage-action-toolbar,
+  .task-footer,
+  .roadmap-reflection-bar {
+    display: none !important;
+  }
+
+  .roadmap-layout {
+    display: block !important;
+  }
+
+  .stage-main-panel,
+  .roadmap-goal-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 24px !important;
+  }
+
+  .task-card {
+    break-inside: avoid;
+    border: 1px solid #cccccc !important;
+    margin-bottom: 12px !important;
+  }
+}
