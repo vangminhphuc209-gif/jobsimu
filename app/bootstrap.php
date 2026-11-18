@@ -82,3 +82,12 @@ admissions_p22_notice_seed();
 
 require_once ROOT_PATH . '/app/training-majors.php';
 training_majors_migrate();
+
+require_once ROOT_PATH . '/app/schools.php';
+schools_migrate();
+
+require_once ROOT_PATH . '/app/journey-flags.php';
+require_once ROOT_PATH . '/app/journey-migrations.php';
+journey_run_migrations();
+
+
