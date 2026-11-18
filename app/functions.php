@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/four-hubs-data.php';
 require_once __DIR__ . '/four-hubs-ai.php';
 require_once __DIR__ . '/recommendations.php';
+require_once __DIR__ . '/schools.php';
 
 function db(): PDO { global $pdo; return $pdo; }
 function run_migrations(): void {
@@ -117,7 +118,10 @@ function user(): ?array {
     static $cached = false;
     if ($cached !== false) return $cached;
     if (empty($_SESSION['user_id'])) return $cached = null;
-    $stmt = db()->prepare("SELECT id, name, email, role, grade, school, avatar_color, status FROM users WHERE id=? AND status='active'");
+    $cols = schools_users_has_school_id()
+        ? 'id, name, email, role, grade, school, school_id, avatar_color, status'
+        : 'id, name, email, role, grade, school, avatar_color, status';
+    $stmt = db()->prepare("SELECT {$cols} FROM users WHERE id=? AND status='active'");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch();
     if (!$user) {
@@ -128,7 +132,7 @@ function user(): ?array {
         }
         return $cached = null;
     }
-    return $cached = $user;
+    return $cached = schools_enrich_user($user);
 }
 function require_login(): void { if (!user()) { flash('warning', 'Vui lòng đăng nhập để tiếp tục.'); redirect('index.php?page=login'); } }
 function require_admin(): void { require_login(); if ((user()['role'] ?? '') !== 'admin') { http_response_code(403); exit('Bạn không có quyền truy cập.'); } }
@@ -141,6 +145,9 @@ function riasec_labels(): array {
     return ['R'=>'Kỹ thuật','I'=>'Nghiên cứu','A'=>'Nghệ thuật','S'=>'Xã hội','E'=>'Quản lý','C'=>'Nghiệp vụ'];
 }
 function riasec_colors(): array { return ['R'=>'#5B7CFA','I'=>'#8B5CF6','A'=>'#EC4899','S'=>'#12B981','E'=>'#F59E0B','C'=>'#0EA5E9']; }
+function school_options(): array {
+    return schools_list_signup_names();
+}
 function simulation_skill_labels(): array { return ['analysis'=>'Phân tích','creativity'=>'Sáng tạo','empathy'=>'Thấu cảm','decision'=>'Ra quyết định','precision'=>'Chính xác']; }
 function realistic_sacrifice_labels(): array {
     return [
