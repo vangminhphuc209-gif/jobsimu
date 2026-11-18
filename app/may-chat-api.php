@@ -70,7 +70,8 @@ if ($userMessage === '' || mb_strlen($userMessage) > 1500) {
 // 5. Context Sanitization
 $rawContext = is_array($data['context'] ?? null) ? $data['context'] : [];
 $allowedPages = [
-    'home', 'knowledge-hub', 'careers', 'career', 'majors', 'major-detail',
+    'home', 'discover', 'lookup', 'compare', 'plan',
+    'knowledge-hub', 'careers', 'career', 'majors', 'major-detail',
     'university-explorer', 'university-compare', 'assessment-hub', 'assessment-report',
     'ai-roadmap', 'simulations', 'dashboard', 'constraints', 'result'
 ];
