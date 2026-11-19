@@ -27,6 +27,11 @@ function schools_canonical_catalog(): array
                 'name' => 'Tỉnh Lai Châu',
                 'sort_order' => 3,
             ],
+            [
+                'code' => 'hung-yen',
+                'name' => 'Tỉnh Hưng Yên',
+                'sort_order' => 4,
+            ],
         ],
         'schools' => [
             // A. Thành phố Hải Phòng (1 trường)
@@ -73,6 +78,14 @@ function schools_canonical_catalog(): array
                 'name' => 'Trường PTDTNT THPT Mường Tè',
                 'sort_order' => 4,
                 'is_legacy' => true,
+            ],
+            // D. Tỉnh Hưng Yên (1 trường)
+            [
+                'code' => 'hy-thpt-nguyen-du',
+                'province_code' => 'hung-yen',
+                'name' => 'Trường THPT Nguyễn Du',
+                'sort_order' => 1,
+                'is_legacy' => false,
             ],
         ],
     ];
@@ -155,7 +168,7 @@ function schools_migrate(?PDO $pdo = null, bool $force = false): array
 
     $conn = schools_pdo($pdo);
     $connKey = spl_object_id($conn);
-    $schemaVersion = '1.0.0';
+    $schemaVersion = '1.1.0';
 
     if (!$force && !empty($migratedConnections[$connKey])) {
         return ['skipped' => true];
@@ -447,7 +460,7 @@ function schools_grouped_by_province(?PDO $pdo = null): array
     // Static fallback from canonical catalog
     $catalog = schools_canonical_catalog();
     $grouped = [];
-    $provCodeToId = ['hai-phong' => 1, 'dien-bien' => 2, 'lai-chau' => 3];
+    $provCodeToId = ['hai-phong' => 1, 'dien-bien' => 2, 'lai-chau' => 3, 'hung-yen' => 4];
     $counter = 1;
     foreach ($catalog['schools'] as $s) {
         $pId = (string)($provCodeToId[$s['province_code']] ?? 1);

@@ -85,7 +85,8 @@ DEALLOCATE PREPARE stmt_add_school_fk;
 INSERT INTO `provinces` (`code`, `name`, `sort_order`, `signup_enabled`) VALUES
     ('hai-phong', 'Thành phố Hải Phòng', 1, 1),
     ('dien-bien', 'Tỉnh Điện Biên', 2, 1),
-    ('lai-chau', 'Tỉnh Lai Châu', 3, 1)
+    ('lai-chau', 'Tỉnh Lai Châu', 3, 1),
+    ('hung-yen', 'Tỉnh Hưng Yên', 4, 1)
 ON DUPLICATE KEY UPDATE
     `name` = VALUES(`name`),
     `sort_order` = VALUES(`sort_order`),
@@ -93,9 +94,9 @@ ON DUPLICATE KEY UPDATE
 
 UPDATE `provinces`
 SET `signup_enabled` = 0
-WHERE `code` NOT IN ('hai-phong', 'dien-bien', 'lai-chau');
+WHERE `code` NOT IN ('hai-phong', 'dien-bien', 'lai-chau', 'hung-yen');
 
--- Seed 6 canonical signup schools (preserve IDs on rerun; "Trường THPT Chu Văn An" deduplicated)
+-- Seed 7 canonical signup schools (preserve IDs on rerun; "Trường THPT Chu Văn An" deduplicated)
 INSERT INTO `schools` (`code`, `province_id`, `name`, `sort_order`, `signup_enabled`)
 SELECT 'hp-thpt-luong-the-vinh-hai-duong', p.id, 'Trường THPT Lương Thế Vinh Hải Dương', 1, 1
 FROM `provinces` p WHERE p.code = 'hai-phong'
@@ -150,6 +151,15 @@ ON DUPLICATE KEY UPDATE
     `sort_order` = VALUES(`sort_order`),
     `signup_enabled` = VALUES(`signup_enabled`);
 
+INSERT INTO `schools` (`code`, `province_id`, `name`, `sort_order`, `signup_enabled`)
+SELECT 'hy-thpt-nguyen-du', p.id, 'Trường THPT Nguyễn Du', 1, 1
+FROM `provinces` p WHERE p.code = 'hung-yen'
+ON DUPLICATE KEY UPDATE
+    `province_id` = VALUES(`province_id`),
+    `name` = VALUES(`name`),
+    `sort_order` = VALUES(`sort_order`),
+    `signup_enabled` = VALUES(`signup_enabled`);
+
 UPDATE `schools`
 SET `signup_enabled` = 0
 WHERE `code` NOT IN (
@@ -158,7 +168,8 @@ WHERE `code` NOT IN (
     'lc-thpt-chu-van-an',
     'lc-ptdtnt-thpt-tinh',
     'lc-thpt-quyet-thang',
-    'lc-ptdtnt-thpt-muong-te'
+    'lc-ptdtnt-thpt-muong-te',
+    'hy-thpt-nguyen-du'
 );
 
 -- Backfill users.school_id ONLY for exact matches with known schools; never overwrite or guess unknown/blank schools

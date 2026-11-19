@@ -46,7 +46,7 @@ def run():
     prov_opts = re.findall(r'<option value="([^"]*)"[^>]*>(.*?)</option>', prov_match.group(1), re.S)
     assert prov_opts[0] == ('', 'Chọn tỉnh/thành phố'), f'Unexpected placeholder: {prov_opts[0]}'
     prov_names = [name.strip() for val, name in prov_opts[1:]]
-    assert prov_names == ['Thành phố Hải Phòng', 'Tỉnh Điện Biên', 'Tỉnh Lai Châu'], f'Unexpected provinces: {prov_names}'
+    assert prov_names == ['Thành phố Hải Phòng', 'Tỉnh Điện Biên', 'Tỉnh Lai Châu', 'Tỉnh Hưng Yên'], f'Unexpected provinces: {prov_names}'
 
     # Check school select is initially disabled with required placeholder
     school_tag = re.search(r'<select[^>]*id="auth-school"[^>]*>', html, re.S)
@@ -67,7 +67,7 @@ def run():
     # 2. Verify JSON API single source of truth
     api_provs = s.get(f'{BASE}/index.php', params={'page': 'schools-api'}).json()
     assert api_provs['ok'] is True
-    assert [p['name'] for p in api_provs['provinces']] == ['Thành phố Hải Phòng', 'Tỉnh Điện Biên', 'Tỉnh Lai Châu']
+    assert [p['name'] for p in api_provs['provinces']] == ['Thành phố Hải Phòng', 'Tỉnh Điện Biên', 'Tỉnh Lai Châu', 'Tỉnh Hưng Yên']
     prov_map = {p['code']: p['id'] for p in api_provs['provinces']}
 
     hp_api = s.get(f'{BASE}/index.php', params={'page': 'schools-api', 'province_id': prov_map['hai-phong']}).json()
@@ -87,12 +87,17 @@ def run():
         'Trường PTDTNT THPT Mường Tè',
     ]
 
+    hy_api = s.get(f'{BASE}/index.php', params={'page': 'schools-api', 'province_id': prov_map['hung-yen']}).json()
+    assert hy_api['ok'] is True
+    assert [x['name'] for x in hy_api['schools']] == ['Trường THPT Nguyễn Du']
+
     bad_api = s.get(f'{BASE}/index.php', params={'page': 'schools-api', 'province_id': 99999})
     assert bad_api.status_code == 400 and bad_api.json()['ok'] is False
 
     hp_school_id = hp_api['schools'][0]['id']
     db_school_id = db_api['schools'][0]['id']
     lc_cva_id = lc_api['schools'][0]['id']
+    hy_nd_id = hy_api['schools'][0]['id']
 
     # 3. Backend rejects missing province & school and preserves entered fields
     csrf = extract_csrf(html)
@@ -206,6 +211,24 @@ def run():
     assert 'Tỉnh Điện Biên' in r_dash2.text
     assert 'Trường PTDTNT THPT tỉnh Điện Biên' in r_dash2.text
 
+    # 6c. Successful signup for Hưng Yên (Trường THPT Nguyễn Du)
+    s_hy = new_session()
+    r_hy_reg = s_hy.get(f'{BASE}/index.php', params={'page': 'register'})
+    r_hy_ok = s_hy.post(f'{BASE}/index.php?page=register', data={
+        'csrf': extract_csrf(r_hy_reg.text),
+        'name': 'Hoàng Văn Nam',
+        'email': 'nam.hungyen@example.test',
+        'password': 'Password123',
+        'grade': 'Lớp 10',
+        'province_id': str(prov_map['hung-yen']),
+        'school_id': str(hy_nd_id),
+        'agree': '1',
+    }, allow_redirects=False)
+    assert r_hy_ok.status_code in (301, 302)
+    r_hy_dash = s_hy.get(f'{BASE}/index.php', params={'page': 'dashboard'})
+    assert 'Tỉnh Hưng Yên' in r_hy_dash.text
+    assert 'Trường THPT Nguyễn Du' in r_hy_dash.text
+
     # 7. Duplicate email rejected inline with preserved values
     s2 = new_session()
     r_reg2 = s2.get(f'{BASE}/index.php', params={'page': 'register'})
@@ -250,6 +273,8 @@ def run():
     assert 'Trường PTDTNT THPT tỉnh Điện Biên' in r_adm_users.text
     assert 'Tỉnh Lai Châu' in r_adm_users.text
     assert 'Trường PTDTNT THPT Tỉnh' in r_adm_users.text
+    assert 'Tỉnh Hưng Yên' in r_adm_users.text
+    assert 'Trường THPT Nguyễn Du' in r_adm_users.text
     assert 'THCS Bình Minh' in r_adm_users.text
 
     print('All HTTP signup, API, profile, legacy preservation, and admin checks passed!')

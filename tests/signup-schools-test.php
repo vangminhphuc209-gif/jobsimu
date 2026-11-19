@@ -98,14 +98,14 @@ $insUser->execute(['Legacy Blank', 'blank@example.test', 'hash', 'student', 'L�
 
 // 1. Run migration #1
 $res1 = schools_migrate($pdo, true);
-assert_eq(3, $res1['provinces_inserted'], 'First migration inserts 3 provinces');
-assert_eq(6, $res1['schools_inserted'], 'First migration inserts 6 deduplicated schools');
+assert_eq(4, $res1['provinces_inserted'], 'First migration inserts 4 provinces');
+assert_eq(7, $res1['schools_inserted'], 'First migration inserts 7 deduplicated schools');
 assert_eq(4, $res1['users_backfilled'], 'Backfills only the 4 legacy users matching known schools');
 
 $provinces = schools_list_signup_provinces($pdo);
-assert_eq(3, count($provinces), 'Signup province dropdown has exactly 3 provinces');
+assert_eq(4, count($provinces), 'Signup province dropdown has exactly 4 provinces');
 assert_eq(
-    ['Thành phố Hải Phòng', 'Tỉnh Điện Biên', 'Tỉnh Lai Châu'],
+    ['Thành phố Hải Phòng', 'Tỉnh Điện Biên', 'Tỉnh Lai Châu', 'Tỉnh Hưng Yên'],
     array_column($provinces, 'name'),
     'Province names match exact requirements in order'
 );
@@ -142,6 +142,13 @@ assert_eq(
     'Tỉnh Lai Châu has exactly 4 deduplicated schools (Chu Văn An + 3 other legacy schools)'
 );
 
+$hySchools = schools_list_signup_by_province($provByCode['hung-yen']['id'], $pdo);
+assert_eq(
+    ['Trường THPT Nguyễn Du'],
+    array_column($hySchools, 'name'),
+    'Tỉnh Hưng Yên has exactly Trường THPT Nguyễn Du'
+);
+
 // Record original IDs before rerun
 $origProvIds = $pdo->query('SELECT code, id FROM provinces ORDER BY id')->fetchAll(PDO::FETCH_KEY_PAIR);
 $origSchoolIds = $pdo->query('SELECT code, id FROM schools ORDER BY id')->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -161,7 +168,7 @@ assert_eq(0, $res2['users_backfilled'], 'Second migration does not re-backfill a
 
 assert_eq(
     $origProvIds,
-    $pdo->query("SELECT code, id FROM provinces WHERE code IN ('hai-phong','dien-bien','lai-chau') ORDER BY id")->fetchAll(PDO::FETCH_KEY_PAIR),
+    $pdo->query("SELECT code, id FROM provinces WHERE code IN ('hai-phong','dien-bien','lai-chau','hung-yen') ORDER BY id")->fetchAll(PDO::FETCH_KEY_PAIR),
     'Province IDs remain unchanged after rerun'
 );
 assert_eq(
@@ -169,7 +176,7 @@ assert_eq(
     $pdo->query("SELECT code, id FROM schools WHERE signup_enabled = 1 ORDER BY id")->fetchAll(PDO::FETCH_KEY_PAIR),
     'School IDs remain unchanged after rerun'
 );
-assert_eq(3, count(schools_list_signup_provinces($pdo)), 'Out-of-scope historical province is excluded from signup');
+assert_eq(4, count(schools_list_signup_provinces($pdo)), 'Out-of-scope historical province is excluded from signup');
 assert_eq(1, (int)$pdo->query("SELECT COUNT(*) FROM schools WHERE id = {$histSchoolId} AND signup_enabled = 0")->fetchColumn(), 'Out-of-scope historical school is preserved with signup_enabled=0');
 
 // 4. Verify legacy user links & preservation
@@ -224,6 +231,13 @@ assert_eq(true, $vValidDb['ok'], 'Accepts valid Điện Biên + PTDTNT THPT tỉ
 $vValidLc = schools_validate_selection((string)$provByCode['lai-chau']['id'], (string)$lcSchools[1]['id'], $pdo);
 assert_eq(true, $vValidLc['ok'], 'Accepts valid Lai Châu + PTDTNT THPT Tỉnh pair');
 
+$vValidHy = schools_validate_selection((string)$provByCode['hung-yen']['id'], (string)$hySchools[0]['id'], $pdo);
+assert_eq(true, $vValidHy['ok'], 'Accepts valid Hưng Yên + THPT Nguyễn Du pair');
+assert_eq('Tỉnh Hưng Yên', $vValidHy['school']['province_name'], 'Validated Hưng Yên school resolves province Tỉnh Hưng Yên');
+
+$vMismatchHy = schools_validate_selection((string)$provByCode['hung-yen']['id'], (string)$lcSchools[0]['id'], $pdo);
+assert_eq(false, $vMismatchHy['ok'], 'Rejects cross-province pair (Hưng Yên + Chu Văn An Lai Châu)');
+
 // 6. Grades 10-12 only validation & legacy/admin preservation
 assert_eq(['Lớp 10', 'Lớp 11', 'Lớp 12'], schools_grade_options(), 'Grade options strictly contain Lớp 10, Lớp 11, Lớp 12');
 assert_eq(true, schools_validate_grade('Lớp 10', true)['ok'], 'Accepts Lớp 10');
@@ -247,15 +261,18 @@ assert_eq(false, $adminEnriched['grade_needs_completion'], 'Admin is not blocked
 
 // 7. Instant client-side lookup grouped catalog
 $grouped = schools_grouped_by_province($pdo);
-assert_eq(3, count($grouped), 'Grouped catalog contains exactly 3 provinces');
+assert_eq(4, count($grouped), 'Grouped catalog contains exactly 4 provinces');
 $hpGroup = $grouped[(string)$provByCode['hai-phong']['id']] ?? [];
 $dbGroup = $grouped[(string)$provByCode['dien-bien']['id']] ?? [];
 $lcGroup = $grouped[(string)$provByCode['lai-chau']['id']] ?? [];
+$hyGroup = $grouped[(string)$provByCode['hung-yen']['id']] ?? [];
 assert_eq(1, count($hpGroup), 'Grouped Hải Phòng has exactly 1 school');
 assert_eq('Trường THPT Lương Thế Vinh Hải Dương', $hpGroup[0]['name'], 'Hải Phòng school name is exact');
 assert_eq(1, count($dbGroup), 'Grouped Điện Biên has exactly 1 school');
 assert_eq('Trường PTDTNT THPT tỉnh Điện Biên', $dbGroup[0]['name'], 'Điện Biên school name is exact');
 assert_eq(4, count($lcGroup), 'Grouped Lai Châu has exactly 4 deduplicated schools');
+assert_eq(1, count($hyGroup), 'Grouped Hưng Yên has exactly 1 school');
+assert_eq('Trường THPT Nguyễn Du', $hyGroup[0]['name'], 'Hưng Yên school name is exact');
 
 // Grouped catalog static fallback
 $groupedFallback = schools_grouped_by_province(null);
