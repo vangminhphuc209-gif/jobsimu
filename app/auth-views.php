@@ -176,6 +176,7 @@ function auth_handle_profile_post(): array
 function auth_render_school_fields(string $prefix, array $values, array $errors, bool $requireSchoolAndGrade = true, string $preservedLegacyGrade = ''): void
 {
     $provinces = schools_list_signup_provinces();
+    $schoolsCatalog = schools_grouped_by_province();
     $selectedProvinceId = schools_parse_positive_id($values['province_id'] ?? '');
     $selectedSchoolId = schools_parse_positive_id($values['school_id'] ?? '');
 
@@ -210,7 +211,12 @@ function auth_render_school_fields(string $prefix, array $values, array $errors,
         $selectedGrade = '';
     }
     ?>
-    <div class="school-selector-group" data-school-selector data-api-url="<?=e(url('index.php?page=schools-api'))?>">
+    <div
+      class="school-selector-group"
+      data-school-selector
+      data-api-url="<?=e(url('index.php?page=schools-api'))?>"
+      data-schools-catalog="<?=e(json_encode($schoolsCatalog, JSON_UNESCAPED_UNICODE))?>"
+    >
       <div class="school-fields-grid">
         <div class="form-group">
           <label class="form-label" for="<?=e($provIdAttr)?>">

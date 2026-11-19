@@ -37,6 +37,23 @@
     let loadFailed = false;
     let isSubmitting = false;
 
+    // Preloaded catalog from server-rendered HTML for instant (0ms) zero-latency switching
+    const preloadedCatalog = (function () {
+      try {
+        const raw = selectorRoot.dataset.schoolsCatalog;
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') return parsed;
+        }
+      } catch (e) {
+        // Fallback to runtime network fetch if preloaded JSON is unavailable
+      }
+      return null;
+    })();
+
+    // In-memory cache by provinceId string to eliminate repeated network calls
+    const schoolsCache = preloadedCatalog ? Object.assign({}, preloadedCatalog) : {};
+
     function getFieldInput(fieldName) {
       return form.querySelector(`[name="${fieldName}"]`);
     }
@@ -106,6 +123,15 @@
       return `${apiUrl}${sep}province_id=${encodeURIComponent(provinceId)}`;
     }
 
+    function applySchoolsForProvince(schoolsList) {
+      isLoadingSchools = false;
+      loadFailed = false;
+      // Always require user to actively select a school, even if only 1 school exists
+      setSchoolOptions(PLACEHOLDER_CHOOSE_SCHOOL, schoolsList);
+      schoolSelect.disabled = false;
+      setAsyncFeedback('idle', '');
+    }
+
     async function fetchSchoolsForProvince(provinceId) {
       if (activeController) {
         activeController.abort();
@@ -123,6 +149,15 @@
         return;
       }
 
+      const cacheKey = String(provinceId);
+
+      // Fast-path: instant (0ms) zero-network lookup from preloaded catalog or memory cache
+      if (schoolsCache[cacheKey] && Array.isArray(schoolsCache[cacheKey])) {
+        applySchoolsForProvince(schoolsCache[cacheKey]);
+        return;
+      }
+
+      // Slow-path fallback: fetch from API only when data is not yet in memory
       isLoadingSchools = true;
       loadFailed = false;
       schoolSelect.disabled = true;
@@ -154,12 +189,9 @@
           throw new Error('Invalid school catalog payload');
         }
 
-        isLoadingSchools = false;
-        loadFailed = false;
-        // Always require user to actively select a school, even if only 1 school exists
-        setSchoolOptions(PLACEHOLDER_CHOOSE_SCHOOL, payload.schools);
-        schoolSelect.disabled = false;
-        setAsyncFeedback('idle', '');
+        // Cache in memory to ensure any repeated selection is instant (0ms)
+        schoolsCache[cacheKey] = payload.schools;
+        applySchoolsForProvince(payload.schools);
       } catch (err) {
         if (err && err.name === 'AbortError') return;
         if (seq !== requestSeq) return;

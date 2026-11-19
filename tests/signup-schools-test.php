@@ -245,4 +245,20 @@ $adminEnriched = schools_enrich_user(['role' => 'admin', 'grade' => '', 'school'
 assert_eq(false, $adminEnriched['school_needs_completion'], 'Admin is not blocked by school_needs_completion');
 assert_eq(false, $adminEnriched['grade_needs_completion'], 'Admin is not blocked by grade_needs_completion');
 
+// 7. Instant client-side lookup grouped catalog
+$grouped = schools_grouped_by_province($pdo);
+assert_eq(3, count($grouped), 'Grouped catalog contains exactly 3 provinces');
+$hpGroup = $grouped[(string)$provByCode['hai-phong']['id']] ?? [];
+$dbGroup = $grouped[(string)$provByCode['dien-bien']['id']] ?? [];
+$lcGroup = $grouped[(string)$provByCode['lai-chau']['id']] ?? [];
+assert_eq(1, count($hpGroup), 'Grouped Hải Phòng has exactly 1 school');
+assert_eq('Trường THPT Lương Thế Vinh Hải Dương', $hpGroup[0]['name'], 'Hải Phòng school name is exact');
+assert_eq(1, count($dbGroup), 'Grouped Điện Biên has exactly 1 school');
+assert_eq('Trường PTDTNT THPT tỉnh Điện Biên', $dbGroup[0]['name'], 'Điện Biên school name is exact');
+assert_eq(4, count($lcGroup), 'Grouped Lai Châu has exactly 4 deduplicated schools');
+
+// Grouped catalog static fallback
+$groupedFallback = schools_grouped_by_province(null);
+assert_true(!empty($groupedFallback), 'Grouped catalog fallback returns valid catalog');
+
 echo "=== All Signup & Schools Unit/Migration Tests Passed! ===\n";

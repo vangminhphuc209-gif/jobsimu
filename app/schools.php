@@ -407,6 +407,63 @@ function schools_list_signup_by_province(int $provinceId, ?PDO $pdo = null): arr
     }, $rows);
 }
 
+/**
+ * Get all active signup schools grouped by province_id for instant client-side lookup.
+ * Returns array of [string $provinceId => array<array{id: int, code: string, name: string, province_id: int}>].
+ */
+function schools_grouped_by_province(?PDO $pdo = null): array
+{
+    try {
+        $conn = schools_pdo($pdo);
+        if (schools_tables_available($conn)) {
+            $stmt = $conn->query(
+                'SELECT s.id, s.code, s.name, s.province_id
+                 FROM schools s
+                 JOIN provinces p ON p.id = s.province_id
+                 WHERE p.signup_enabled = 1 AND s.signup_enabled = 1
+                 ORDER BY p.sort_order ASC, s.sort_order ASC, s.id ASC'
+            );
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $grouped = [];
+            foreach ($rows as $r) {
+                $pid = (string)$r['province_id'];
+                if (!isset($grouped[$pid])) {
+                    $grouped[$pid] = [];
+                }
+                $grouped[$pid][] = [
+                    'id' => (int)$r['id'],
+                    'code' => (string)$r['code'],
+                    'name' => (string)$r['name'],
+                    'province_id' => (int)$r['province_id'],
+                ];
+            }
+            if (!empty($grouped)) {
+                return $grouped;
+            }
+        }
+    } catch (Throwable $ignored) {
+    }
+
+    // Static fallback from canonical catalog
+    $catalog = schools_canonical_catalog();
+    $grouped = [];
+    $provCodeToId = ['hai-phong' => 1, 'dien-bien' => 2, 'lai-chau' => 3];
+    $counter = 1;
+    foreach ($catalog['schools'] as $s) {
+        $pId = (string)($provCodeToId[$s['province_code']] ?? 1);
+        if (!isset($grouped[$pId])) {
+            $grouped[$pId] = [];
+        }
+        $grouped[$pId][] = [
+            'id' => $counter++,
+            'code' => $s['code'],
+            'name' => $s['name'],
+            'province_id' => (int)$pId,
+        ];
+    }
+    return $grouped;
+}
+
 function schools_list_signup_names(?PDO $pdo = null): array
 {
     try {
@@ -599,13 +656,14 @@ function schools_enrich_user(array $user, ?PDO $pdo = null): array
 function schools_handle_api_request(?PDO $pdo = null): void
 {
     header('Content-Type: application/json; charset=utf-8');
-    header('Cache-Control: no-store, no-cache, must-revalidate');
+    header('Cache-Control: public, max-age=300, stale-while-revalidate=600');
 
     $rawProvince = $_GET['province_id'] ?? null;
     if ($rawProvince === null || $rawProvince === '') {
         echo json_encode([
             'ok' => true,
             'provinces' => schools_list_signup_provinces($pdo),
+            'catalog' => schools_grouped_by_province($pdo),
         ], JSON_UNESCAPED_UNICODE);
         return;
     }
