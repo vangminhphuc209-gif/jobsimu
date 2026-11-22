@@ -1,10 +1,11 @@
-/* assets/css/roadmap.css - Bảng phong cách chuyên dụng cho Lộ trình cá nhân JobSimu */
+/* assets/css/roadmap.css - Bảng phong cách kế hoạch hướng nghiệp theo tháng JobSimu */
 
-/* 0. Design tokens & Root Variables */
+/* 0. Design Tokens & Root Variables */
 :root {
   --primary: #4f46e5;
   --primary-hover: #4338ca;
   --primary-light: #eef2ff;
+  --primary-subtle: #f5f3ff;
   --text: #0f172a;
   --text-muted: #64748b;
   --muted: #64748b;
@@ -12,9 +13,16 @@
   --border-strong: #cbd5e1;
   --surface: #ffffff;
   --surface-alt: #f8fafc;
+  --surface-card: #ffffff;
   --success: #10b981;
+  --success-light: #ecfdf5;
+  --success-border: #a7f3d0;
   --danger: #ef4444;
+  --danger-light: #fef2f2;
+  --danger-border: #fecaca;
   --warning: #f59e0b;
+  --warning-light: #fffbeb;
+  --warning-border: #fde68a;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -45,7 +53,7 @@
   --leading-relaxed: 1.625;
 }
 
-/* Base button and input styles missing from Tailwind purge */
+/* Base button, input & typography */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -66,7 +74,7 @@
 
 .btn-primary {
   background: #4f46e5;
-  color: #ffffff;
+  color: #ffffff !important;
   border-color: #4f46e5;
   box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2);
 }
@@ -88,6 +96,12 @@
   color: #0f172a;
 }
 
+.btn-sm {
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+}
+
 .input, select.input, textarea.input {
   display: block;
   width: 100%;
@@ -99,6 +113,7 @@
   background: #ffffff;
   font-family: inherit;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
 }
 
 .input:focus, select.input:focus, textarea.input:focus {
@@ -115,6 +130,7 @@
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .card {
@@ -161,9 +177,10 @@
   margin-left: auto;
   margin-right: auto;
   padding: var(--space-6) var(--space-4) var(--space-12);
+  box-sizing: border-box;
 }
 
-/* 2. Vùng A: Mục tiêu của tôi */
+/* 2. Vùng A: Mục tiêu của tôi (Plan Header) */
 .roadmap-goal-card {
   background: var(--surface);
   border: 1.5px solid var(--border);
@@ -188,15 +205,19 @@
 }
 
 .roadmap-goal-title {
-  font-size: var(--text-2xl);
+  font-size: 1.375rem;
   font-weight: 800;
   color: var(--text);
-  margin: var(--space-1) 0;
+  margin: var(--space-2) 0 var(--space-1);
   line-height: var(--leading-tight);
+}
+
+.roadmap-goal-meta-badges {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   flex-wrap: wrap;
+  margin-bottom: var(--space-2);
 }
 
 .roadmap-goal-timeframe {
@@ -213,10 +234,10 @@
 }
 
 .roadmap-goal-notes {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--muted);
   font-style: italic;
-  margin-top: var(--space-2);
+  margin: var(--space-1) 0 0;
   line-height: var(--leading-relaxed);
 }
 
@@ -241,6 +262,7 @@
   gap: var(--space-2);
   margin-bottom: var(--space-2);
   font-size: var(--text-sm);
+  flex-wrap: wrap;
 }
 
 .roadmap-progress-track {
@@ -254,134 +276,172 @@
 
 .roadmap-progress-fill {
   height: 100%;
-  background: var(--primary);
+  background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
   border-radius: var(--radius-full);
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 3. Vùng B: Việc nên làm tiếp theo (Next Action Hero) */
-.roadmap-next-card {
-  background: linear-gradient(135deg, #fbfbfe 0%, #f5f3ff 100%);
-  border: 2px solid #ddd6fe;
-  border-radius: var(--radius-lg);
-  padding: var(--space-5) var(--space-6);
-  margin-bottom: var(--space-8);
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.08);
+/* Unscheduled Tasks Notice Banner */
+.unscheduled-notice-banner {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-4);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-6);
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
-.roadmap-next-content {
-  flex: 1;
-  min-width: 280px;
+.unscheduled-notice-banner .banner-text {
+  font-size: var(--text-xs);
+  color: #92400e;
+  line-height: var(--leading-relaxed);
 }
 
-.roadmap-next-badge {
-  display: inline-flex;
+/* 3. Vùng B: Việc cần làm tiếp theo (Next Actions Hero Section) */
+.roadmap-next-section {
+  margin-bottom: var(--space-8);
+}
+
+.roadmap-next-section-head {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: #ede9fe;
-  color: #6d28d9;
-  font-size: 0.75rem;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.roadmap-next-section-title {
+  font-size: var(--text-base);
   font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  border: 1px solid #c4b5fd;
+  color: var(--text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.roadmap-next-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+}
+
+.next-action-card {
+  background: linear-gradient(135deg, #ffffff 0%, #faf8ff 100%);
+  border: 1.5px solid #ddd6fe;
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.next-action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.12);
+  border-color: #c4b5fd;
+}
+
+.next-action-card.is-overdue {
+  border-color: #fca5a5;
+  background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+}
+
+.next-action-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
   margin-bottom: var(--space-2);
 }
 
-.roadmap-next-title {
-  font-size: var(--text-lg);
-  font-weight: 800;
-  color: var(--text);
-  margin: 0 0 var(--space-2);
-  line-height: var(--leading-tight);
-}
-
-.roadmap-next-reason {
-  font-size: var(--text-sm);
-  color: #4b5563;
-  line-height: var(--leading-relaxed);
-  margin-bottom: var(--space-3);
-}
-
-.roadmap-next-outcome {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  background: #ffffff;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  border: 1px solid #e9d5ff;
-  font-size: var(--text-xs);
-  color: #6b21a8;
-  font-weight: 500;
-}
-
-.roadmap-next-action-area {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-2);
-}
-
-.roadmap-next-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  background: var(--primary);
-  color: #ffffff;
+.next-action-month-badge {
+  font-size: 0.72rem;
   font-weight: 700;
-  font-size: var(--text-sm);
-  padding: 12px 22px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
-  transition: all 0.2s ease;
-  min-height: 44px;
-  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: #ede9fe;
+  color: #6d28d9;
 }
 
-.roadmap-next-cta:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+.next-action-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin: 0 0 var(--space-2);
 }
 
-/* 4. Vùng C: Bố cục 2 cột (Giai đoạn & Công việc) */
+.next-action-outcome {
+  background: #ffffff;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+  font-size: 0.75rem;
+  color: #4b5563;
+  margin-bottom: var(--space-3);
+  line-height: 1.4;
+}
+
+.next-action-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+
+#user-roadmap {
+  scroll-margin-top: calc(var(--nav-height, 70px) + 24px);
+}
+
+/* 4. Vùng C & D: Bố cục 2 cột (Timeline Navigation & Active Month) */
 .roadmap-layout {
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: var(--space-8);
+  grid-template-columns: 285px 1fr;
+  gap: var(--space-6);
   align-items: start;
 }
 
-/* Sidebar: Bộ chọn 4 Giai đoạn */
-.stage-sidebar {
+/* Cột Trái: Điều hướng theo tháng (Desktop Sidebar) */
+.month-sidebar {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-3);
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  position: sticky;
+  top: calc(var(--nav-height, 70px) + 1.5rem);
 }
 
-.stage-sidebar-title {
+.month-sidebar-head {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.month-sidebar-title {
   font-size: var(--text-xs);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  padding: var(--space-2) var(--space-3) var(--space-3);
   margin: 0;
-  border-bottom: 1px solid var(--border);
 }
 
-.stage-nav-list {
+.month-nav-list {
   list-style: none;
   padding: 0;
   margin: var(--space-2) 0 0;
@@ -390,13 +450,13 @@
   gap: 4px;
 }
 
-.stage-nav-btn {
+.month-nav-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  padding: 12px 14px;
+  gap: var(--space-2);
+  padding: 10px 12px;
   border-radius: var(--radius-md);
   border: 1.5px solid transparent;
   background: transparent;
@@ -404,59 +464,56 @@
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: inherit;
-  min-height: 52px;
+  min-height: 48px;
   text-decoration: none;
+  box-sizing: border-box;
 }
 
-.stage-nav-btn:hover {
+.month-nav-btn:hover {
   background: var(--surface-alt);
   border-color: var(--border);
 }
 
-.stage-nav-btn.is-active {
+.month-nav-btn.is-active {
   background: var(--primary-light);
   border-color: #c7d2fe;
 }
 
-.stage-nav-left {
+.month-nav-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  flex: 1;
 }
 
-.stage-nav-number {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-alt);
-  font-size: 0.8rem;
-  font-weight: 800;
-  color: var(--muted);
-  flex-shrink: 0;
-}
-
-.stage-nav-btn.is-active .stage-nav-number {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-.stage-nav-text {
-  font-size: var(--text-sm);
+.month-nav-label {
+  font-size: 0.8125rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.3;
+  white-space: nowrap;
 }
 
-.stage-nav-btn.is-active .stage-nav-text {
+.month-nav-btn.is-active .month-nav-label {
   color: var(--primary);
 }
 
-.stage-nav-badge {
+.current-month-badge {
+  font-size: 0.625rem;
+  font-weight: 800;
+  background: #e0e7ff;
+  color: #3730a3;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.month-nav-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
   background: var(--surface-alt);
   color: var(--muted);
@@ -464,64 +521,143 @@
   flex-shrink: 0;
 }
 
-.stage-nav-btn.is-active .stage-nav-badge {
+.month-nav-btn.is-active .month-nav-badge {
   background: #ffffff;
   color: var(--primary);
   border-color: #c7d2fe;
 }
 
-/* Cột phải: Nội dung giai đoạn đang chọn */
+.month-sidebar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space-2) var(--space-2);
+}
+
+/* Mobile Month Selector & Pills */
+.mobile-month-nav {
+  display: none;
+  margin-bottom: var(--space-4);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.mobile-month-scroll {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 4px 2px 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  box-sizing: border-box;
+}
+
+.mobile-month-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  text-decoration: none;
+  flex-shrink: 0;
+  min-height: 38px;
+}
+
+.mobile-month-pill.is-active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.mobile-month-pill.is-active .badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border: none;
+}
+
+.mobile-jump-current-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: 6px;
+}
+
+/* Cột Phải: Nội dung tháng đang chọn (Active Month Panel) */
 .stage-main-panel {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  box-sizing: border-box;
 }
 
-.stage-header {
+.month-panel-header {
   border-bottom: 1px solid var(--border);
   padding-bottom: var(--space-4);
   margin-bottom: var(--space-5);
 }
 
-.stage-header-top {
+.month-panel-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
-.stage-header-title {
+.month-panel-title {
   font-size: var(--text-2xl);
   font-weight: 800;
   color: var(--text);
   margin: 0 0 var(--space-1);
 }
 
-.stage-header-desc {
-  font-size: var(--text-sm);
-  color: var(--muted);
+/* Month Goal Box */
+.month-goal-box {
+  background: var(--primary-light);
+  border: 1.5px solid #c7d2fe;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-3);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.month-goal-text {
+  font-size: 0.8125rem;
+  color: #312e81;
   line-height: var(--leading-relaxed);
   margin: 0;
 }
 
-.stage-target-outcome-box {
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-3) var(--space-4);
-  margin-top: var(--space-3);
-  font-size: var(--text-xs);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+.btn-edit-month-goal {
+  background: transparent;
+  border: none;
+  font-size: 0.8125rem;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
 }
 
-/* Nút Thêm công việc duy nhất */
-.stage-action-toolbar {
+/* Toolbar & Filters */
+.month-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -530,70 +666,43 @@
   flex-wrap: wrap;
 }
 
-.add-task-dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.btn-add-task {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--primary);
-  color: #ffffff;
-  font-size: var(--text-sm);
-  font-weight: 700;
-  padding: 10px 18px;
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  min-height: 44px;
-  transition: all 0.2s ease;
-}
-
-.btn-add-task:hover {
-  background: var(--primary-hover);
-}
-
-.add-task-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  width: 240px;
-  background: #ffffff;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
-  padding: 6px;
-  z-index: 40;
-  display: none;
-}
-
-.add-task-menu.is-open {
-  display: block;
-}
-
-.add-task-menu-item {
-  width: 100%;
+.month-filters-group {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  border: none;
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--text);
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.15s ease;
-  min-height: 40px;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
-.add-task-menu-item:hover {
-  background: var(--surface-alt);
-  color: var(--primary);
+.filter-pill-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill-btn:hover {
+  border-color: #94a3b8;
+  color: var(--text);
+}
+
+.filter-pill-btn.is-active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+}
+
+.stage-filter-select {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
 }
 
 /* Task Cards List */
@@ -611,6 +720,7 @@
   padding: var(--space-4);
   transition: all 0.2s ease;
   position: relative;
+  box-sizing: border-box;
 }
 
 .task-card:hover {
@@ -620,8 +730,11 @@
 
 .task-card.is-completed {
   background: #f8fafc;
-  border-color: #cbd5e1;
-  opacity: 0.85;
+  border-color: #e2e8f0;
+}
+
+.task-card.is-overdue {
+  border-color: #fca5a5;
 }
 
 .task-card-main {
@@ -630,7 +743,6 @@
   gap: var(--space-3);
 }
 
-/* Accessible Checkbox Target >= 44px hit-box */
 .task-checkbox-container {
   display: flex;
   align-items: center;
@@ -667,11 +779,12 @@
 }
 
 .task-title {
-  font-size: var(--text-base);
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--text);
   line-height: 1.4;
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .task-card.is-completed .task-title {
@@ -679,37 +792,69 @@
   text-decoration: line-through;
 }
 
-/* Source Badges */
-.task-source-badge {
-  font-size: 0.7rem;
+/* Badges */
+.task-status-badge {
+  font-size: 0.6875rem;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 2px 6px;
   border-radius: 4px;
-  letter-spacing: 0.02em;
 }
 
-.badge-source-custom {
+.status-todo {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.status-in-progress {
   background: #fef3c7;
   color: #92400e;
   border: 1px solid #fde68a;
 }
 
-.badge-source-suggested {
+.status-completed {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.badge-overdue {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  font-weight: 800;
+}
+
+.task-stage-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
   background: var(--surface-alt);
   color: var(--muted);
   border: 1px solid var(--border);
 }
 
-.badge-source-assessment {
-  background: #e0e7ff;
-  color: #3730a3;
-  border: 1px solid #c7d2fe;
+.task-priority-high {
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
-.badge-source-ai {
-  background: #f5f3ff;
-  color: #6d28d9;
-  border: 1px solid #ddd6fe;
+.task-blocked-notice {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  color: #92400e;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .task-desc {
@@ -719,13 +864,12 @@
   margin: 4px 0 var(--space-2);
 }
 
-/* Expected Outcome Box */
 .task-outcome-box {
   background: var(--surface-alt);
   border-left: 3px solid var(--primary);
   border-radius: 0 6px 6px 0;
-  padding: 6px 12px;
-  font-size: 0.8rem;
+  padding: 6px 10px;
+  font-size: 0.75rem;
   color: var(--text);
   margin-top: var(--space-2);
   line-height: 1.4;
@@ -737,7 +881,18 @@
   margin-right: 4px;
 }
 
-/* Card Bottom Actions */
+.task-actual-outcome-box {
+  background: #ecfdf5;
+  border-left: 3px solid var(--success);
+  border-radius: 0 6px 6px 0;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  color: #065f46;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Card Footer & Action Buttons */
 .task-footer {
   display: flex;
   align-items: center;
@@ -758,30 +913,30 @@
   color: var(--primary);
   background: var(--primary-light);
   border: 1px solid #c7d2fe;
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
   text-decoration: none;
-  min-height: 38px;
+  min-height: 36px;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .task-action-btn:hover {
   background: #e0e7ff;
-  border-color: #a5b4fc;
 }
 
 .task-menu-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--muted);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .task-menu-btn:hover {
@@ -789,57 +944,67 @@
   color: var(--text);
 }
 
-/* 5. Vùng D: Trợ giúp & Phản tư (Help & Reflection) */
-.roadmap-reflection-bar {
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
+/* 5. Khối Nhìn lại cuối tháng (Monthly Reflection Card) */
+.month-reflection-card {
+  background: linear-gradient(180deg, #fbfbfe 0%, #f8fafc 100%);
+  border: 1.5px solid #e2e8f0;
   border-radius: var(--radius-md);
-  padding: var(--space-4) var(--space-5);
-  margin-top: var(--space-6);
+  padding: var(--space-5);
+  margin-top: var(--space-8);
+  box-sizing: border-box;
+}
+
+.month-reflection-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
-.reflection-bar-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--text-sm);
+.month-reflection-title {
+  font-size: 0.9375rem;
+  font-weight: 800;
   color: var(--text);
-}
-
-.reflection-bar-actions {
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.btn-reflection-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
+.reflection-question-label {
   font-size: var(--text-xs);
   font-weight: 700;
-  border: 1px solid var(--border);
+  color: #334155;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Incomplete tasks review table in reflection */
+.incomplete-review-box {
   background: #ffffff;
-  color: var(--text);
-  cursor: pointer;
-  min-height: 40px;
-  transition: all 0.15s ease;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  margin-top: var(--space-4);
 }
 
-.btn-reflection-action:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+.incomplete-task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+  flex-wrap: wrap;
 }
 
-/* 6. Modals / Drawers for Add Task, Templates & AI Help */
+.incomplete-task-row:last-child {
+  border-bottom: none;
+}
+
+/* 6. Modals / Dialogs */
 .roadmap-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -849,6 +1014,7 @@
   display: none;
   place-items: center;
   padding: var(--space-4);
+  box-sizing: border-box;
 }
 
 .roadmap-modal-backdrop.is-open {
@@ -866,6 +1032,7 @@
   overflow-y: auto;
   padding: var(--space-6);
   position: relative;
+  box-sizing: border-box;
 }
 
 .roadmap-modal-header {
@@ -899,7 +1066,7 @@
   background: var(--surface-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   margin-bottom: var(--space-3);
   display: flex;
   align-items: flex-start;
@@ -921,53 +1088,43 @@
   margin: 0 0 6px;
 }
 
-/* 7. Responsive Styles for Tablet & Mobile */
-@media (max-width: 900px) {
+/* Accessibility Focus States */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* 7. Responsive Breakpoints */
+@media (max-width: 960px) {
   .roadmap-layout {
     grid-template-columns: 1fr;
     gap: var(--space-5);
   }
 
-  .stage-sidebar {
-    padding: var(--space-2);
+  .month-sidebar {
+    display: none;
   }
 
-  .stage-nav-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-
-  .stage-nav-btn {
-    min-height: 48px;
-    padding: 8px 10px;
-  }
-}
-
-@media (max-width: 640px) {
-  .stage-nav-list {
-    grid-template-columns: 1fr;
-  }
-
-  .roadmap-goal-header {
-    flex-direction: column;
-  }
-
-  .roadmap-next-card {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .roadmap-next-action-area {
-    align-items: stretch;
-  }
-
-  .roadmap-next-cta {
-    width: 100%;
+  .mobile-month-nav {
+    display: block;
   }
 
   .stage-main-panel {
     padding: var(--space-4);
+  }
+}
+
+@media (max-width: 640px) {
+  .roadmap-goal-header {
+    flex-direction: column;
+  }
+
+  .roadmap-next-grid {
+    grid-template-columns: 1fr;
   }
 
   .task-footer {
@@ -976,28 +1133,26 @@
   }
 
   .task-action-btn {
-    justify-content: center;
     width: 100%;
+    justify-content: center;
+  }
+
+  .month-toolbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
-/* 8. Print Styles */
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
-  }
-
-  .nav,
-  .footer,
   .no-print,
   #mayChatTrigger,
   #mayChatWindow,
-  .stage-sidebar,
+  .month-sidebar,
+  .mobile-month-nav,
   .roadmap-goal-actions,
-  .stage-action-toolbar,
+  .month-toolbar,
   .task-footer,
-  .roadmap-reflection-bar {
+  .month-reflection-card {
     display: none !important;
   }
 
@@ -1010,7 +1165,6 @@
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-    margin-bottom: 24px !important;
   }
 
   .task-card {

@@ -18,6 +18,8 @@ require_once __DIR__ . '/../app/discover.php';
 require_once __DIR__ . '/../app/lookup.php';
 require_once __DIR__ . '/../app/compare.php';
 require_once __DIR__ . '/../app/plan.php';
+require_once __DIR__ . '/../app/journey-migrations.php';
+require_once __DIR__ . '/../app/journey-flags.php';
 
 function p_assert_eq($expected, $actual, string $msg): void
 {

@@ -200,11 +200,14 @@ require __DIR__ . '/header.php';
               <th>Tổ hợp xét tuyển</th>
               <th>Đối tượng thí sinh</th>
               <th>Điểm trúng tuyển</th>
-              <th>Nguồn công bố</th>
+              <th>Nguồn & Xác minh</th>
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($records as $r): ?>
+            <?php foreach ($records as $r): 
+              $src = safe_external_url($r['source_url'] ?? ''); 
+              $isVerified = ($r['verification_status'] ?? '') === 'verified';
+            ?>
               <tr>
                 <td class="font-bold text-slate-900"><?=(int)$r['admission_year']?></td>
                 <td><?=e($r['method'] ?: 'Theo đề án')?></td>
@@ -219,14 +222,20 @@ require __DIR__ . '/header.php';
                   <?php endif; ?>
                 </td>
                 <td>
-                  <?php $src = safe_external_url($r['source_url'] ?? ''); ?>
-                  <?php if ($src): ?>
-                    <a href="<?=e($src)?>" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-600 hover:underline">
-                      Nguồn gốc ↗
-                    </a>
-                  <?php else: ?>
-                    <span class="text-xs text-slate-400">—</span>
-                  <?php endif; ?>
+                  <div class="space-y-1">
+                    <?php if ($isVerified): ?>
+                      <span class="badge badge-success text-[10px]">✓ Đã xác minh</span>
+                    <?php else: ?>
+                      <span class="badge badge-subtle text-[10px] text-amber-800 bg-amber-50 border border-amber-200">Tham khảo</span>
+                    <?php endif; ?>
+                    <?php if ($src): ?>
+                      <a href="<?=e($src)?>" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-600 hover:underline block">
+                        <?=e($r['source_title'] ?: 'Đề án tuyển sinh')?> ↗
+                      </a>
+                    <?php else: ?>
+                      <span class="text-[11px] text-slate-400 block">Chưa có liên kết đề án</span>
+                    <?php endif; ?>
+                  </div>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -235,7 +244,7 @@ require __DIR__ . '/header.php';
       </div>
     <?php endif; ?>
     <p class="text-xs text-slate-400 mt-3">
-      * Lưu ý: Điểm giữa các phương thức xét tuyển và thang điểm khác nhau không có giá trị quy đổi ngang hàng. Hãy kiểm tra đề án chính thức của năm đăng ký.
+      * Lưu ý sư phạm & pháp lý: Điểm trúng tuyển giữa các phương thức xét tuyển và thang điểm khác nhau không có giá trị quy đổi ngang hàng. Dữ liệu trên mang tính tham khảo, không bảo đảm chắc chắn trúng tuyển cho các mùa tuyển sinh tiếp theo. Hãy luôn đối chiếu với đề án tuyển sinh chính thức do Hội đồng tuyển sinh cơ sở đào tạo công bố.
     </p>
   </div>
 

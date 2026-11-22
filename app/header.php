@@ -38,7 +38,7 @@ $isPlanActive = in_array($navCurrentPage, ['plan', 'plan-share', 'ai-roadmap', '
       </a>
 
 <?php
-$useJourney4StepNav = function_exists('journey_feature_enabled') ? journey_feature_enabled('journey_4step') : true;
+$useJourney4StepNav = function_exists('journey_feature_enabled') && journey_feature_enabled('journey_4step');
 ?>
       <!-- Desktop Primary Navigation -->
       <nav class="desktop-nav" aria-label="Điều hướng chính">
@@ -201,18 +201,10 @@ $useJourney4StepNav = function_exists('journey_feature_enabled') ? journey_featu
             </svg>
           </button>
           <div id="menu-plan" class="dropdown-menu" role="menu">
-            <?php if (journey_feature_enabled('action_plan')): ?>
-            <a href="<?=url('index.php?page=plan')?>" class="dropdown-item" role="menuitem" <?= $navCurrentPage === 'plan' ? 'aria-current="page"' : '' ?>>
+            <a href="<?=url('index.php?page=ai-roadmap')?>" class="dropdown-item" role="menuitem" <?= in_array($navCurrentPage, ['ai-roadmap', 'plan'], true) ? 'aria-current="page"' : '' ?>>
               <div>
-                <strong>Lập kế hoạch theo tháng/năm (mới)</strong>
-                <span class="item-desc">Mốc công việc chỉnh sửa được, chia sẻ &amp; xuất PDF</span>
-              </div>
-            </a>
-            <?php endif; ?>
-            <a href="<?=url('index.php?page=ai-roadmap')?>" class="dropdown-item" role="menuitem" <?= $navCurrentPage === 'ai-roadmap' ? 'aria-current="page"' : '' ?>>
-              <div>
-                <strong>Bản đồ hành trình &amp; Kế hoạch cũ</strong>
-                <span class="item-desc">Mở lại kế hoạch hiện có &amp; theo dõi tiến độ</span>
+                <strong>Bản đồ kế hoạch theo tháng</strong>
+                <span class="item-desc">Mốc hành động từng tháng, việc học &amp; trải nghiệm</span>
               </div>
             </a>
             <a href="<?=url('index.php?page=ai-roadmap#career-conversations')?>" class="dropdown-item" role="menuitem">
@@ -373,10 +365,7 @@ $useJourney4StepNav = function_exists('journey_feature_enabled') ? journey_featu
       <!-- Mobile Category 4: Kế hoạch & Trải nghiệm -->
       <div>
         <div class="mobile-nav-group-title">4. Kế hoạch &amp; Trải nghiệm</div>
-        <?php if (journey_feature_enabled('action_plan')): ?>
-        <a href="<?=url('index.php?page=plan')?>" class="mobile-nav-link <?= $currentPage === 'plan' ? 'active' : '' ?>">Lập kế hoạch theo tháng/năm (mới)</a>
-        <?php endif; ?>
-        <a href="<?=url('index.php?page=ai-roadmap')?>" class="mobile-nav-link <?= $currentPage === 'ai-roadmap' ? 'active' : '' ?>">Bản đồ hành trình &amp; Kế hoạch cũ</a>
+        <a href="<?=url('index.php?page=ai-roadmap')?>" class="mobile-nav-link <?= in_array($currentPage, ['ai-roadmap', 'plan'], true) ? 'active' : '' ?>">Bản đồ kế hoạch theo tháng</a>
         <a href="<?=url('index.php?page=ai-roadmap#career-conversations')?>" class="mobile-nav-link">Góc người trong nghề</a>
         <a href="<?=url('index.php?page=simulations')?>" class="mobile-nav-link <?= in_array($currentPage, ['simulations', 'simulation', 'simulation-3d'], true) ? 'active' : '' ?>">Trải nghiệm nghề (2D &amp; 3D)</a>
         <a href="<?=url('index.php?page=dashboard')?>" class="mobile-nav-link <?= $currentPage === 'dashboard' ? 'active' : '' ?>">Không gian cá nhân &amp; Đã lưu</a>

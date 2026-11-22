@@ -18,20 +18,22 @@ assert(count($lib['skills']) >= 3, 'Skills library should have at least 3 milest
 assert(count($lib['decision']) >= 3, 'Decision library should have at least 3 milestones');
 echo "✓ Milestone suggestions library populated with standard templates" . PHP_EOL;
 
-// 2. Test with a test user ID from DB
-$testUserStmt = db()->query("SELECT id FROM users WHERE role='student' LIMIT 1");
-$testUserId = (int)($testUserStmt ? $testUserStmt->fetchColumn() : 0);
-if ($testUserId <= 0) {
-    db()->exec("INSERT INTO users(name, email, password, role) VALUES('Test Student', 'test_student_" . time() . "@example.test', 'secret', 'student')");
-    $testUserId = (int)db()->lastInsertId();
-}
-assert($testUserId > 0, 'Must have at least one student user in database');
+// 2. Safe transaction with dedicated test user
+$pdo = db();
+$pdo->beginTransaction();
 
-// 3. Roadmap get or create
-$roadmap = user_roadmap_get_or_create($testUserId);
-assert(!empty($roadmap['id']), 'Roadmap ID must be present');
-assert(isset($roadmap['milestones']['discovery']), 'Grouped milestones must contain discovery stage');
-echo "✓ user_roadmap_get_or_create successfully initialized/retrieved roadmap" . PHP_EOL;
+try {
+    $email = 'test_student_rm_' . time() . '@example.test';
+    $stmt = $pdo->prepare("INSERT INTO users(name, email, password, role, status) VALUES('Test Student Roadmap', ?, 'secret', 'student', 'active')");
+    $stmt->execute([$email]);
+    $testUserId = (int)$pdo->lastInsertId();
+    assert($testUserId > 0, 'Must have a valid test student ID');
+
+    // 3. Roadmap get or create
+    $roadmap = user_roadmap_get_or_create($testUserId);
+    assert(!empty($roadmap['id']), 'Roadmap ID must be present');
+    assert(isset($roadmap['milestones']['discovery']), 'Grouped milestones must contain discovery stage');
+    echo "✓ user_roadmap_get_or_create successfully initialized/retrieved roadmap" . PHP_EOL;
 
 // 4. Assessment insights derivation
 $insights = user_roadmap_derive_assessment_insights($testUserId);
@@ -86,3 +88,13 @@ assert(!$found, 'Test milestone must be deleted');
 echo "✓ user_roadmap_delete_milestone successfully removed milestone" . PHP_EOL;
 
 echo "=== All User Custom Roadmap Tests Passed! ===" . PHP_EOL;
+
+} finally {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    if (isset($testUserId) && $testUserId > 0) {
+        $pdo->prepare("DELETE FROM users WHERE id=?")->execute([$testUserId]);
+    }
+    echo "✓ Test student cleaned up safely, real database preserved 100%." . PHP_EOL;
+}

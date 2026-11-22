@@ -43,15 +43,17 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 ini_set('display_errors', !empty($config['debug']) ? '1' : '0');
 error_reporting(E_ALL);
 
-session_name($config['session_name'] ?? 'jobsimu_session');
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
-    'httponly' => true,
-    'samesite' => 'Lax',
-]);
-if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_name($config['session_name'] ?? 'jobsimu_session');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
 
 $db = $config['db'];
 $dsn = ($db['driver'] ?? 'mysql') === 'sqlite' ? 'sqlite:' . $db['path'] : sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $db['host'], $db['port'], $db['name'], $db['charset']);
@@ -67,27 +69,47 @@ try {
 }
 
 require_once ROOT_PATH . '/app/functions.php';
-run_migrations();
-require_once ROOT_PATH . '/app/career-admissions.php';
-run_admissions_migrations();
-require_once ROOT_PATH . '/app/admissions-p2.php';
-admissions_p2_migrate();
-require_once ROOT_PATH . '/app/admissions-p22.php';
-admissions_p22_migrate();
-admissions_p22_tuition_seed();
-
-require_once ROOT_PATH . '/app/admissions-p22-notices.php';
-admissions_p22_notice_migrate();
-admissions_p22_notice_seed();
-
-require_once ROOT_PATH . '/app/training-majors.php';
-training_majors_migrate();
-
-require_once ROOT_PATH . '/app/schools.php';
-schools_migrate();
-
 require_once ROOT_PATH . '/app/journey-flags.php';
-require_once ROOT_PATH . '/app/journey-migrations.php';
-journey_run_migrations();
+
+if (!function_exists('bootstrap_run_migrations_if_needed')) {
+    function bootstrap_run_migrations_if_needed(): void {
+        if (getenv('JOBSIMU_RUN_MIGRATIONS') === '1' || getenv('JOBSIMU_FORCE_MIGRATIONS') === '1') {
+            bootstrap_execute_all_migrations();
+            return;
+        }
+        $codeVersion = '4.0.0_1.1.0_1.0.0';
+        $lockFile = sys_get_temp_dir() . '/jobsimu_schema_' . md5(ROOT_PATH) . '.lock';
+        if (is_file($lockFile) && trim((string)@file_get_contents($lockFile)) === $codeVersion) {
+            return;
+        }
+        bootstrap_execute_all_migrations();
+        @file_put_contents($lockFile, $codeVersion);
+    }
+}
+
+if (!function_exists('bootstrap_execute_all_migrations')) {
+    function bootstrap_execute_all_migrations(): void {
+    run_migrations();
+    require_once ROOT_PATH . '/app/career-admissions.php';
+    run_admissions_migrations();
+    require_once ROOT_PATH . '/app/admissions-p2.php';
+    admissions_p2_migrate();
+    require_once ROOT_PATH . '/app/admissions-p22.php';
+    admissions_p22_migrate();
+    admissions_p22_tuition_seed();
+    require_once ROOT_PATH . '/app/admissions-p22-notices.php';
+    admissions_p22_notice_migrate();
+    admissions_p22_notice_seed();
+    require_once ROOT_PATH . '/app/training-majors.php';
+    training_majors_migrate();
+    require_once ROOT_PATH . '/app/schools.php';
+    schools_migrate();
+    require_once ROOT_PATH . '/app/journey-flags.php';
+    require_once ROOT_PATH . '/app/journey-migrations.php';
+    journey_run_migrations();
+    }
+}
+
+bootstrap_run_migrations_if_needed();
 
 

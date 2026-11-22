@@ -130,7 +130,7 @@ function may_action_registry(): array {
         'open_plan' => [
             'id' => 'open_plan',
             'name' => 'Lập kế hoạch theo tháng',
-            'path' => 'index.php?page=plan',
+            'path' => 'index.php?page=ai-roadmap',
             'login_required' => false,
             'role' => 'all',
             'summary' => 'Xây dựng kế hoạch hành động có mốc tháng/năm và chỉnh sửa linh hoạt.',

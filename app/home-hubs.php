@@ -20,7 +20,7 @@ if ($me) {
     $hasRoadmap = (bool)$latestHolland;
 }
 
-$useJourney4StepHome = function_exists('journey_feature_enabled') ? journey_feature_enabled('journey_4step') : true;
+$useJourney4StepHome = function_exists('journey_feature_enabled') && journey_feature_enabled('journey_4step');
 
 if ($useJourney4StepHome) {
     $hubs = [
