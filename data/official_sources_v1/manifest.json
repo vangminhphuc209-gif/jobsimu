@@ -1,0 +1,225 @@
+{
+  "dataset_id": "jobsimu-official-sources-v1",
+  "schema_version": 1,
+  "retrieved_at": "2026-11-22T01:34:56.555944+00:00",
+  "status": "staging_not_imported",
+  "onet_version": "31.0",
+  "geography": {
+    "onet": "US",
+    "admissions": "VN"
+  },
+  "sources": [
+    {
+      "source_id": "onet-31.0-occupation-data",
+      "url": "https://www.onetcenter.org/dl_files/database/db_31_0_excel/Occupation%20Data.xlsx",
+      "sha256": "13b2aa4c08e6c9a3708d5e5ac83e13da5cc184e3798313c8942a266d00593ace",
+      "publisher": "USDOL/ETA",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "source_id": "onet-31.0-task-statements",
+      "url": "https://www.onetcenter.org/dl_files/database/db_31_0_excel/Task%20Statements.xlsx",
+      "sha256": "afb7ba3bb00f0355d7d5f07e0a446ce880d72d15d4f3f2087973aa8c0dd102d4",
+      "publisher": "USDOL/ETA",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "source_id": "onet-31.0-career-interest-types",
+      "url": "https://www.onetcenter.org/dl_files/database/db_31_0_excel/Career%20Interest%20Types.xlsx",
+      "sha256": "f5d94c1c99d6709879578f914e3e6a91e25d315d7136024e79b75985d00c715d",
+      "publisher": "USDOL/ETA",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "source_id": "onet-31.0-content-model-reference",
+      "url": "https://www.onetcenter.org/dl_files/database/db_31_0_excel/Content%20Model%20Reference.xlsx",
+      "sha256": "e1ac3680e091eb0820c41f3800ff7b6473c3bb28f9914837c7f611bff3141892",
+      "publisher": "USDOL/ETA",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "source_id": "onet-31.0-scales-reference",
+      "url": "https://www.onetcenter.org/dl_files/database/db_31_0_excel/Scales%20Reference.xlsx",
+      "sha256": "0ffac0236a59b9aa71ddc9d347a57b150f204e7ae450945e199e43a41dad99f3",
+      "publisher": "USDOL/ETA",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "source_id": "hust-admissions-2026",
+      "url": "https://hust.edu.vn/uploads/sys/tuyen-sinh/2026_05/danh-muc-chuong-trinh-dao-tao-2026.pdf",
+      "sha256": "eedd3e020e2ce4cc945b3e1421ec1e6e19fc48d9eae75c4fe3853bf63ffa3f86",
+      "publisher": "Đại học Bách khoa Hà Nội",
+      "license": "public_factual_admissions_table_no_open_license_asserted"
+    }
+  ],
+  "files": [
+    {
+      "path": "onet/occupation_data.csv",
+      "rows": 1016,
+      "sha256": "e43dba44e7a674629c25f55ec6d0ae50369321905e45d306d0aa80498abd139f",
+      "source_id": "onet-31.0-occupation-data"
+    },
+    {
+      "path": "onet/tasks/11.csv",
+      "rows": 1213,
+      "sha256": "4c8d197019151e80df41049d599505fa21bd2519cf95bf9be6d7b89281c603ed",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/13.csv",
+      "rows": 988,
+      "sha256": "9a15061910853ffa147a1b1b5fb6089b904791569d46cc40e312ee24b3717465",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/15.csv",
+      "rows": 770,
+      "sha256": "9feb58b3c667a36806ebb66c29bb8b5a9f49eb89496e6d93e289e65bbd6cd092",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/17.csv",
+      "rows": 1237,
+      "sha256": "765a8f471b908593b1b37acaa8bb211a67da298307780508117503fa55d1ce15",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/19.csv",
+      "rows": 1236,
+      "sha256": "8533c4f9bfb885d2f6e2aae1f83581aa9d1c19eee9f02c7f38e5564feaff409c",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/21.csv",
+      "rows": 295,
+      "sha256": "ed007b20c7e15caf2a98cbd6104bd63d9327431a5a6c6f2f15487124baa27460",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/23.csv",
+      "rows": 124,
+      "sha256": "eb02bfac4fbe3103a79134e97992ad27892a8d924d402eb2f51ad5c054c3b0e5",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/25.csv",
+      "rows": 1636,
+      "sha256": "dc2bab4d61df416f58b7dc53fd298abca951f17c0a2553facd12cdbecbb3e7bd",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/27.csv",
+      "rows": 806,
+      "sha256": "1786463b17a40421bc225af4e032c8fc3d80c26796d2b45369ddb22ab337bd13",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/29.csv",
+      "rows": 1729,
+      "sha256": "652d990c56bb279df8189f9ebc4398345b9acb97083f8c71aa577042f8015262",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/31.csv",
+      "rows": 347,
+      "sha256": "9eba564c724d1857592584294f1e0faa847f2fac693dbce29cc65f52db3e977d",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/33.csv",
+      "rows": 519,
+      "sha256": "51bd79c9e2f8312a79d0be894a4d47e7ba027a60ec87d9540d752fdec7b9c2a3",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/35.csv",
+      "rows": 320,
+      "sha256": "4c7d7853b184cdd30b0c3f76d2b3781d9b6d9b0309f22763603766d1ae3a4ccf",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/37.csv",
+      "rows": 164,
+      "sha256": "325eec761d6bd562e6a24abedb1523cc252a737f7b23870e2a944b0a8857cb94",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/39.csv",
+      "rows": 617,
+      "sha256": "1870252a120c0c60e6c6f553668d122ce784c07497bde02d6aba85523e3ce505",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/41.csv",
+      "rows": 427,
+      "sha256": "6431dad570d7b07bc161c37c80816e125d62a6c4e254dcff129b15f7906fca89",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/43.csv",
+      "rows": 975,
+      "sha256": "2ebbd755ab618f2fcf49838126d8da4b5ca5fedae7e5772602de99a9b7e8f92d",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/45.csv",
+      "rows": 225,
+      "sha256": "2ce451e8ac7c59d8732ead8a73808dc68bc7fbdcf31e209bcfb70b162fb34555",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/47.csv",
+      "rows": 1140,
+      "sha256": "0a1b14fe2017687cfbd6c2de4ebe261c63554b1ab92cce6f276578ca3db426c3",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/49.csv",
+      "rows": 1016,
+      "sha256": "05c75c40d604faaef2ffe0383c3f6fc7c19d68e491d0189839d2da83abe131b6",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/51.csv",
+      "rows": 2140,
+      "sha256": "e883e15da52dea4831d58cb70921dc29d4f535cc250f0c32d95321889c72bc58",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/tasks/53.csv",
+      "rows": 914,
+      "sha256": "a0f6e435406d476a6d01194304d5726021dfce931800a687bfdbefa543906699",
+      "source_id": "onet-31.0-task-statements"
+    },
+    {
+      "path": "onet/career_interest_types.csv",
+      "rows": 8307,
+      "sha256": "ddb4a7151a31a4dca0a66ade44876b9f824defdce2e206738e8c7aae54d322fb",
+      "source_id": "onet-31.0-career-interest-types"
+    },
+    {
+      "path": "onet/content_model_reference.csv",
+      "rows": 3006,
+      "sha256": "53ae4d156b06aa2505a6a8bee1b42cf42a09a5587538a657583276dc54d78b0a",
+      "source_id": "onet-31.0-content-model-reference"
+    },
+    {
+      "path": "onet/scales_reference.csv",
+      "rows": 33,
+      "sha256": "f93c52019a165e806a9d0bd3999db7b0af7a6f9f67f48cc997e8b736a5e123c2",
+      "source_id": "onet-31.0-scales-reference"
+    },
+    {
+      "path": "admissions/hust_2026.json",
+      "rows": 68,
+      "sha256": "636561e1395e2fa3112dcef134aa4289a4d67a42cd92c672466cc03625833616",
+      "source_id": "hust-admissions-2026"
+    }
+  ],
+  "limitations": [
+    "Not all Vietnamese universities or majors are covered.",
+    "No new cutoffs or tuition values in this release.",
+    "O*NET occupations are not Vietnamese training majors.",
+    "US occupational interest values are not student test norms or suitability probabilities."
+  ]
+}

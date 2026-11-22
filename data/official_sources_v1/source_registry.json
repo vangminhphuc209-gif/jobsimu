@@ -1,0 +1,58 @@
+[
+  {
+    "source_key": "hust",
+    "publisher": "Đại học Bách khoa Hà Nội",
+    "url": "https://hust.edu.vn/uploads/sys/tuyen-sinh/2026_05/danh-muc-chuong-trinh-dao-tao-2026.pdf",
+    "status": "included",
+    "notes": "68 chương trình 2026; không có điểm chuẩn/học phí trong gói"
+  },
+  {
+    "source_key": "onet",
+    "publisher": "O*NET 31.0 / USDOL/ETA",
+    "url": "https://www.onetcenter.org/database.html",
+    "status": "included",
+    "notes": "5 workbook, giữ dữ liệu tiếng Anh và phiên bản"
+  },
+  {
+    "source_key": "hnue",
+    "publisher": "Trường Đại học Sư phạm Hà Nội",
+    "url": "https://tuyensinh.hnue.edu.vn/tuyensinh2026/665",
+    "status": "pending_download",
+    "notes": "HTTP 403 khi tải trực tiếp; chưa trích xuất vào gói"
+  },
+  {
+    "source_key": "moet",
+    "publisher": "Bộ Giáo dục và Đào tạo",
+    "url": "https://tuyensinh.moet.gov.vn/ts/",
+    "status": "planned",
+    "notes": "Nguồn văn bản; chưa nhập"
+  },
+  {
+    "source_key": "esco",
+    "publisher": "European Commission ESCO",
+    "url": "https://esco.ec.europa.eu/en/use-esco/download",
+    "status": "planned",
+    "notes": "Chưa tải; cần chọn phiên bản, giấy phép, ngôn ngữ và mapping"
+  },
+  {
+    "source_key": "nso",
+    "publisher": "Cục Thống kê",
+    "url": "https://www.nso.gov.vn/",
+    "status": "planned",
+    "notes": "Chưa trích xuất; cần chọn chỉ tiêu, kỳ và đơn vị"
+  },
+  {
+    "source_key": "ilostat",
+    "publisher": "ILO",
+    "url": "https://ilostat.ilo.org/data/",
+    "status": "planned",
+    "notes": "Chưa tải; giữ quốc gia, đơn vị và phương pháp thống kê"
+  },
+  {
+    "source_key": "onet-ip",
+    "publisher": "O*NET Interest Profiler",
+    "url": "https://www.onetcenter.org/IP.html",
+    "status": "reference_only",
+    "notes": "Không nhập câu hỏi; giấy phép công cụ khác giấy phép database; không thay test"
+  }
+]
