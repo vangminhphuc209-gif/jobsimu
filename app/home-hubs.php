@@ -212,24 +212,66 @@ require ROOT_PATH . '/app/header.php';
 
 <?php else: ?>
 <!-- ================= GUEST WELCOME EXPERIENCE ================= -->
-<section class="hub-hero">
-  <div class="container py-12 md:py-16">
-    <div class="max-w-3xl">
-      <span class="badge badge-purple mb-3">Nền tảng hướng nghiệp dành cho học sinh Việt Nam</span>
-      <h1 class="page-title text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+<section class="hero hub-hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="badge badge-purple mb-4">✦ Nền tảng hướng nghiệp dành cho học sinh Việt Nam</span>
+      <h1 class="page-title text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-4">
         Hiểu mình hôm nay.<br>
-        <span class="text-brand-600">Chủ động thiết kế tương lai.</span>
+        <span class="gradient-text">Chủ động thiết kế tương lai.</span>
       </h1>
-      <p class="text-base md:text-lg text-slate-600 leading-relaxed mb-6">
+      <p class="text-base md:text-lg text-slate-600 leading-relaxed mb-6 max-w-xl">
         Mỗi lựa chọn bắt đầu từ một lần khám phá. Tìm hiểu nghề nghiệp, lắng nghe bản thân qua các công cụ đo lường tiêu chuẩn, thử sức qua tình huống thực tế và xây dựng lộ trình của riêng bạn.
       </p>
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="hero-actions flex flex-wrap items-center gap-3 mb-6">
         <a class="btn btn-primary btn-lg" href="<?=url('index.php?page=careers')?>">
           Bắt đầu khám phá nghề →
         </a>
         <a class="btn btn-outline btn-lg" href="<?=url('index.php?page=register')?>">
           Tạo tài khoản miễn phí
         </a>
+      </div>
+      <div class="trust-row flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-slate-500">
+        <span>✓ 4 giai đoạn rõ ràng</span>
+        <span>✓ Dữ liệu mở xác minh</span>
+        <span>✓ Trải nghiệm mô phỏng</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-label="Minh họa hồ sơ sở thích RIASEC">
+      <div class="blob"></div>
+      <div class="float-card big">
+        <div class="flex items-center justify-between gap-3">
+          <b class="text-slate-900 text-base font-extrabold">Hồ sơ sở thích RIASEC</b>
+          <span class="ai-badge">✦ AI Ready</span>
+        </div>
+        <div class="mini-bars">
+          <span style="height:62%" title="Realistic (Kỹ thuật)"></span>
+          <span style="height:92%" title="Investigative (Nghiên cứu)"></span>
+          <span style="height:54%" title="Artistic (Nghệ thuật)"></span>
+          <span style="height:82%" title="Social (Xã hội)"></span>
+          <span style="height:48%" title="Enterprising (Quản lý)"></span>
+          <span style="height:74%" title="Conventional (Nghiệp vụ)"></span>
+        </div>
+        <small class="muted block mt-3 text-xs text-slate-500">Mỗi bạn là một tổ hợp thế mạnh độc đáo</small>
+      </div>
+      <div class="float-card c1">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl leading-none" aria-hidden="true">🎯</span>
+          <div>
+            <b class="text-sm font-bold text-slate-900 block leading-tight">15 nghề chuyên sâu</b>
+            <small class="muted block text-xs text-slate-500 mt-0.5">Lộ trình &amp; mô phỏng thực tế</small>
+          </div>
+        </div>
+      </div>
+      <div class="float-card c2">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl leading-none" aria-hidden="true">✨</span>
+          <div>
+            <b class="text-sm font-bold text-slate-900 block leading-tight">AI Career Coach</b>
+            <small class="muted block text-xs text-slate-500 mt-0.5">Phân tích riêng cho từng bạn</small>
+          </div>
+        </div>
       </div>
     </div>
   </div>
