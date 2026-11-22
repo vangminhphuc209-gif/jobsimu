@@ -59,6 +59,38 @@ function user_roadmap_ensure_tables(): void
             FOREIGN KEY(roadmap_id) REFERENCES user_roadmaps(id) ON DELETE CASCADE,
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         )");
+
+        try {
+            $existingCols = [];
+            $colsRes = db()->query("PRAGMA table_info(user_roadmap_milestones)")->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($colsRes as $colRow) {
+                if (!empty($colRow['name'])) {
+                    $existingCols[] = $colRow['name'];
+                }
+            }
+            $neededCols = [
+                'target_month' => 'VARCHAR(7)',
+                'start_date' => 'TEXT',
+                'due_date' => 'TEXT',
+                'estimated_duration' => 'VARCHAR(50)',
+                'priority' => "TEXT NOT NULL DEFAULT 'medium'",
+                'status' => "TEXT NOT NULL DEFAULT 'todo'",
+                'expected_outcome' => 'TEXT',
+                'actual_outcome' => 'TEXT',
+                'action_url' => 'VARCHAR(255)',
+                'prerequisite_id' => 'INTEGER',
+                'is_completed' => 'INTEGER NOT NULL DEFAULT 0',
+                'completed_at' => 'TEXT',
+                'source' => "TEXT NOT NULL DEFAULT 'suggested'",
+                'sort_order' => 'INTEGER NOT NULL DEFAULT 0',
+            ];
+            foreach ($neededCols as $col => $typeDef) {
+                if (!in_array($col, $existingCols, true)) {
+                    db()->exec("ALTER TABLE user_roadmap_milestones ADD COLUMN $col $typeDef");
+                }
+            }
+        } catch (Throwable $e) {}
+
         db()->exec('CREATE INDEX IF NOT EXISTS idx_milestone_user_stage ON user_roadmap_milestones(user_id,stage,is_completed)');
         db()->exec('CREATE INDEX IF NOT EXISTS idx_milestone_target_month ON user_roadmap_milestones(user_id,target_month)');
     } else {
