@@ -26,4 +26,12 @@ return [
     'session_name' => getenv('SESSION_NAME') ?: 'jobsimu_session',
     // Luôn đặt debug = false trên môi trường production
     'debug' => filter_var(getenv('APP_DEBUG') ?: false, FILTER_VALIDATE_BOOLEAN),
+    // Cấu hình AI Chatbot Trợ lý La Bàn (tùy chọn trong config.php nếu không dùng .env hoặc database)
+    'ai' => [
+        'groq_api_key' => getenv('GROQ_API_KEY') ?: '',
+        'groq_model' => getenv('GROQ_MODEL') ?: 'openai/gpt-oss-120b',
+        'cloudflare_api_token' => getenv('CLOUDFLARE_API_TOKEN') ?: '',
+        'cloudflare_account_id' => getenv('CLOUDFLARE_ACCOUNT_ID') ?: '',
+        'cloudflare_model' => getenv('CLOUDFLARE_MODEL') ?: '@cf/meta/llama-3.1-8b-instruct-fp8-fast',
+    ],
 ];

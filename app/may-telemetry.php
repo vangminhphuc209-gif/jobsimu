@@ -90,6 +90,7 @@ function may_log_telemetry(array $entry): void {
         'latency_ms' => (int)($entry['latency_ms'] ?? 0),
         'http_status' => (int)($entry['http_status'] ?? 200),
         'status' => $entry['status'] ?? 'completed',
+        'fallback_reason' => $entry['fallback_reason'] ?? '',
         'error' => mb_substr((string)($entry['error'] ?? ''), 0, 200)
     ];
 
@@ -127,6 +128,15 @@ function may_get_telemetry_stats(): array {
         'groq_count' => 0,
         'cloudflare_count' => 0,
         'fallback_count' => 0,
+        'fallback_reasons' => [
+            'unconfigured' => 0,
+            'quota_exceeded' => 0,
+            'auth_error' => 0,
+            'timeout' => 0,
+            'circuit_breaker_active' => 0,
+            'server_error' => 0,
+            'other' => 0
+        ],
         'groq_latency_sum' => 0,
         'groq_latency_avg' => 0,
         'cloudflare_latency_sum' => 0,
@@ -145,16 +155,22 @@ function may_get_telemetry_stats(): array {
         if (!$row) continue;
         $stats['total_requests']++;
 
-        if (str_starts_with((string)$row['timestamp'], $today)) {
+        if (str_starts_with((string)($row['timestamp'] ?? ''), $today)) {
             $stats['today_requests']++;
         }
 
         $provider = $row['provider'] ?? '';
         $latency = (int)($row['latency_ms'] ?? 0);
         $status = $row['status'] ?? '';
+        $reason = (string)($row['fallback_reason'] ?? '');
 
         if ($status === 'fallback' || $status === 'failed' || $provider === 'none') {
             $stats['fallback_count']++;
+            if (isset($stats['fallback_reasons'][$reason])) {
+                $stats['fallback_reasons'][$reason]++;
+            } else {
+                $stats['fallback_reasons']['other']++;
+            }
         } elseif ($provider === 'groq' || str_starts_with($provider, 'groq')) {
             $stats['groq_count']++;
             $stats['groq_latency_sum'] += $latency;

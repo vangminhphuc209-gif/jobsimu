@@ -162,6 +162,7 @@ $finalActions = array_values(array_slice($mergedActions, 0, 3));
 $cleanAnswer = may_clean_action_tags($modelAnswer);
 
 // 12. Record telemetry (zero sensitive data)
+$fallbackReason = $response['fallback_reason'] ?? '';
 may_log_telemetry([
     'user_type' => $currentUser ? 'Học sinh #' . $currentUser['id'] : 'Khách',
     'provider' => $providerName,
@@ -169,7 +170,8 @@ may_log_telemetry([
     'latency_ms' => $latencyMs,
     'http_status' => $httpStatus,
     'status' => ($providerModel === 'unavailable' ? 'fallback' : 'completed'),
-    'error' => ($providerModel === 'unavailable' ? 'All providers unavailable or in cooldown' : '')
+    'fallback_reason' => $fallbackReason,
+    'error' => ($providerModel === 'unavailable' ? ($fallbackReason ?: 'All providers unavailable') : '')
 ]);
 
 // 13. Increment rate limit counter

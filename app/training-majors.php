@@ -73,6 +73,7 @@ function training_majors_migrate(?PDO $pdo = null): void
 {
     $db = $pdo ?? db();
     if (training_majors_tables_ready($db) && training_majors_columns_ready($db)) {
+        training_majors_seed($db);
         return;
     }
     $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -100,6 +101,70 @@ function training_majors_migrate(?PDO $pdo = null): void
     }
 
     training_majors_ensure_columns($db);
+    training_majors_seed($db);
+}
+
+/**
+ * Automatically seeds 358 training majors and catalog tables from SQL dump
+ * if the table is currently empty (< 300 records).
+ */
+function training_majors_seed(?PDO $pdo = null): bool
+{
+    $db = $pdo ?? db();
+    if (!training_majors_tables_ready($db)) {
+        return false;
+    }
+    try {
+        $count = (int)$db->query('SELECT COUNT(*) FROM training_majors')->fetchColumn();
+        if ($count >= 300) {
+            return true;
+        }
+    } catch (Throwable $e) {
+        return false;
+    }
+
+    $seedFile = ROOT_PATH . '/database/seeds/training_majors_data.sql';
+    if (!is_file($seedFile) || !is_readable($seedFile)) {
+        return false;
+    }
+
+    $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if ($driver !== 'mysql') {
+        return false;
+    }
+
+    $sql = file_get_contents($seedFile);
+    if ($sql === false || trim($sql) === '') {
+        return false;
+    }
+
+    $statements = explode(";\n", $sql);
+    $inTx = false;
+    try {
+        $db->exec('SET FOREIGN_KEY_CHECKS=0');
+        if (!$db->inTransaction()) {
+            $db->beginTransaction();
+            $inTx = true;
+        }
+        foreach ($statements as $stmt) {
+            $stmt = trim($stmt);
+            if ($stmt !== '' && !str_starts_with($stmt, '--')) {
+                $db->exec($stmt);
+            }
+        }
+        if ($inTx && $db->inTransaction()) {
+            $db->commit();
+        }
+        $db->exec('SET FOREIGN_KEY_CHECKS=1');
+        return true;
+    } catch (Throwable $e) {
+        if ($inTx && $db->inTransaction()) {
+            $db->rollBack();
+        }
+        $db->exec('SET FOREIGN_KEY_CHECKS=1');
+        error_log('training_majors_seed error: ' . $e->getMessage());
+        return false;
+    }
 }
 
 /**

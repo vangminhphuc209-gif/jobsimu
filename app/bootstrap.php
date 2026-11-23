@@ -32,8 +32,12 @@ if (is_file($envFile) && is_readable($envFile)) {
                 [$key, $value] = explode('=', $line, 2);
                 $key = trim($key);
                 $value = trim($value, " \t\n\r\0\x0B\"'");
-                if (!array_key_exists($key, $_SERVER) && !array_key_exists($key, $_ENV)) {
-                    putenv("{$key}={$value}");
+                $curServer = trim((string)($_SERVER[$key] ?? ''));
+                $curEnv = trim((string)($_ENV[$key] ?? ''));
+                if ($curServer === '' && $curEnv === '') {
+                    if (function_exists('putenv')) {
+                        @putenv("{$key}={$value}");
+                    }
                     $_ENV[$key] = $value;
                     $_SERVER[$key] = $value;
                 }

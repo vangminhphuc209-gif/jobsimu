@@ -1,8 +1,70 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__.'/psychometrics.php';
+require_once __DIR__.'/assessment-feedback.php';
 require_login();
 $studentId = (int)user()['id'];
+
+// Handle student reflection feedback save
+if ($page === 'assessment-reflection-save' && is_post()) {
+    verify_csrf();
+    $testType = (string)($_POST['test_type'] ?? 'holland');
+    $fitFeeling = (string)($_POST['fit_feeling'] ?? 'agree');
+    $studentNotes = (string)($_POST['student_notes'] ?? '');
+    $assessmentId = !empty($_POST['assessment_id']) ? (int)$_POST['assessment_id'] : null;
+    assessment_save_student_reflection($studentId, $testType, $fitFeeling, $studentNotes, $assessmentId);
+    flash('success', 'Đã lưu phản tư của bạn về kết quả bài đánh giá.');
+    redirect('index.php?page=assessment-result&type=' . $testType);
+}
+
+// Handle student academic profile save
+if ($page === 'academic-profile-save' && is_post()) {
+    verify_csrf();
+    assessment_save_academic_profile($studentId, $_POST);
+    flash('success', 'Đã cập nhật điểm học kỳ và điều kiện học tập của bạn.');
+    redirect('index.php?page=assessment-report');
+}
+
+// Handle quick milestone creation from action plan
+if ($page === 'plan-quick-add' && is_post()) {
+    verify_csrf();
+    require_once __DIR__ . '/user-roadmap.php';
+    user_roadmap_ensure_tables();
+    $title = trim((string)($_POST['title'] ?? ''));
+    $stage = in_array($_POST['stage'] ?? '', ['discovery', 'academic', 'skills', 'decision'], true) ? $_POST['stage'] : 'academic';
+    if ($title !== '') {
+        $rm = user_roadmap_get_active($studentId);
+        if (!$rm) {
+            $rm = user_roadmap_create($studentId, [
+                'goal_title' => 'Kế hoạch học tập và chuẩn bị tuyển sinh',
+                'target_timeframe' => 'Lớp 10 - 12'
+            ]);
+        }
+        user_roadmap_milestone_create($studentId, (int)$rm['id'], [
+            'title' => $title,
+            'stage' => $stage,
+            'priority' => 'high',
+            'source' => 'assessment'
+        ]);
+        flash('success', 'Đã thêm mục tiêu vào Kế hoạch hành động.');
+    }
+    redirect('index.php?page=assessment-report');
+}
+
+// Direct render for single result view
+if ($page === 'assessment-result') {
+    $targetType = (string)($_GET['type'] ?? 'holland');
+    $assId = !empty($_GET['id']) ? (int)$_GET['id'] : null;
+    assessment_render_single_result($studentId, $targetType, $assId);
+    exit;
+}
+
+// Direct render for 5-test comprehensive report
+if ($page === 'assessment-report') {
+    assessment_render_comprehensive_report($studentId);
+    exit;
+}
+
 $typeMap = [
     'test-big5' => 'big5',
     'test-caas' => 'caas',
@@ -26,7 +88,7 @@ if ($testType !== null && is_post()) {
         } else {
             flash('success', 'Đã lưu kết quả chuẩn hóa. Bạn có thể đối chiếu với trải nghiệm thực tế.');
         }
-        redirect('index.php?page=assessment-report');
+        redirect('index.php?page=assessment-result&type=' . $testType);
     } catch (InvalidArgumentException $error) {
         http_response_code(422);
         $testError = $error->getMessage();
@@ -77,7 +139,12 @@ require __DIR__.'/header.php';
 
 <div class="container py-8">
 
-<?php if ($page === 'assessment-hub'): ?>
+<?php if ($page === 'assessment-hub'): 
+    $journeyProgress = assessment_get_journey_progress($studentId);
+?>
+  <!-- 5-Step Journey Tracker -->
+  <?=assessment_render_journey_tracker($journeyProgress, '')?>
+
   <!-- 6 Student-Friendly Assessment Cards Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
     <?php foreach ([
@@ -87,9 +154,10 @@ require __DIR__.'/header.php';
         'desc' => 'Khám phá 6 nhóm sở thích nghề nghiệp và mức độ tự tin của bạn, từ đó gợi ý danh sách ngành nghề tương đồng nhất.',
         'duration' => '⏱ 5–7 phút (30 câu)',
         'route' => 'assessment',
+        'result_route' => 'assessment-result&type=holland',
         'done' => $latestHolland && !empty($latestHolland['constraint_answers']),
         'result_text' => $latestHolland ? 'Mã ' . $latestHolland['result_code'] : '',
-        'tag' => 'Bài đánh giá cốt lõi',
+        'tag' => 'Bài 01/05 · Sở thích',
         'icon' => '🧭'
       ],
       [
@@ -98,9 +166,10 @@ require __DIR__.'/header.php';
         'desc' => 'Nhận diện 5 nét tính cách cốt lõi: Cởi mở, Chỉn chu, Hòa đồng, Dễ chịu và Cách bạn đối diện với áp lực công việc.',
         'duration' => '⏱ 4–5 phút (20 câu)',
         'route' => 'test-big5',
+        'result_route' => 'assessment-result&type=big5',
         'done' => isset($latestPsych['big5']),
         'result_text' => isset($latestPsych['big5']) ? $latestPsych['big5']['result_code'] : '',
-        'tag' => 'Đo lường tính cách',
+        'tag' => 'Bài 02/05 · Tính cách',
         'icon' => '🧩'
       ],
       [
@@ -109,21 +178,11 @@ require __DIR__.'/header.php';
         'desc' => 'Đo lường mức độ quan tâm tương lai, tính chủ động, sự tò mò và lòng tự tin khi bạn đứng trước các quyết định chọn trường, chọn nghề.',
         'duration' => '⏱ 2–3 phút (12 câu)',
         'route' => 'test-caas',
+        'result_route' => 'assessment-result&type=caas',
         'done' => isset($latestPsych['caas']),
         'result_text' => isset($latestPsych['caas']) ? $latestPsych['caas']['result_code'] : '',
-        'tag' => 'Độ sẵn sàng',
+        'tag' => 'Bài 03/05 · Thích ứng',
         'icon' => '🌱'
-      ],
-      [
-        'title' => 'Góc nhìn 360° từ người xung quanh',
-        'sub' => 'Gương soi SOKA 360°',
-        'desc' => 'Gửi liên kết ẩn danh để bạn bè, thầy cô hoặc người thân chia sẻ cảm nhận thực tế về điểm mạnh và tiềm năng của bạn.',
-        'duration' => '⏱ 2 phút gửi liên kết',
-        'route' => 'soka-mirror',
-        'done' => $sokaRespCount > 0,
-        'result_text' => $sokaRespCount > 0 ? $sokaRespCount . ' người đã nhận xét' : '',
-        'tag' => 'Góc nhìn khách quan',
-        'icon' => '🪞'
       ],
       [
         'title' => 'Xu hướng tương tác & Ra quyết định',
@@ -131,9 +190,10 @@ require __DIR__.'/header.php';
         'desc' => 'Tìm hiểu phong cách nạp năng lượng, cách tiếp nhận dữ liệu và thói quen ra quyết định trong học tập và sinh hoạt hàng ngày.',
         'duration' => '⏱ 3 phút (12 câu)',
         'route' => 'test-mbti',
+        'result_route' => 'assessment-result&type=mbti',
         'done' => isset($latestPsych['mbti']),
         'result_text' => isset($latestPsych['mbti']) ? $latestPsych['mbti']['result_code'] : '',
-        'tag' => 'Tự phản tư',
+        'tag' => 'Bài 04/05 · Quyết định',
         'icon' => '💡'
       ],
       [
@@ -142,10 +202,23 @@ require __DIR__.'/header.php';
         'desc' => 'Lắng nghe cách bạn nhận diện cảm xúc cá nhân, giữ vững động lực vượt khó và thấu cảm khi làm việc nhóm.',
         'duration' => '⏱ 2 phút (10 tình huống)',
         'route' => 'test-eq',
+        'result_route' => 'assessment-result&type=eq',
         'done' => isset($latestPsych['eq']),
         'result_text' => isset($latestPsych['eq']) ? 'Đã hoàn thành' : '',
-        'tag' => 'Tự phản tư',
+        'tag' => 'Bài 05/05 · Cảm xúc',
         'icon' => '❤️'
+      ],
+      [
+        'title' => 'Góc nhìn 360° từ người xung quanh',
+        'sub' => 'Gương soi SOKA 360°',
+        'desc' => 'Gửi liên kết ẩn danh để bạn bè, thầy cô hoặc người thân chia sẻ cảm nhận thực tế về điểm mạnh và tiềm năng của bạn.',
+        'duration' => '⏱ 2 phút gửi liên kết',
+        'route' => 'soka-mirror',
+        'result_route' => 'soka-mirror',
+        'done' => $sokaRespCount > 0,
+        'result_text' => $sokaRespCount > 0 ? $sokaRespCount . ' người đã nhận xét' : '',
+        'tag' => 'Khảo sát bổ trợ · 360°',
+        'icon' => '🪞'
       ]
     ] as $card): ?>
       <div class="card p-5 flex flex-col justify-between hover:border-brand-300 transition-all">
@@ -168,11 +241,18 @@ require __DIR__.'/header.php';
           </p>
         </div>
 
-        <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+        <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
           <span class="text-xs text-slate-500 font-medium"><?=e($card['duration'])?></span>
-          <a class="btn <?=$card['done']?'btn-outline':'btn-primary'?> btn-sm shrink-0 whitespace-nowrap" href="<?=url('index.php?page='.$card['route'])?>">
-            <?=$card['done'] ? 'Xem / Làm lại' : 'Bắt đầu làm bài'?> →
-          </a>
+          <div class="flex items-center gap-1.5">
+            <?php if ($card['done'] && !empty($card['result_route'])): ?>
+              <a class="btn btn-outline btn-sm shrink-0 whitespace-nowrap text-brand-600" href="<?=url('index.php?page='.$card['result_route'])?>">
+                Xem kết quả →
+              </a>
+            <?php endif; ?>
+            <a class="btn <?=$card['done']?'btn-outline':'btn-primary'?> btn-sm shrink-0 whitespace-nowrap" href="<?=url('index.php?page='.$card['route'])?>">
+              <?=$card['done'] ? 'Làm lại' : 'Bắt đầu'?> →
+            </a>
+          </div>
         </div>
       </div>
     <?php endforeach; ?>
