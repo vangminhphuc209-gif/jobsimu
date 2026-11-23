@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/journey-flags.php';
+require_once __DIR__ . '/journey-migrations.php';
+
 /**
  * Step 2 / 4: Redesigned Public Lookup ("Tra cứu")
  * Three focused entry points: Ngành học, Trường đào tạo, Tổ hợp xét tuyển.
@@ -873,12 +876,23 @@ function lookup_render_page(): void
     $activeTab = in_array($tab, $validTabs, true) ? $tab : '';
     $meta = $activeTab !== '' ? lookup_get_filter_metadata() : null;
     $initialResult = null;
-    if ($activeTab === 'majors') {
-        $initialResult = lookup_query_majors($_GET);
-    } elseif ($activeTab === 'schools') {
-        $initialResult = lookup_query_schools($_GET);
-    } elseif ($activeTab === 'combinations') {
-        $initialResult = lookup_query_combinations($_GET);
+    try {
+        if ($activeTab === 'majors') {
+            $initialResult = lookup_query_majors($_GET);
+        } elseif ($activeTab === 'schools') {
+            $initialResult = lookup_query_schools($_GET);
+        } elseif ($activeTab === 'combinations') {
+            $initialResult = lookup_query_combinations($_GET);
+        }
+    } catch (Throwable $e) {
+        $initialResult = [
+            'items' => [],
+            'total' => 0,
+            'page' => 1,
+            'per_page' => 12,
+            'total_pages' => 1,
+            'error' => 'Không thể tải dữ liệu tra cứu lúc này. Vui lòng thử lại sau.',
+        ];
     }
 
     $tabTitles = [

@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/journey-flags.php';
+require_once __DIR__ . '/journey-migrations.php';
+require_once __DIR__ . '/compare.php';
+
 /**
  * Step 4 / 4: Month/Year Action Plan ("Lập kế hoạch")
  * - Accepts confirmed primary/backup choices & research notes via comparison_id.

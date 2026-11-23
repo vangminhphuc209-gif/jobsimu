@@ -93,6 +93,7 @@ try {
 
 require_once ROOT_PATH . '/app/functions.php';
 require_once ROOT_PATH . '/app/journey-flags.php';
+require_once ROOT_PATH . '/app/journey-migrations.php';
 
 if (!function_exists('bootstrap_run_migrations_if_needed')) {
     function bootstrap_run_migrations_if_needed(): void {

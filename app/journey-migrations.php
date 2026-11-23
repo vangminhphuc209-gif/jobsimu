@@ -11,50 +11,57 @@ declare(strict_types=1);
  * Safe on both MySQL/MariaDB and SQLite. Never fabricates scores or unverified data.
  */
 
-function journey_canonical_combinations(): array
-{
-    return [
-        ['A00', 'Toán, Vật lý, Hóa học', ['Toán', 'Vật lý', 'Hóa học'], 'Khoa học tự nhiên', 1],
-        ['A01', 'Toán, Vật lý, Tiếng Anh', ['Toán', 'Vật lý', 'Tiếng Anh'], 'Khoa học tự nhiên & Ngoại ngữ', 2],
-        ['B00', 'Toán, Hóa học, Sinh học', ['Toán', 'Hóa học', 'Sinh học'], 'Y sinh & Khoa học sự sống', 3],
-        ['C00', 'Ngữ văn, Lịch sử, Địa lý', ['Ngữ văn', 'Lịch sử', 'Địa lý'], 'Khoa học xã hội', 4],
-        ['C01', 'Ngữ văn, Toán, Vật lý', ['Ngữ văn', 'Toán', 'Vật lý'], 'Tổng hợp', 5],
-        ['D01', 'Ngữ văn, Toán, Tiếng Anh', ['Ngữ văn', 'Toán', 'Tiếng Anh'], 'Ngoại ngữ & Kinh tế - Xã hội', 6],
-        ['D07', 'Toán, Hóa học, Tiếng Anh', ['Toán', 'Hóa học', 'Tiếng Anh'], 'Khoa học tự nhiên & Ngoại ngữ', 7],
-        ['D14', 'Ngữ văn, Lịch sử, Tiếng Anh', ['Ngữ văn', 'Lịch sử', 'Tiếng Anh'], 'Khoa học xã hội & Ngoại ngữ', 8],
-        ['D15', 'Ngữ văn, Địa lý, Tiếng Anh', ['Ngữ văn', 'Địa lý', 'Tiếng Anh'], 'Khoa học xã hội & Ngoại ngữ', 9],
-        ['K01', 'Toán, Ngữ văn và 1 môn Tự nhiên/Tin học/Công nghệ (Bách khoa)', ['Toán', 'Ngữ văn', 'Vật lý', 'Hóa học', 'Sinh học', 'Tin học', 'Công nghệ'], 'Tổ hợp kỹ thuật', 10],
-        ['V00', 'Toán, Vật lý, Vẽ mỹ thuật', ['Toán', 'Vật lý', 'Vẽ mỹ thuật'], 'Kiến trúc & Nghệ thuật', 11],
-        ['H00', 'Ngữ văn, Năng khiếu vẽ 1, Năng khiếu vẽ 2', ['Ngữ văn', 'Mỹ thuật', 'Vẽ mỹ thuật'], 'Thiết kế & Nghệ thuật', 12],
-        ['X06', 'Toán, Vật lý, Tin học', ['Toán', 'Vật lý', 'Tin học'], 'Công nghệ thông tin', 13],
-        ['X26', 'Toán, Tiếng Anh, Tin học', ['Toán', 'Tiếng Anh', 'Tin học'], 'Công nghệ thông tin & Ngoại ngữ', 14],
-    ];
+if (!function_exists('journey_canonical_combinations')) {
+    function journey_canonical_combinations(): array
+    {
+        return [
+            ['A00', 'Toán, Vật lý, Hóa học', ['Toán', 'Vật lý', 'Hóa học'], 'Khoa học tự nhiên', 1],
+            ['A01', 'Toán, Vật lý, Tiếng Anh', ['Toán', 'Vật lý', 'Tiếng Anh'], 'Khoa học tự nhiên & Ngoại ngữ', 2],
+            ['B00', 'Toán, Hóa học, Sinh học', ['Toán', 'Hóa học', 'Sinh học'], 'Y sinh & Khoa học sự sống', 3],
+            ['C00', 'Ngữ văn, Lịch sử, Địa lý', ['Ngữ văn', 'Lịch sử', 'Địa lý'], 'Khoa học xã hội', 4],
+            ['C01', 'Ngữ văn, Toán, Vật lý', ['Ngữ văn', 'Toán', 'Vật lý'], 'Tổng hợp', 5],
+            ['D01', 'Ngữ văn, Toán, Tiếng Anh', ['Ngữ văn', 'Toán', 'Tiếng Anh'], 'Ngoại ngữ & Kinh tế - Xã hội', 6],
+            ['D07', 'Toán, Hóa học, Tiếng Anh', ['Toán', 'Hóa học', 'Tiếng Anh'], 'Khoa học tự nhiên & Ngoại ngữ', 7],
+            ['D14', 'Ngữ văn, Lịch sử, Tiếng Anh', ['Ngữ văn', 'Lịch sử', 'Tiếng Anh'], 'Khoa học xã hội & Ngoại ngữ', 8],
+            ['D15', 'Ngữ văn, Địa lý, Tiếng Anh', ['Ngữ văn', 'Địa lý', 'Tiếng Anh'], 'Khoa học xã hội & Ngoại ngữ', 9],
+            ['K01', 'Toán, Ngữ văn và 1 môn Tự nhiên/Tin học/Công nghệ (Bách khoa)', ['Toán', 'Ngữ văn', 'Vật lý', 'Hóa học', 'Sinh học', 'Tin học', 'Công nghệ'], 'Tổ hợp kỹ thuật', 10],
+            ['V00', 'Toán, Vật lý, Vẽ mỹ thuật', ['Toán', 'Vật lý', 'Vẽ mỹ thuật'], 'Kiến trúc & Nghệ thuật', 11],
+            ['H00', 'Ngữ văn, Năng khiếu vẽ 1, Năng khiếu vẽ 2', ['Ngữ văn', 'Mỹ thuật', 'Vẽ mỹ thuật'], 'Thiết kế & Nghệ thuật', 12],
+            ['X06', 'Toán, Vật lý, Tin học', ['Toán', 'Vật lý', 'Tin học'], 'Công nghệ thông tin', 13],
+            ['X26', 'Toán, Tiếng Anh, Tin học', ['Toán', 'Tiếng Anh', 'Tin học'], 'Công nghệ thông tin & Ngoại ngữ', 14],
+        ];
+    }
 }
 
-function journey_strip_accents(string $str): string
-{
-    $str = mb_strtolower(trim($str), 'UTF-8');
-    $map = [
-        'à'=>'a','á'=>'a','ạ'=>'a','ả'=>'a','ã'=>'a','â'=>'a','ầ'=>'a','ấ'=>'a','ậ'=>'a','ẩ'=>'a','ẫ'=>'a','ă'=>'a','ằ'=>'a','ắ'=>'a','ặ'=>'a','ẳ'=>'a','ẵ'=>'a',
-        'è'=>'e','é'=>'e','ẹ'=>'e','ẻ'=>'e','ẽ'=>'e','ê'=>'e','ề'=>'e','ế'=>'e','ệ'=>'e','ể'=>'e','ễ'=>'e',
-        'ì'=>'i','í'=>'i','ị'=>'i','ỉ'=>'i','ĩ'=>'i',
-        'ò'=>'o','ó'=>'o','ọ'=>'o','ỏ'=>'o','õ'=>'o','ô'=>'o','ồ'=>'o','ố'=>'o','ộ'=>'o','ổ'=>'o','ỗ'=>'o','ơ'=>'o','ờ'=>'o','ớ'=>'o','ợ'=>'o','ở'=>'o','ỡ'=>'o',
-        'ù'=>'u','ú'=>'u','ụ'=>'u','ủ'=>'u','ũ'=>'u','ư'=>'u','ừ'=>'u','ứ'=>'u','ự'=>'u','ử'=>'u','ữ'=>'u',
-        'ỳ'=>'y','ý'=>'y','ỵ'=>'y','ỷ'=>'y','ỹ'=>'y',
-        'đ'=>'d',
-    ];
-    return strtr($str, $map);
+if (!function_exists('journey_strip_accents')) {
+    function journey_strip_accents(string $str): string
+    {
+        $str = mb_strtolower(trim($str), 'UTF-8');
+        $map = [
+            'à'=>'a','á'=>'a','ạ'=>'a','ả'=>'a','ã'=>'a','â'=>'a','ầ'=>'a','ấ'=>'a','ậ'=>'a','ẩ'=>'a','ẫ'=>'a','ă'=>'a','ằ'=>'a','ắ'=>'a','ặ'=>'a','ẳ'=>'a','ẵ'=>'a',
+            'è'=>'e','é'=>'e','ẹ'=>'e','ẻ'=>'e','ẽ'=>'e','ê'=>'e','ề'=>'e','ế'=>'e','ệ'=>'e','ể'=>'e','ễ'=>'e',
+            'ì'=>'i','í'=>'i','ị'=>'i','ỉ'=>'i','ĩ'=>'i',
+            'ò'=>'o','ó'=>'o','ọ'=>'o','ỏ'=>'o','õ'=>'o','ô'=>'o','ồ'=>'o','ố'=>'o','ộ'=>'o','ổ'=>'o','ỗ'=>'o','ơ'=>'o','ờ'=>'o','ớ'=>'o','ợ'=>'o','ở'=>'o','ỡ'=>'o',
+            'ù'=>'u','ú'=>'u','ụ'=>'u','ủ'=>'u','ũ'=>'u','ư'=>'u','ừ'=>'u','ứ'=>'u','ự'=>'u','ử'=>'u','ữ'=>'u',
+            'ỳ'=>'y','ý'=>'y','ỵ'=>'y','ỷ'=>'y','ỹ'=>'y',
+            'đ'=>'d',
+        ];
+        return strtr($str, $map);
+    }
 }
 
-function journey_uuid4(): string
-{
-    $bytes = random_bytes(16);
-    $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
-    $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
-    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
+if (!function_exists('journey_uuid4')) {
+    function journey_uuid4(): string
+    {
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
+    }
 }
 
-function journey_run_migrations(?PDO $pdo = null, bool $force = false): void
+if (!function_exists('journey_run_migrations')) {
+    function journey_run_migrations(?PDO $pdo = null, bool $force = false): void
 {
     static $done = [];
     $conn = $pdo ?? db();
@@ -324,4 +331,5 @@ function journey_run_migrations(?PDO $pdo = null, bool $force = false): void
     }
 
     $done[$key] = true;
+}
 }

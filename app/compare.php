@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/journey-flags.php';
+require_once __DIR__ . '/journey-migrations.php';
+
 /**
  * Step 3 / 4: "Hiểu mình cần gì" (20-question weighted decision comparison).
  * - Question bank, weights (total = 100), and version (compare_v1) separated from UI.
