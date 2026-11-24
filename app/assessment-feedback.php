@@ -1072,12 +1072,15 @@ function assessment_render_single_result(int $userId, string $type, ?int $assess
     ?>
     <section class="page-head bg-slate-900 text-white py-8">
         <div class="container">
-            <nav class="breadcrumb mb-3 text-slate-300 text-xs" aria-label="Đường dẫn trang">
-                <a href="<?=url('index.php?page=home')?>" class="hover:text-white">Trang chủ</a>
-                <span class="breadcrumb-sep">/</span>
-                <a href="<?=url('index.php?page=assessment-hub')?>" class="hover:text-white">Hiểu bản thân</a>
-                <span class="breadcrumb-sep">/</span>
-                <span aria-current="page" class="text-white font-semibold">Kết quả <?=$step['short_name']?></span>
+            <nav class="breadcrumb mb-3 text-slate-300 text-xs flex items-center justify-between" aria-label="Đường dẫn trang">
+                <div>
+                    <a href="<?=url('index.php?page=home')?>" class="hover:text-white">Trang chủ</a>
+                    <span class="breadcrumb-sep">/</span>
+                    <a href="<?=url('index.php?page=assessment-hub')?>" class="hover:text-white">Hiểu bản thân</a>
+                    <span class="breadcrumb-sep">/</span>
+                    <span aria-current="page" class="text-white font-semibold">Kết quả <?=$step['short_name']?></span>
+                </div>
+                <span class="text-[11px] text-brand-300 font-medium">Gợi ý từ hồ sơ hiện tại</span>
             </nav>
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -1114,6 +1117,15 @@ function assessment_render_single_result(int $userId, string $type, ?int $assess
 
         <!-- MỤC A: TIẾN ĐỘ THỰC TẾ (X/5 BÀI) -->
         <?=assessment_render_journey_tracker($progress, $type)?>
+
+        <?php if ($type === 'holland' && ($record['ai_status'] ?? '') !== 'completed'): ?>
+            <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 flex items-start gap-3">
+                <span class="text-lg">⚠️</span>
+                <div>
+                    <strong>Cập nhật phân tích AI:</strong> <?=e(($record['ai_status'] ?? '') === 'pending' ? 'Phần tư vấn AI cần được tạo lại sau khi hồ sơ thay đổi.' : 'Phần tư vấn AI chưa hoàn tất; bạn có thể thử lại.')?>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <!-- MỤC B: BÀI NÀY GIÚP TÌM HIỂU ĐIỀU GÌ -->
         <section class="card p-6 border border-slate-200 shadow-sm" aria-labelledby="sec-purpose-title">
@@ -1636,14 +1648,14 @@ function assessment_render_comprehensive_report(int $userId): void
             <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 flex items-start gap-3">
                 <span class="text-lg">ℹ️</span>
                 <div>
-                    <strong>Lưu ý về tính hoàn thiện của báo cáo:</strong> Bạn đã hoàn thành <?=$completedCount?>/5 bài đánh giá. Báo cáo dưới đây được tổng hợp từ những bài bạn đã làm; các phần còn thiếu sẽ không bị tự ý suy đoán. Để có bức tranh đầy đủ và mở khóa toàn bộ gợi ý đối chiếu tuyển sinh, bạn nên hoàn thành các bài còn lại.
+                    <strong>Lưu ý về tính hoàn thiện của báo cáo:</strong> Bạn đã hoàn thành <?=$completedCount?>/5 bài đánh giá. Các bài bạn đã làm vẫn được lưu và trình bày bên dưới. Phần xếp hạng nghề hiện cần kết quả Holland cùng bước điều kiện học tập; thông tin còn thiếu không bị tính thành điểm thấp. Để có bức tranh đầy đủ và mở khóa toàn bộ gợi ý đối chiếu tuyển sinh, bạn nên hoàn thành các bài còn lại.
                 </div>
             </div>
         <?php else: ?>
             <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-start gap-3">
                 <span class="text-lg">🎉</span>
                 <div>
-                    <strong>Báo cáo tổng hợp đã hoàn thiện:</strong> Bạn đã hoàn thành đủ 5/5 bài đánh giá chuẩn hóa. Dữ liệu dưới đây tích hợp đầy đủ 5 chiều tâm lý với danh mục 358 ngành đào tạo đại học và cơ sở dữ liệu điểm chuẩn tuyển sinh.
+                    <strong>Báo cáo tổng hợp đã hoàn thiện:</strong> Bạn đã hoàn thành đủ 5/5 bài đánh giá chuẩn hóa. Các bài bạn đã làm vẫn được lưu và tích hợp đầy đủ 5 chiều tâm lý với danh mục 358 ngành đào tạo đại học và cơ sở dữ liệu điểm chuẩn tuyển sinh.
                 </div>
             </div>
         <?php endif; ?>
