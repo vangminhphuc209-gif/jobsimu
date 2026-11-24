@@ -55,10 +55,10 @@ function admissions_p22_notice_seed(): int {
     $find=$db->prepare('SELECT id FROM institutions WHERE code=?');
     foreach($notices as $notice){
       [$code,$year,$key,$track,$type,$title,$desc,$start,$end,$url]=$notice;
-      $find->execute([$code]);$schoolId=$find->fetchColumn();
+      $find->execute([$code]);$schoolId=$find->fetchColumn();$find->closeCursor();
       if(!$schoolId)continue; // Do not create an unsourced institution for notices.
-      $exists->execute([$schoolId,$year,$key]);
-      if($exists->fetchColumn())continue;
+      $exists->execute([$schoolId,$year,$key]);$ex=$exists->fetchColumn();$exists->closeCursor();
+      if($ex)continue;
       $insert->execute([$schoolId,$year,$key,$track,$type,$title,$desc,$start,$end,$url,'2026-11-09']);$created++;
     }
     return $created;

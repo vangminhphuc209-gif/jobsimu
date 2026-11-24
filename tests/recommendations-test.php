@@ -4,7 +4,11 @@ define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/app/functions.php';
 require ROOT_PATH.'/app/psychometrics.php';
 
-$dsn = getenv('RECOMMENDATIONS_TEST_DSN') ?: 'sqlite::memory:';
+$dsn = getenv('RECOMMENDATIONS_TEST_DSN') ?: (in_array('sqlite', PDO::getAvailableDrivers(), true) ? 'sqlite::memory:' : null);
+if ($dsn === null) {
+    echo "SKIP: pdo_sqlite unavailable and RECOMMENDATIONS_TEST_DSN not set.\n";
+    exit(0);
+}
 $pdo = new PDO($dsn, getenv('TEST_DB_USER') ?: null, getenv('TEST_DB_PASS') ?: null,
     [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
 $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';

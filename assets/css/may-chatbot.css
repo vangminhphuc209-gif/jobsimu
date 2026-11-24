@@ -1,32 +1,33 @@
-/* assets/css/may-chatbot.css - Mây Career Companion Chatbot Styles */
+/* assets/css/may-chatbot.css - Trợ lý La Bàn Chatbot Styles */
 
 /* 1. Floating Trigger Button */
 .may-chat-trigger {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 20px;
+  right: 20px;
   z-index: 9990;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px 10px 14px;
-  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  padding: 10px 16px 10px 13px;
+  background: #6D28D9;
   color: #ffffff;
-  border: none;
+  border: 1px solid #5B21B6;
   border-radius: 9999px;
-  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4), 0 8px 10px -6px rgba(79, 70, 229, 0.2);
+  box-shadow: 0 8px 20px -6px rgba(109, 40, 217, 0.35), 0 2px 6px rgba(15, 23, 42, 0.08);
   cursor: pointer;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   user-select: none;
   outline-offset: 4px;
 }
 
 .may-chat-trigger:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 14px 28px -5px rgba(79, 70, 229, 0.5), 0 10px 10px -5px rgba(79, 70, 229, 0.3);
+  background: #5B21B6;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -6px rgba(109, 40, 217, 0.42), 0 4px 10px rgba(15, 23, 42, 0.1);
 }
 
 .may-chat-trigger:active {
@@ -34,10 +35,9 @@
 }
 
 .may-trigger-icon {
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   line-height: 1;
   display: inline-block;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
 }
 
 .may-trigger-text {
@@ -45,7 +45,7 @@
 }
 
 .may-trigger-badge {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.18);
   padding: 2px 7px;
   border-radius: 9999px;
   font-size: 0.6875rem;
@@ -57,12 +57,12 @@
 /* 2. Chat Window Modal */
 .may-chat-window {
   position: fixed;
-  bottom: 84px;
-  right: 24px;
+  bottom: 78px;
+  right: 20px;
   width: 380px;
   max-width: calc(100vw - 32px);
   height: 540px;
-  max-height: calc(100vh - 110px);
+  max-height: calc(100vh - 104px);
   z-index: 9995;
   background: #ffffff;
   border-radius: 18px;
@@ -87,7 +87,7 @@
 /* 3. Header */
 .may-chat-header {
   padding: 14px 16px;
-  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+  background: #6D28D9;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -183,7 +183,7 @@
 }
 
 .may-privacy-bar input[type="checkbox"] {
-  accent-color: #4F46E5;
+  accent-color: #6D28D9;
   cursor: pointer;
 }
 
@@ -233,8 +233,8 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #eef2ff;
-  color: #4f46e5;
+  background: #f5f3ff;
+  color: #6D28D9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -252,13 +252,14 @@
 }
 
 .may-message.is-ai .may-msg-bubble {
-  background: #f1f5f9;
+  background: #f8fafc;
   color: #0f172a;
+  border: 1px solid #e2e8f0;
   border-bottom-left-radius: 4px;
 }
 
 .may-message.is-user .may-msg-bubble {
-  background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+  background: #6D28D9;
   color: #ffffff;
   border-bottom-right-radius: 4px;
 }
@@ -303,8 +304,8 @@
   gap: 8px;
   padding: 8px 12px;
   background: #ffffff;
-  border: 1.5px solid #c7d2fe;
-  color: #4338ca;
+  border: 1.5px solid #ddd6fe;
+  color: #5b21b6;
   border-radius: 10px;
   text-decoration: none;
   font-size: 0.8125rem;
@@ -314,9 +315,9 @@
 }
 
 .may-action-btn:hover {
-  background: #eef2ff;
-  border-color: #818cf8;
-  color: #312e81;
+  background: #f5f3ff;
+  border-color: #a78bfa;
+  color: #4c1d95;
   transform: translateX(2px);
 }
 
@@ -333,7 +334,7 @@
   background: #ffffff;
   border-top: 1px solid #f1f5f9;
   flex-shrink: 0;
-  max-height: 90px;
+  max-height: 98px;
   overflow-y: auto;
 }
 
@@ -347,24 +348,25 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease;
-  white-space: nowrap;
+  text-align: left;
+  max-width: 100%;
 }
 
 .may-chip:hover {
-  background: #eef2ff;
-  color: #4338ca;
-  border-color: #c7d2fe;
+  background: #f5f3ff;
+  color: #5b21b6;
+  border-color: #ddd6fe;
 }
 
 .may-chip.is-contextual {
   background: #faf5ff;
-  color: #7e22ce;
+  color: #6d28d9;
   border-color: #e9d5ff;
 }
 
 .may-chip.is-contextual:hover {
   background: #f3e8ff;
-  color: #6b21a8;
+  color: #5b21b6;
   border-color: #d8b4fe;
 }
 
@@ -449,15 +451,15 @@
 }
 
 .may-textarea:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: #6D28D9;
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.14);
 }
 
 .may-send-btn {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: #4F46E5;
+  background: #6D28D9;
   color: #ffffff;
   border: none;
   display: flex;
@@ -470,8 +472,8 @@
 }
 
 .may-send-btn:hover:not(:disabled) {
-  background: #4338ca;
-  transform: scale(1.05);
+  background: #5B21B6;
+  transform: scale(1.04);
 }
 
 .may-send-btn:disabled {
@@ -483,11 +485,19 @@
 
 /* Mobile Safe-Area & Viewport Adjustments */
 @media (max-width: 640px) {
+  body {
+    padding-bottom: 72px;
+  }
+
   .may-chat-trigger {
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    right: 16px;
-    padding: 8px 14px 8px 10px;
-    font-size: 0.875rem;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    right: 12px;
+    padding: 8px 12px 8px 10px;
+    font-size: 0.8125rem;
+  }
+
+  .may-trigger-badge {
+    display: none;
   }
 
   .may-chat-window {
@@ -506,5 +516,12 @@
 
   .may-chat-header {
     padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  }
+}
+
+@media print {
+  .may-chat-trigger,
+  .may-chat-window {
+    display: none !important;
   }
 }

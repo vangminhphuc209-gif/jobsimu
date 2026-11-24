@@ -59,4 +59,33 @@ foreach (['big5', 'caas'] as $sciType) {
     check($resRushed['validity_flag'] === 'rushed', "$sciType 5-second completion must flag rushed");
 }
 
-echo "Psychometric scoring checks passed (MBTI, EQ, Mini-IPIP Big Five, CAAS, and Validity Guards).\n";
+// 4. Holland SCCT Dual-Matrix, zero variance protection, and neutral quadrant labeling
+require_once dirname(__DIR__) . '/app/functions.php';
+$dummyQuestions = [];
+$rTypes = ['R','I','A','S','E','C'];
+for ($i = 1; $i <= 30; $i++) {
+    $t = $rTypes[($i - 1) % 6];
+    $dummyQuestions[] = ['id' => $i, 'riasec_type' => $t, 'sort_order' => $i, 'content' => "Câu $i"];
+}
+
+// 4a. Zero-variance answers (all 3s)
+$allThree = array_fill_keys(range(1, 30), 3);
+$sciZero = score_assessment_scientific($allThree, $dummyQuestions, [], 60);
+check(isset($sciZero['ipsative_scores']), 'Ipsative scores returned');
+check(isset($sciZero['ipsative_z_scores']), 'Z-scores returned');
+foreach ($sciZero['ipsative_z_scores'] as $t => $z) {
+    check($z === 0.0, "Zero-variance Z-score for $t must be 0.0, got $z");
+}
+foreach ($sciZero['ipsative_scores'] as $t => $score) {
+    check($score === 50, "Zero-variance ipsative score for $t must be 50, got $score");
+}
+
+// 4b. Test neutral SCCT quadrant naming (no 'Burnout' or negative clinical labels)
+$highEffLowInt = ['R' => 100, 'I' => 10, 'A' => 10, 'S' => 10, 'E' => 10, 'C' => 10]; // High efficacy, low interest
+$sciSCCT = score_assessment_scientific($allThree, $dummyQuestions, ['R' => 90], 60);
+foreach ($sciSCCT['scct_quadrants'] as $t => $qData) {
+    check(!str_contains($qData['label'], 'Burnout'), "SCCT quadrant label must not contain 'Burnout'");
+    check(!str_contains($qData['desc'], 'kiệt sức'), "SCCT quadrant desc must not contain 'kiệt sức'");
+}
+
+echo "Psychometric scoring checks passed (MBTI, EQ, Mini-IPIP Big Five, CAAS, SCCT neutral labeling, and Validity Guards).\n";

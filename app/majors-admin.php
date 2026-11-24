@@ -19,6 +19,16 @@ if (is_post()) {
     $majorIdRedirect = trim((string)($_POST['major_id'] ?? ''));
 
     try {
+        if ($intent === 'seed_catalog') {
+            $ok = training_majors_seed($db);
+            if ($ok) {
+                flash('success', '✓ Đã tự động nạp thành công 358 ngành đào tạo, 23 lĩnh vực và hơn 2.700 dữ liệu tuyển sinh.');
+            } else {
+                flash('error', '✗ Không thể nạp tự động danh mục ngành. Vui lòng kiểm tra file database/seeds/training_majors_data.sql.');
+            }
+            redirect('admin.php?section=majors-review');
+        }
+
         if ($intent === 'save_description') {
             $majorId = trim((string)($_POST['major_id'] ?? ''));
             $stmt = $db->prepare('SELECT id, is_editorially_locked FROM training_majors WHERE id = ?');
@@ -428,12 +438,16 @@ $buildAdminQueueUrl = static function (array $overrides = []) use ($q, $issueFil
 };
 
 $queueStatusMeta = static function (string $st): array {
-    return match ($st) {
-        'verified' => ['label' => 'Đã đóng hết vấn đề', 'tone' => 'on'],
-        'in_review' => ['label' => 'Đang xử lý dở', 'tone' => 'off'],
-        'deferred' => ['label' => 'Tạm hoãn còn lại', 'tone' => 'off'],
-        default => ['label' => 'Chưa xử lý', 'tone' => 'off'],
-    };
+    switch ($st) {
+        case 'verified':
+            return ['label' => 'Đã đóng hết vấn đề', 'tone' => 'on'];
+        case 'in_review':
+            return ['label' => 'Đang xử lý dở', 'tone' => 'off'];
+        case 'deferred':
+            return ['label' => 'Tạm hoãn còn lại', 'tone' => 'off'];
+        default:
+            return ['label' => 'Chưa xử lý', 'tone' => 'off'];
+    }
 };
 ?>
 <!doctype html>
@@ -474,6 +488,20 @@ $queueStatusMeta = static function (string $st): array {
         <?php foreach (pull_flashes() as $f): ?>
             <div class="alert alert-<?= e($f['type']) ?>" role="alert"><?= e($f['message']) ?></div>
         <?php endforeach; ?>
+
+        <?php if ($stats['majors'] === 0): ?>
+            <div class="card" style="margin-bottom:20px;border-left:4px solid #f59e0b;background:#fffbeb;padding:16px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+                <div>
+                    <h3 style="color:#b45309;margin:0 0 4px;font-size:1.05rem">⚠️ Danh mục 358 ngành học chưa được nạp vào cơ sở dữ liệu này</h3>
+                    <p style="color:#78350f;margin:0;font-size:0.875rem">Cơ sở dữ liệu hiện tại chưa có dữ liệu danh mục ngành đào tạo chuẩn Bộ GD&ĐT. Nhấn nút bên cạnh để nạp toàn bộ 358 ngành, 23 lĩnh vực, 76 nhóm ngành và 2.712 liên kết tuyển sinh ngay lập tức.</p>
+                </div>
+                <form method="post">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="intent" value="seed_catalog">
+                    <button type="submit" class="btn btn-primary" style="white-space:nowrap;padding:10px 20px">🚀 Nạp 358 ngành ngay</button>
+                </form>
+            </div>
+        <?php endif; ?>
 
         <div class="admin-stats">
             <div class="card">

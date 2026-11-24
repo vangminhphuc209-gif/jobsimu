@@ -73,6 +73,7 @@ function training_majors_migrate(?PDO $pdo = null): void
 {
     $db = $pdo ?? db();
     if (training_majors_tables_ready($db) && training_majors_columns_ready($db)) {
+        training_majors_seed($db);
         return;
     }
     $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -100,6 +101,70 @@ function training_majors_migrate(?PDO $pdo = null): void
     }
 
     training_majors_ensure_columns($db);
+    training_majors_seed($db);
+}
+
+/**
+ * Automatically seeds 358 training majors and catalog tables from SQL dump
+ * if the table is currently empty (< 300 records).
+ */
+function training_majors_seed(?PDO $pdo = null): bool
+{
+    $db = $pdo ?? db();
+    if (!training_majors_tables_ready($db)) {
+        return false;
+    }
+    try {
+        $count = (int)$db->query('SELECT COUNT(*) FROM training_majors')->fetchColumn();
+        if ($count >= 300) {
+            return true;
+        }
+    } catch (Throwable $e) {
+        return false;
+    }
+
+    $seedFile = ROOT_PATH . '/database/seeds/training_majors_data.sql';
+    if (!is_file($seedFile) || !is_readable($seedFile)) {
+        return false;
+    }
+
+    $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if ($driver !== 'mysql') {
+        return false;
+    }
+
+    $sql = file_get_contents($seedFile);
+    if ($sql === false || trim($sql) === '') {
+        return false;
+    }
+
+    $statements = explode(";\n", $sql);
+    $inTx = false;
+    try {
+        $db->exec('SET FOREIGN_KEY_CHECKS=0');
+        if (!$db->inTransaction()) {
+            $db->beginTransaction();
+            $inTx = true;
+        }
+        foreach ($statements as $stmt) {
+            $stmt = trim($stmt);
+            if ($stmt !== '' && !str_starts_with($stmt, '--')) {
+                $db->exec($stmt);
+            }
+        }
+        if ($inTx && $db->inTransaction()) {
+            $db->commit();
+        }
+        $db->exec('SET FOREIGN_KEY_CHECKS=1');
+        return true;
+    } catch (Throwable $e) {
+        if ($inTx && $db->inTransaction()) {
+            $db->rollBack();
+        }
+        $db->exec('SET FOREIGN_KEY_CHECKS=1');
+        error_log('training_majors_seed error: ' . $e->getMessage());
+        return false;
+    }
 }
 
 /**
@@ -573,60 +638,83 @@ function hnv_source_access_meta(string $detailStatus, bool $hasArticleBody): arr
 
 function hnv_description_status_meta(string $status): array
 {
-    return match ($status) {
-        'approved' => ['label' => 'Đã duyệt mô tả JobSimu', 'tone' => 'ok'],
-        'draft' => ['label' => 'Bản nháp mô tả JobSimu (chưa công khai)', 'tone' => 'info'],
-        default => ['label' => 'Chưa biên tập mô tả JobSimu', 'tone' => 'warn'],
-    };
+    switch ($status) {
+        case 'approved':
+            return ['label' => 'Đã duyệt mô tả JobSimu', 'tone' => 'ok'];
+        case 'draft':
+            return ['label' => 'Bản nháp mô tả JobSimu (chưa công khai)', 'tone' => 'info'];
+        default:
+            return ['label' => 'Chưa biên tập mô tả JobSimu', 'tone' => 'warn'];
+    }
 }
 
 function hnv_code_verification_meta(string $status): array
 {
-    return match ($status) {
-        'verified' => ['label' => 'Đã xác minh mã ngành', 'tone' => 'ok'],
-        'conflict' => ['label' => 'Mã ngành có xung đột cần đối chiếu', 'tone' => 'error'],
-        default => ['label' => 'Chưa xác minh mã ngành chính thức', 'tone' => 'warn'],
-    };
+    switch ($status) {
+        case 'verified':
+            return ['label' => 'Đã xác minh mã ngành', 'tone' => 'ok'];
+        case 'conflict':
+            return ['label' => 'Mã ngành có xung đột cần đối chiếu', 'tone' => 'error'];
+        default:
+            return ['label' => 'Chưa xác minh mã ngành chính thức', 'tone' => 'warn'];
+    }
 }
 
 function hnv_code_basis_label(?string $basis): string
 {
-    return match (trim((string)$basis)) {
-        'catalogue_dom_id' => 'ID danh mục trên trang nguồn',
-        'single_code_in_school_listings' => 'Mã duy nhất quan sát trong bảng trường',
-        'exact_row_match' => 'Khớp dòng tên ngành trong bảng nguồn',
-        default => 'Thông tin trích xuất từ nguồn tham khảo',
-    };
+    switch (trim((string)$basis)) {
+        case 'catalogue_dom_id':
+            return 'ID danh mục trên trang nguồn';
+        case 'single_code_in_school_listings':
+            return 'Mã duy nhất quan sát trong bảng trường';
+        case 'exact_row_match':
+            return 'Khớp dòng tên ngành trong bảng nguồn';
+        default:
+            return 'Thông tin trích xuất từ nguồn tham khảo';
+    }
 }
 
 function hnv_mapping_status_meta(string $status): array
 {
-    return match ($status) {
-        'approved', 'confirmed' => ['label' => 'Đã duyệt ánh xạ', 'tone' => 'ok'],
-        'rejected' => ['label' => 'Đã từ chối ánh xạ', 'tone' => 'error'],
-        default => ['label' => 'Chờ duyệt ánh xạ', 'tone' => 'warn'],
-    };
+    switch ($status) {
+        case 'approved':
+        case 'confirmed':
+            return ['label' => 'Đã duyệt ánh xạ', 'tone' => 'ok'];
+        case 'rejected':
+            return ['label' => 'Đã từ chối ánh xạ', 'tone' => 'error'];
+        default:
+            return ['label' => 'Chờ duyệt ánh xạ', 'tone' => 'warn'];
+    }
 }
 
 function hnv_admission_link_status_meta(string $status): array
 {
-    return match ($status) {
-        'source_verified_year' => ['label' => 'Đã đối chiếu tại nguồn theo đúng năm tin', 'tone' => 'ok'],
-        'outdated_historical' => ['label' => 'Tin lịch sử · đã hết hiệu lực tuyển sinh hiện hành', 'tone' => 'warn'],
-        'source_unavailable' => ['label' => 'URL nguồn hỏng hoặc nội dung đã thay đổi', 'tone' => 'error'],
-        'disputed' => ['label' => 'Thông tin tại nguồn có sai khác cần kiểm tra', 'tone' => 'error'],
-        default => ['label' => 'Tin lịch sử · chưa kiểm chứng lại tại nguồn', 'tone' => 'warn'],
-    };
+    switch ($status) {
+        case 'source_verified_year':
+            return ['label' => 'Đã đối chiếu tại nguồn theo đúng năm tin', 'tone' => 'ok'];
+        case 'outdated_historical':
+            return ['label' => 'Tin lịch sử · đã hết hiệu lực tuyển sinh hiện hành', 'tone' => 'warn'];
+        case 'source_unavailable':
+            return ['label' => 'URL nguồn hỏng hoặc nội dung đã thay đổi', 'tone' => 'error'];
+        case 'disputed':
+            return ['label' => 'Thông tin tại nguồn có sai khác cần kiểm tra', 'tone' => 'error'];
+        default:
+            return ['label' => 'Tin lịch sử · chưa kiểm chứng lại tại nguồn', 'tone' => 'warn'];
+    }
 }
 
 function hnv_match_basis_label(string $basis): string
 {
-    return match ($basis) {
-        'exact_name_and_candidate_code' => 'Khớp chính xác tên ngành và mã ứng viên nguồn',
-        'exact_name_without_candidate_code' => 'Khớp chính xác tên ngành (nguồn chưa có mã ứng viên đơn nhất)',
-        'unique_candidate_code_name_differs' => 'Khớp mã ứng viên đơn nhất nhưng tên khác nhau',
-        default => 'Đối chiếu thủ công bởi quản trị viên',
-    };
+    switch ($basis) {
+        case 'exact_name_and_candidate_code':
+            return 'Khớp chính xác tên ngành và mã ứng viên nguồn';
+        case 'exact_name_without_candidate_code':
+            return 'Khớp chính xác tên ngành (nguồn chưa có mã ứng viên đơn nhất)';
+        case 'unique_candidate_code_name_differs':
+            return 'Khớp mã ứng viên đơn nhất nhưng tên khác nhau';
+        default:
+            return 'Đối chiếu thủ công bởi quản trị viên';
+    }
 }
 
 function hnv_format_utc_datetime(?string $iso): string
@@ -876,11 +964,17 @@ function hnv_search_majors(PDO $db, array $filters, int $page = 1, int $perPage 
 
     $whereSql = $where ? (' WHERE ' . implode(' AND ', $where)) : '';
 
-    $orderBy = match ($sort) {
-        'az' => 'm.name ASC, m.id ASC',
-        'za' => 'm.name DESC, m.id DESC',
-        default => 'source_url_count DESC, m.name ASC, m.id ASC',
-    };
+    switch ($sort) {
+        case 'az':
+            $orderBy = 'm.name ASC, m.id ASC';
+            break;
+        case 'za':
+            $orderBy = 'm.name DESC, m.id DESC';
+            break;
+        default:
+            $orderBy = 'source_url_count DESC, m.name ASC, m.id ASC';
+            break;
+    }
 
     $selectBase = 'SELECT m.id, m.name, m.field_id, m.subgroup_id, f.name AS field_name, s.name AS subgroup_name,
                           m.source_url, m.catalogue_url, m.detail_status, m.has_article_body,
