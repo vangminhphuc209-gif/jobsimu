@@ -539,12 +539,25 @@ function assessment_get_daily_examples(string $type, array $scores, string $resu
 function assessment_get_pedagogical_limits(string $type, int $completedCount): array
 {
     $notices = [];
+    $remaining = max(0, 5 - $completedCount);
 
-    if ($type === 'holland') {
+    if ($completedCount === 1) {
         $notices[] = [
             'type' => 'mandatory_step1',
-            'title' => 'Thông báo quan trọng về giá trị kết quả',
-            'text' => 'Bạn đã hoàn thành 1/5 bài đánh giá. Đây mới là xu hướng sở thích ban đầu, chưa phản ánh đầy đủ năng lực hay cơ hội nghề nghiệp. Hãy hoàn thành các bài tiếp theo để hồ sơ được tích lũy chính xác hơn.',
+            'title' => 'Góc nhìn khởi đầu · Cần thêm dữ liệu tích lũy',
+            'text' => 'Đây là góc nhìn đầu tiên về bạn. Nếu kết quả chưa phản ánh hết những điều bạn cảm nhận về bản thân, cũng không sao. Chúng ta còn ' . $remaining . ' bài khám phá nữa để bổ sung những góc nhìn khác.',
+        ];
+    } elseif ($completedCount > 1 && $completedCount < 5) {
+        $notices[] = [
+            'type' => 'in_progress',
+            'title' => 'Tiến độ tích lũy thực tế',
+            'text' => 'Bạn đã hoàn thành ' . $completedCount . '/5 bài đánh giá. Kết quả hiện tại kết hợp từ những bài bạn đã làm; chúng ta còn ' . $remaining . ' bài khám phá nữa để có bức tranh toàn diện và mở khóa toàn bộ gợi ý đối chiếu điểm chuẩn tuyển sinh.',
+        ];
+    } else {
+        $notices[] = [
+            'type' => 'completed',
+            'title' => 'Bức tranh toàn diện 5 bài',
+            'text' => 'Bạn đã hoàn thành trọn vẹn 5/5 bài đánh giá. Toàn bộ 4 góc nhìn đã được tổng hợp đầy đủ trong Báo cáo tổng hợp đa chiều.',
         ];
     }
 

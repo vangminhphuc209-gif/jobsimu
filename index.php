@@ -9,7 +9,17 @@ if($page==='lookup') { if(journey_guard_page('lookup_hub','index.php?page=univer
 if($page==='lookup-api') { if(journey_guard_api('lookup_hub')) { require_once __DIR__.'/app/lookup.php'; lookup_handle_api(); } exit; }
 if($page==='compare') { if(journey_guard_page('compare_priority','index.php?page=university-compare','Công cụ So sánh ưu tiên (20 câu)')) { require_once __DIR__.'/app/compare.php'; compare_render_page(); } exit; }
 if($page==='compare-api') { if(journey_guard_api('compare_priority')) { require_once __DIR__.'/app/compare.php'; compare_handle_api(); } exit; }
-if($page==='plan') { $careerParam = !empty($_GET['career_id']) ? '&career_id='.(int)$_GET['career_id'] : ''; redirect('index.php?page=ai-roadmap'.$careerParam); }
+if($page==='plan') {
+    if(!empty($_GET['comparison_id']) || !empty($_GET['uid']) || (function_exists('journey_flag_enabled') && journey_flag_enabled('action_plan')) || (function_exists('journey_feature_enabled') && journey_feature_enabled('action_plan'))) {
+        if(journey_guard_page('action_plan','index.php?page=ai-roadmap','Công cụ Lập kế hoạch theo tháng/năm')) {
+            require_once __DIR__.'/app/plan.php';
+            plan_render_page();
+        }
+        exit;
+    }
+    $careerParam = !empty($_GET['career_id']) ? '&career_id='.(int)$_GET['career_id'] : '';
+    redirect('index.php?page=ai-roadmap'.$careerParam);
+}
 if($page==='plan-api') { if(journey_guard_api('action_plan')) { require_once __DIR__.'/app/plan.php'; plan_handle_api(); } exit; }
 if($page==='plan-share') { if(journey_guard_page('action_plan','index.php','Liên kết chia sẻ kế hoạch')) { require_once __DIR__.'/app/plan.php'; plan_render_share_page(); } exit; }
 if($page==='admin-chatbot') { require __DIR__.'/app/admin-chatbot.php'; exit; }
