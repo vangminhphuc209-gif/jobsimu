@@ -1,9 +1,28 @@
 <?php
 declare(strict_types=1);
 
+// PHP 7.4 compatibility polyfills
+if (!function_exists('str_contains')) {
+    function str_contains(string $haystack, string $needle): bool {
+        return $needle === '' || strpos($haystack, $needle) !== false;
+    }
+}
+if (!function_exists('str_starts_with')) {
+    function str_starts_with(string $haystack, string $needle): bool {
+        return $needle === '' || strncmp($haystack, $needle, strlen($needle)) === 0;
+    }
+}
+if (!function_exists('str_ends_with')) {
+    function str_ends_with(string $haystack, string $needle): bool {
+        return $needle === '' || $needle === substr($haystack, -strlen($needle));
+    }
+}
+
 require_once __DIR__ . '/four-hubs-data.php';
 require_once __DIR__ . '/four-hubs-ai.php';
 require_once __DIR__ . '/recommendations.php';
+require_once __DIR__ . '/schools.php';
+require_once __DIR__ . '/journey-flags.php';
 
 function db(): PDO { global $pdo; return $pdo; }
 function run_migrations(): void {
@@ -117,7 +136,10 @@ function user(): ?array {
     static $cached = false;
     if ($cached !== false) return $cached;
     if (empty($_SESSION['user_id'])) return $cached = null;
-    $stmt = db()->prepare("SELECT id, name, email, role, grade, school, avatar_color, status FROM users WHERE id=? AND status='active'");
+    $cols = schools_users_has_school_id()
+        ? 'id, name, email, role, grade, school, school_id, avatar_color, status'
+        : 'id, name, email, role, grade, school, avatar_color, status';
+    $stmt = db()->prepare("SELECT {$cols} FROM users WHERE id=? AND status='active'");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch();
     if (!$user) {
@@ -128,7 +150,7 @@ function user(): ?array {
         }
         return $cached = null;
     }
-    return $cached = $user;
+    return $cached = schools_enrich_user($user);
 }
 function require_login(): void { if (!user()) { flash('warning', 'Vui lòng đăng nhập để tiếp tục.'); redirect('index.php?page=login'); } }
 function require_admin(): void { require_login(); if ((user()['role'] ?? '') !== 'admin') { http_response_code(403); exit('Bạn không có quyền truy cập.'); } }
@@ -141,6 +163,9 @@ function riasec_labels(): array {
     return ['R'=>'Kỹ thuật','I'=>'Nghiên cứu','A'=>'Nghệ thuật','S'=>'Xã hội','E'=>'Quản lý','C'=>'Nghiệp vụ'];
 }
 function riasec_colors(): array { return ['R'=>'#5B7CFA','I'=>'#8B5CF6','A'=>'#EC4899','S'=>'#12B981','E'=>'#F59E0B','C'=>'#0EA5E9']; }
+function school_options(): array {
+    return schools_list_signup_names();
+}
 function simulation_skill_labels(): array { return ['analysis'=>'Phân tích','creativity'=>'Sáng tạo','empathy'=>'Thấu cảm','decision'=>'Ra quyết định','precision'=>'Chính xác']; }
 function realistic_sacrifice_labels(): array {
     return [
@@ -413,15 +438,15 @@ function score_assessment_scientific(array $answers, array $questions, array $ef
             ];
         } elseif ($intScore < 58 && $effScore >= 58) {
             $scctQuadrants[$type] = [
-                'quadrant' => 'passive_skill',
-                'label' => 'Vùng Kỹ năng Thụ động (Burnout Risk)',
-                'desc' => 'Bạn tự tin làm được nhưng ít hứng thú; nếu chọn làm nghề chính lâu dài cần chú ý nguy cơ nhàm chán.'
+                'quadrant' => 'available_skill',
+                'label' => 'Vùng Kỹ năng Khả dụng (Ít Ưu tiên)',
+                'desc' => 'Bạn tự tin vào năng lực thực hiện nhưng hiện ít hứng thú; có thể dùng làm kỹ năng bổ trợ thay vì định hướng nghề nghiệp chính.'
             ];
         } else {
             $scctQuadrants[$type] = [
                 'quadrant' => 'low_priority',
-                'label' => 'Vùng Không Ưu tiên',
-                'desc' => 'Chưa phải nhóm sở thích hay thế mạnh ưu tiên ở thời điểm hiện tại.'
+                'label' => 'Vùng Chưa Ưu tiên',
+                'desc' => 'Chưa phải nhóm sở thích hay thế mạnh ưu tiên ở thời điểm hiện tại; có thể quay lại tìm hiểu khi có nhu cầu.'
             ];
         }
     }
@@ -956,4 +981,210 @@ function generate_assessment_ai(int $assessmentId, int $userId): array {
 }
 function audit(string $action, string $entity = '', ?int $entityId = null): void {
     try { $stmt=db()->prepare('INSERT INTO audit_logs(user_id,action,entity_type,entity_id,ip_address) VALUES(?,?,?,?,?)'); $stmt->execute([user()['id']??null,$action,$entity,$entityId,$_SERVER['REMOTE_ADDR']??'']); } catch(Throwable $ignored) {}
+}
+
+/**
+ * Resolve holistic journey state for a student based on real activity data.
+ * Safe across both MySQL and SQLite.
+ *
+ * @param int $userId
+ * @return array
+ */
+function journey_user_state(int $userId): array {
+    if ($userId <= 0) {
+        return [
+            'has_holland' => false,
+            'latest_holland' => null,
+            'favorite_count' => 0,
+            'sim_count' => 0,
+            'has_roadmap' => false,
+            'milestone_count' => 0,
+            'unreflected_sim_count' => 0,
+            'state_code' => 'anonymous',
+        ];
+    }
+
+    try {
+        // 1. Check latest Holland assessment
+        $stmt = db()->prepare('SELECT id, result_code, completed_at FROM assessments WHERE user_id=? ORDER BY completed_at DESC LIMIT 1');
+        $stmt->execute([$userId]);
+        $latestHolland = $stmt->fetch() ?: null;
+        $hasHolland = !empty($latestHolland);
+
+        // 2. Check saved favorite careers
+        $favStmt = db()->prepare('SELECT COUNT(*) FROM favorites WHERE user_id=?');
+        $favStmt->execute([$userId]);
+        $favCount = (int)$favStmt->fetchColumn();
+
+        // 3. Check simulation attempts
+        $simStmt = db()->prepare('SELECT COUNT(*) FROM simulation_attempts WHERE user_id=?');
+        $simStmt->execute([$userId]);
+        $simCount = (int)$simStmt->fetchColumn();
+
+        // 4. Check unreflected simulations
+        $unrefStmt = db()->prepare("SELECT COUNT(*) FROM simulation_attempts WHERE user_id=? AND (reflection_note IS NULL OR TRIM(reflection_note)='')");
+        $unrefStmt->execute([$userId]);
+        $unrefCount = (int)$unrefStmt->fetchColumn();
+
+        // 5. Check user roadmap & milestones
+        $rmStmt = db()->prepare('SELECT id FROM user_roadmaps WHERE user_id=? LIMIT 1');
+        $rmStmt->execute([$userId]);
+        $rm = $rmStmt->fetch();
+        $hasRoadmap = !empty($rm);
+
+        $msCount = 0;
+        if ($hasRoadmap) {
+            $msStmt = db()->prepare('SELECT COUNT(*) FROM user_roadmap_milestones WHERE user_id=?');
+            $msStmt->execute([$userId]);
+            $msCount = (int)$msStmt->fetchColumn();
+        }
+
+        // 6. Determine canonical state code
+        if (!$hasHolland) {
+            $stateCode = 'not_started';
+        } elseif ($favCount === 0) {
+            $stateCode = 'profile_ready';
+        } elseif ($simCount === 0) {
+            $stateCode = 'career_saved';
+        } elseif (!$hasRoadmap || $msCount === 0) {
+            $stateCode = 'simulated';
+        } else {
+            $stateCode = 'planning';
+        }
+
+        return [
+            'has_holland' => $hasHolland,
+            'latest_holland' => $latestHolland,
+            'favorite_count' => $favCount,
+            'sim_count' => $simCount,
+            'has_roadmap' => $hasRoadmap,
+            'milestone_count' => $msCount,
+            'unreflected_sim_count' => $unrefCount,
+            'state_code' => $stateCode,
+        ];
+    } catch (Throwable $e) {
+        return [
+            'has_holland' => false,
+            'latest_holland' => null,
+            'favorite_count' => 0,
+            'sim_count' => 0,
+            'has_roadmap' => false,
+            'milestone_count' => 0,
+            'unreflected_sim_count' => 0,
+            'state_code' => 'not_started',
+        ];
+    }
+}
+
+/**
+ * Unified Next Action Resolver for Student Journey.
+ * Consistently used across Dashboard, Chatbot, and Result pages.
+ *
+ * @param int $userId
+ * @return array
+ */
+function journey_resolve_next_step(int $userId): array {
+    $state = journey_user_state($userId);
+
+    // 1. If no Holland assessment yet
+    if (!$state['has_holland']) {
+        return [
+            'action_key' => 'take_holland',
+            'action_title' => 'Khảo sát sở thích nghề nghiệp (Holland RIASEC)',
+            'reason' => 'Khám phá 6 nhóm sở thích và nhận danh sách ngành nghề tương đồng ban đầu.',
+            'estimated_minutes' => 7,
+            'route' => 'index.php?page=assessment',
+            'cta_label' => 'Bắt đầu khảo sát ngay →',
+            'is_completed' => false,
+            'stage' => 'self_discovery',
+            'can_skip' => false,
+        ];
+    }
+
+    // 2. If Holland is done, but no careers saved to favorites
+    if ($state['favorite_count'] === 0) {
+        $lastAssId = (int)($state['latest_holland']['id'] ?? 0);
+        $route = $lastAssId > 0 ? "index.php?page=result&id={$lastAssId}" : 'index.php?page=careers';
+        return [
+            'action_key' => 'save_favorite_career',
+            'action_title' => 'Lưu ít nhất 1–2 nghề bạn quan tâm',
+            'reason' => 'Từ kết quả trắc nghiệm mã ' . ($state['latest_holland']['result_code'] ?? '') . ', hãy đánh dấu các nghề bạn muốn tìm hiểu sâu.',
+            'estimated_minutes' => 5,
+            'route' => $route,
+            'cta_label' => 'Xem gợi ý nghề & Lưu lựa chọn →',
+            'is_completed' => false,
+            'stage' => 'career_exploration',
+            'can_skip' => true,
+        ];
+    }
+
+    // 3. If favorites saved, but no simulations tried yet
+    if ($state['sim_count'] === 0) {
+        return [
+            'action_key' => 'try_simulation',
+            'action_title' => 'Trải nghiệm tình huống nghề thực tế',
+            'reason' => 'Thử thách giải quyết các xung đột thực tế của nghề để tự đối chiếu cảm nhận trước khi quyết định.',
+            'estimated_minutes' => 6,
+            'route' => 'index.php?page=simulations',
+            'cta_label' => 'Vào phòng mô phỏng nghề →',
+            'is_completed' => false,
+            'stage' => 'simulation_trial',
+            'can_skip' => true,
+        ];
+    }
+
+    // 4. If simulations tried, but no roadmap or no tasks for current month
+    if ($state['milestone_count'] === 0) {
+        return [
+            'action_key' => 'setup_roadmap',
+            'action_title' => 'Xây dựng Kế hoạch hành động năm học',
+            'reason' => 'Tổng hợp sở thích và trải nghiệm thành các mốc rèn luyện, tìm hiểu ngành học và chuẩn bị hồ sơ tuyển sinh.',
+            'estimated_minutes' => 5,
+            'route' => 'index.php?page=ai-roadmap',
+            'cta_label' => 'Mở Kế hoạch hành động →',
+            'is_completed' => false,
+            'stage' => 'action_planning',
+            'can_skip' => false,
+        ];
+    }
+
+    // 5. Active monthly planning
+    return [
+        'action_key' => 'execute_monthly_task',
+        'action_title' => 'Thực hiện công việc trọng tâm trong tháng',
+        'reason' => 'Bạn đang có ' . $state['milestone_count'] . ' công việc trong kế hoạch. Hãy kiểm tra các mốc ưu tiên của tháng này.',
+        'estimated_minutes' => 15,
+        'route' => 'index.php?page=ai-roadmap',
+        'cta_label' => 'Xem công việc tháng này →',
+        'is_completed' => false,
+        'stage' => 'action_execution',
+        'can_skip' => true,
+    ];
+}
+
+if (!function_exists('journey_strip_accents')) {
+    function journey_strip_accents(string $str): string
+    {
+        $str = mb_strtolower(trim($str), 'UTF-8');
+        $map = [
+            'à'=>'a','á'=>'a','ạ'=>'a','ả'=>'a','ã'=>'a','â'=>'a','ầ'=>'a','ấ'=>'a','ậ'=>'a','ẩ'=>'a','ẫ'=>'a','ă'=>'a','ằ'=>'a','ắ'=>'a','ặ'=>'a','ẳ'=>'a','ẵ'=>'a',
+            'è'=>'e','é'=>'e','ẹ'=>'e','ẻ'=>'e','ẽ'=>'e','ê'=>'e','ề'=>'e','ế'=>'e','ệ'=>'e','ể'=>'e','ễ'=>'e',
+            'ì'=>'i','í'=>'i','ị'=>'i','ỉ'=>'i','ĩ'=>'i',
+            'ò'=>'o','ó'=>'o','ọ'=>'o','ỏ'=>'o','õ'=>'o','ô'=>'o','ồ'=>'o','ố'=>'o','ộ'=>'o','ổ'=>'o','ỗ'=>'o','ơ'=>'o','ờ'=>'o','ớ'=>'o','ợ'=>'o','ở'=>'o','ỡ'=>'o',
+            'ù'=>'u','ú'=>'u','ụ'=>'u','ủ'=>'u','ũ'=>'u','ư'=>'u','ừ'=>'u','ứ'=>'u','ự'=>'u','ử'=>'u','ữ'=>'u',
+            'ỳ'=>'y','ý'=>'y','ỵ'=>'y','ỷ'=>'y','ỹ'=>'y',
+            'đ'=>'d',
+        ];
+        return strtr($str, $map);
+    }
+}
+
+if (!function_exists('journey_uuid4')) {
+    function journey_uuid4(): string
+    {
+        $bytes = random_bytes(16);
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($bytes), 4));
+    }
 }

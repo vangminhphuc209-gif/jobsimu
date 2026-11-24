@@ -1,7 +1,12 @@
 <?php
 declare(strict_types=1);
 define('ROOT_PATH',dirname(__DIR__));
-require ROOT_PATH.'/app/functions.php';
+require_once ROOT_PATH . '/app/functions.php';
+require_once ROOT_PATH . '/app/four-hubs-data.php';
+if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+    echo "SKIP: pdo_sqlite unavailable in local CLI environment.\n";
+    exit(0);
+}
 $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
 $pdo->exec('PRAGMA foreign_keys=ON');
 $pdo->exec("CREATE TABLE users(id INTEGER PRIMARY KEY,grade TEXT); INSERT INTO users VALUES(1,'Lớp 10'),(2,'Lớp 11'); CREATE TABLE settings(setting_key TEXT,setting_value TEXT); CREATE TABLE assessments(id INTEGER PRIMARY KEY,user_id INTEGER,scores TEXT,result_code TEXT,constraint_answers TEXT,completed_at TEXT); CREATE TABLE careers(id INTEGER PRIMARY KEY,title TEXT,slug TEXT,subjects TEXT,skills TEXT,education_path TEXT,status TEXT); CREATE TABLE assessment_matches(assessment_id INTEGER,career_id INTEGER,match_percent INTEGER,rank_order INTEGER); CREATE TABLE simulation_attempts(id INTEGER PRIMARY KEY,user_id INTEGER,career_id INTEGER,skill_scores TEXT,reflection_feeling TEXT,reflection_note TEXT,completed_at TEXT)");

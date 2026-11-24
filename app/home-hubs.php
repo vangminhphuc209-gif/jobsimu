@@ -20,44 +20,87 @@ if ($me) {
     $hasRoadmap = (bool)$latestHolland;
 }
 
-$hubs = [
-    [
-        'step' => '01',
-        'route' => 'careers',
-        'title' => 'Khám phá kiến thức',
-        'lead' => 'Hiểu rõ thế giới việc làm trước khi đưa ra lựa chọn.',
-        'desc' => 'Tra cứu 27+ hồ sơ nghề thực tế, 150+ ngành đào tạo chuẩn và các trường đại học, cao đẳng trên cả nước.',
-        'status' => $me ? 'Đang mở thư viện' : '27+ nghề · 150+ ngành',
-        'icon' => '📚'
-    ],
-    [
-        'step' => '02',
-        'route' => 'assessment-hub',
-        'title' => 'Hiểu bản thân',
-        'lead' => 'Lắng nghe sở thích, tính cách và năng lực tự thân.',
-        'desc' => 'Đánh giá 6 nhóm sở thích Holland (RIASEC), 5 nét tính cách Big Five và khả năng thích ứng nghề nghiệp.',
-        'status' => $me ? ($completedTests > 0 ? "Đã làm $completedTests bài đánh giá" : 'Chưa có bài kiểm tra') : '6 công cụ đo lường',
-        'icon' => '🧭'
-    ],
-    [
-        'step' => '03',
-        'route' => 'simulations',
-        'title' => 'Trải nghiệm nghề',
-        'lead' => 'Thử sức giải quyết tình huống thực tế rồi tự cảm nhận.',
-        'desc' => 'Phòng mô phỏng tình huống 2D tương tác và góc nhìn thực tế của nghề giáo viên, lập trình viên, y tế.',
-        'status' => $me ? ($activityCount > 0 ? "Đã thử $activityCount lượt mô phỏng" : 'Chưa thử tình huống') : '4–6 phút / thử thách',
-        'icon' => '🎮'
-    ],
-    [
-        'step' => '04',
-        'route' => 'ai-roadmap',
-        'title' => 'Xây dựng hành trình',
-        'lead' => 'Biến hiểu biết cá nhân thành các bước đi cụ thể.',
-        'desc' => 'Tự đặt mục tiêu nghề nghiệp, theo dõi danh sách mốc hành động cho năm học và nhận cố vấn từ AI khi cần.',
-        'status' => $me ? ($hasRoadmap ? 'Lộ trình đang hoạt động' : 'Tạo lộ trình cá nhân') : 'Kế hoạch hành động',
-        'icon' => '🗺️'
-    ],
-];
+$useJourney4StepHome = function_exists('journey_feature_enabled') && journey_feature_enabled('journey_4step');
+
+if ($useJourney4StepHome) {
+    $hubs = [
+        [
+            'step' => '01',
+            'route' => journey_feature_enabled('discover_quick') ? 'discover' : 'assessment-hub',
+            'title' => 'Khám phá bản thân',
+            'lead' => 'Bắt đầu bằng 5 câu hỏi nhanh hoặc làm bộ đánh giá chuẩn hóa.',
+            'desc' => 'Gọi tên môn học yêu thích, hoạt động ngoài giờ, điều bạn coi trọng — song song với toàn bộ bài test Holland, Big Five, CAAS, MBTI, EQ và SOKA 360°.',
+            'status' => $me ? ($completedTests > 0 ? "5 câu nhanh · $completedTests bài chuẩn hóa" : '5 câu nhanh · Bộ đánh giá chuẩn') : '5 câu nhanh · Bộ đánh giá chuẩn',
+            'icon' => '🧭'
+        ],
+        [
+            'step' => '02',
+            'route' => journey_feature_enabled('lookup_hub') ? 'lookup' : 'university-explorer',
+            'title' => 'Tra cứu',
+            'lead' => 'Tìm hiểu ngành học, trường đào tạo và tổ hợp xét tuyển.',
+            'desc' => 'Bắt đầu từ 3 cửa vào rõ ràng: Ngành học, Trường đào tạo và Tổ hợp xét tuyển kèm nguồn xác minh, cùng danh mục 358 ngành và 27 hồ sơ nghề.',
+            'status' => 'Ngành · Trường · Tổ hợp',
+            'icon' => '🔎'
+        ],
+        [
+            'step' => '03',
+            'route' => journey_feature_enabled('compare_priority') ? 'compare' : 'university-compare',
+            'title' => 'Hiểu mình cần gì',
+            'lead' => 'Đặt các lựa chọn cạnh nhau để nhìn rõ điều bạn ưu tiên.',
+            'desc' => 'Chọn 2–7 phương án, trả lời 20 câu hỏi trọng số trên thang 100 điểm (lưu riêng với điểm bài test chuẩn hóa) và tự chốt phương án ưu tiên / dự phòng.',
+            'status' => 'So sánh ưu tiên · 20 câu',
+            'icon' => '⚖️'
+        ],
+        [
+            'step' => '04',
+            'route' => journey_feature_enabled('action_plan') ? 'plan' : 'ai-roadmap',
+            'title' => 'Lập kế hoạch',
+            'lead' => 'Chia mục tiêu thành mốc tháng/năm cụ thể và chỉnh sửa được.',
+            'desc' => 'Mang phương án đã chọn sang bảng kế hoạch theo khối Lớp 10–12, nhờ Trợ lý La Bàn gợi ý bản nháp, in PDF hoặc mở lại Bản đồ hành trình & mô phỏng nghề.',
+            'status' => $me ? ($activityCount > 0 ? "Mốc tháng/năm · $activityCount lượt mô phỏng" : 'Mốc tháng/năm & PDF') : 'Mốc tháng/năm & PDF',
+            'icon' => '📅'
+        ],
+    ];
+} else {
+    $hubs = [
+        [
+            'step' => '01',
+            'route' => 'assessment-hub',
+            'title' => 'Hiểu mình',
+            'lead' => 'Đánh giá sở thích, tính cách và năng lực thích ứng.',
+            'desc' => 'Hoàn thành bộ trắc nghiệm chuẩn hóa Holland RIASEC, Big Five, CAAS, MBTI, EQ và Gương soi SOKA 360° để xem hồ sơ tổng hợp.',
+            'status' => $me ? "$completedTests bài đã hoàn thành" : 'Holland · Big Five · CAAS',
+            'icon' => '🧭'
+        ],
+        [
+            'step' => '02',
+            'route' => 'careers',
+            'title' => 'Khám phá',
+            'lead' => 'Tìm hiểu 27 nghề nghiệp, 358 ngành đào tạo và trường ĐH/CĐ.',
+            'desc' => 'Đọc mô tả nghề, tra cứu trường đại học & điểm chuẩn, so sánh trường và tham khảo cẩm nang hướng nghiệp.',
+            'status' => '27 nghề · 358 ngành',
+            'icon' => '🔎'
+        ],
+        [
+            'step' => '03',
+            'route' => 'simulations',
+            'title' => 'Trải nghiệm',
+            'lead' => 'Nhập vai tình huống nghề nghiệp thực tế 2D & 3D.',
+            'desc' => 'Kiểm chứng sự phù hợp qua các tình huống mô phỏng nghề nghiệp và lưu lại nhật ký trải nghiệm cá nhân.',
+            'status' => $me ? "$activityCount lượt trải nghiệm" : 'Mô phỏng 2D & 3D',
+            'icon' => '🎮'
+        ],
+        [
+            'step' => '04',
+            'route' => 'ai-roadmap',
+            'title' => 'Lộ trình của tôi',
+            'lead' => 'Lập bản đồ hành trình và theo dõi tiến độ.',
+            'desc' => 'Quản lý mục tiêu học tập, góc người trong nghề và danh sách nghề yêu thích của bạn.',
+            'status' => $hasRoadmap ? 'Đang theo dõi lộ trình' : 'Bản đồ hành trình',
+            'icon' => '🗺️'
+        ],
+    ];
+}
 
 // Featured careers for guest discovery
 $stmt = db()->query("SELECT id,title,icon,short_description FROM careers WHERE status='published' AND slug IN ('giao-vien-thcs','lap-trinh-vien-frontend','bac-si-da-khoa') ORDER BY id LIMIT 3");
@@ -169,24 +212,66 @@ require ROOT_PATH . '/app/header.php';
 
 <?php else: ?>
 <!-- ================= GUEST WELCOME EXPERIENCE ================= -->
-<section class="hub-hero">
-  <div class="container py-12 md:py-16">
-    <div class="max-w-3xl">
-      <span class="badge badge-purple mb-3">Nền tảng hướng nghiệp dành cho học sinh Việt Nam</span>
-      <h1 class="page-title text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+<section class="hero hub-hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="badge badge-purple mb-4">✦ Nền tảng hướng nghiệp dành cho học sinh Việt Nam</span>
+      <h1 class="page-title text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-4">
         Hiểu mình hôm nay.<br>
-        <span class="text-brand-600">Chủ động thiết kế tương lai.</span>
+        <span class="gradient-text">Chủ động thiết kế tương lai.</span>
       </h1>
-      <p class="text-base md:text-lg text-slate-600 leading-relaxed mb-6">
+      <p class="text-base md:text-lg text-slate-600 leading-relaxed mb-6 max-w-xl">
         Mỗi lựa chọn bắt đầu từ một lần khám phá. Tìm hiểu nghề nghiệp, lắng nghe bản thân qua các công cụ đo lường tiêu chuẩn, thử sức qua tình huống thực tế và xây dựng lộ trình của riêng bạn.
       </p>
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="hero-actions flex flex-wrap items-center gap-3 mb-6">
         <a class="btn btn-primary btn-lg" href="<?=url('index.php?page=careers')?>">
           Bắt đầu khám phá nghề →
         </a>
         <a class="btn btn-outline btn-lg" href="<?=url('index.php?page=register')?>">
           Tạo tài khoản miễn phí
         </a>
+      </div>
+      <div class="trust-row flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-slate-500">
+        <span>✓ 4 giai đoạn rõ ràng</span>
+        <span>✓ Dữ liệu mở xác minh</span>
+        <span>✓ Trải nghiệm mô phỏng</span>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-label="Minh họa hồ sơ sở thích RIASEC">
+      <div class="blob"></div>
+      <div class="float-card big">
+        <div class="flex items-center justify-between gap-3">
+          <b class="text-slate-900 text-base font-extrabold">Hồ sơ sở thích RIASEC</b>
+          <span class="ai-badge">✦ AI Ready</span>
+        </div>
+        <div class="mini-bars">
+          <span style="height:62%" title="Realistic (Kỹ thuật)"></span>
+          <span style="height:92%" title="Investigative (Nghiên cứu)"></span>
+          <span style="height:54%" title="Artistic (Nghệ thuật)"></span>
+          <span style="height:82%" title="Social (Xã hội)"></span>
+          <span style="height:48%" title="Enterprising (Quản lý)"></span>
+          <span style="height:74%" title="Conventional (Nghiệp vụ)"></span>
+        </div>
+        <small class="muted block mt-3 text-xs text-slate-500">Mỗi bạn là một tổ hợp thế mạnh độc đáo</small>
+      </div>
+      <div class="float-card c1">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl leading-none" aria-hidden="true">🎯</span>
+          <div>
+            <b class="text-sm font-bold text-slate-900 block leading-tight">15 nghề chuyên sâu</b>
+            <small class="muted block text-xs text-slate-500 mt-0.5">Lộ trình &amp; mô phỏng thực tế</small>
+          </div>
+        </div>
+      </div>
+      <div class="float-card c2">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl leading-none" aria-hidden="true">✨</span>
+          <div>
+            <b class="text-sm font-bold text-slate-900 block leading-tight">AI Career Coach</b>
+            <small class="muted block text-xs text-slate-500 mt-0.5">Phân tích riêng cho từng bạn</small>
+          </div>
+        </div>
       </div>
     </div>
   </div>

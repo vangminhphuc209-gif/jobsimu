@@ -97,6 +97,46 @@ function may_action_registry(): array {
             'icon' => '🎮',
             'keywords' => ['mô phỏng', 'chơi thử', 'game nghề', 'phòng mô phỏng']
         ],
+        'open_discover' => [
+            'id' => 'open_discover',
+            'name' => 'Khám phá bản thân (5 câu)',
+            'path' => 'index.php?page=discover',
+            'login_required' => false,
+            'role' => 'all',
+            'summary' => 'Trả lời nhanh 5 câu hỏi gần gũi để gợi mở hướng ngành phù hợp.',
+            'icon' => '✨',
+            'keywords' => ['chưa biết thích gì', 'thích môn', 'khám phá nhanh', '5 câu']
+        ],
+        'open_lookup' => [
+            'id' => 'open_lookup',
+            'name' => 'Trang Tra cứu (Ngành · Trường · Tổ hợp)',
+            'path' => 'index.php?page=lookup',
+            'login_required' => false,
+            'role' => 'all',
+            'summary' => 'Tra cứu ngành học, trường đào tạo và tổ hợp xét tuyển có nguồn xác minh.',
+            'icon' => '🔎',
+            'keywords' => ['tra cứu', 'tổ hợp', 'tổ hợp xét tuyển', 'khối thi']
+        ],
+        'open_compare' => [
+            'id' => 'open_compare',
+            'name' => 'Hiểu mình cần gì (So sánh)',
+            'path' => 'index.php?page=compare',
+            'login_required' => false,
+            'role' => 'all',
+            'summary' => 'Đặt các phương án cạnh nhau và cân nhắc theo 20 câu hỏi trọng số.',
+            'icon' => '⚖️',
+            'keywords' => ['phân vân', 'so sánh hai ngành', 'so sánh lựa chọn', 'hiểu mình cần gì']
+        ],
+        'open_plan' => [
+            'id' => 'open_plan',
+            'name' => 'Lập kế hoạch theo tháng',
+            'path' => 'index.php?page=ai-roadmap',
+            'login_required' => false,
+            'role' => 'all',
+            'summary' => 'Xây dựng kế hoạch hành động có mốc tháng/năm và chỉnh sửa linh hoạt.',
+            'icon' => '📅',
+            'keywords' => ['chia kế hoạch', 'từng tháng', 'lập kế hoạch', 'mốc thời gian']
+        ],
     ];
 }
 

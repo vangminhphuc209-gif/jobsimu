@@ -52,7 +52,7 @@ $cooldowns = chat_provider_cooldown_status();
 $groqInCooldown = chat_provider_is_in_cooldown('groq');
 $cfInCooldown = chat_provider_is_in_cooldown('cloudflare');
 
-$title = 'Quản trị Chatbot Mây';
+$title = 'Quản trị Trợ lý La Bàn';
 ?><!doctype html>
 <html lang="vi">
 <head>
@@ -89,7 +89,7 @@ $title = 'Quản trị Chatbot Mây';
         'majors-review'=>'🎓 Ngành & Xác minh',
         'knowledge-articles'=>'📚 Bài viết',
         'knowledge-portals'=>'🌐 Cổng thông tin',
-        'chatbot'=>'☁️ Chatbot Mây',
+        'chatbot'=>'🧭 Trợ lý La Bàn',
         'dashboard'=>'▦ Tổng quan',
         'careers'=>'💼 Nghề nghiệp',
         'simulations'=>'🎮 Mô phỏng nghề',
@@ -108,7 +108,7 @@ $title = 'Quản trị Chatbot Mây';
     <header class="admin-top">
       <div>
         <span class="muted">Hệ thống quản trị</span>
-        <h1>☁️ Quản trị Chatbot Mây</h1>
+        <h1>🧭 Quản trị Trợ lý La Bàn</h1>
       </div>
       <div class="user-chip">
         <span class="avatar" style="background:<?=e(user()['avatar_color'])?>"><?=e(mb_substr(user()['name'],0,1))?></span>

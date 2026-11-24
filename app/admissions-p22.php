@@ -29,7 +29,7 @@ function admissions_p22_migrate(): void {
 function admissions_p22_tuition_seed(): int {
     $db=db();
     $s=$db->prepare('SELECT id FROM institutions WHERE code=?');
-    $s->execute(['BKA']);$schoolId=$s->fetchColumn();
+    $s->execute(['BKA']);$schoolId=$s->fetchColumn();$s->closeCursor();
     if(!$schoolId)return 0;
     $source2024='https://smse.hust.edu.vn/vi/news/tin-bai/diem-chuan-dai-hoc-bach-khoa-ha-noi-2024-118.html';
     $source2025='https://hust.edu.vn/vi/news/hoat-dong-chung/dai-hoc-bach-khoa-ha-noi-cong-bo-diem-chuan-xet-tuyen-dai-hoc-nam-2025-655575.html';
@@ -48,8 +48,8 @@ function admissions_p22_tuition_seed(): int {
     $count=0;
     foreach($data as $item){
       [$year,$group,$min,$max,$source,$title]=$item;
-      $exists->execute([$schoolId,$year,$group,'semester']);
-      if($exists->fetchColumn())continue; // Preserve editorial/admin corrections.
+      $exists->execute([$schoolId,$year,$group,'semester']);$ex=$exists->fetchColumn();$exists->closeCursor();
+      if($ex)continue; // Preserve editorial/admin corrections.
       $note='Khoảng học phí theo nhóm chương trình và học kỳ, không phải học phí chính xác của từng ngành, chưa bao gồm chi phí sinh hoạt.';
       $insert->execute([$schoolId,$year,$group,'semester',$min,$max,$note,$source,$title,'2026-11-09']);
       $count++;

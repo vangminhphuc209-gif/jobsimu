@@ -428,12 +428,16 @@ $buildAdminQueueUrl = static function (array $overrides = []) use ($q, $issueFil
 };
 
 $queueStatusMeta = static function (string $st): array {
-    return match ($st) {
-        'verified' => ['label' => 'Đã đóng hết vấn đề', 'tone' => 'on'],
-        'in_review' => ['label' => 'Đang xử lý dở', 'tone' => 'off'],
-        'deferred' => ['label' => 'Tạm hoãn còn lại', 'tone' => 'off'],
-        default => ['label' => 'Chưa xử lý', 'tone' => 'off'],
-    };
+    switch ($st) {
+        case 'verified':
+            return ['label' => 'Đã đóng hết vấn đề', 'tone' => 'on'];
+        case 'in_review':
+            return ['label' => 'Đang xử lý dở', 'tone' => 'off'];
+        case 'deferred':
+            return ['label' => 'Tạm hoãn còn lại', 'tone' => 'off'];
+        default:
+            return ['label' => 'Chưa xử lý', 'tone' => 'off'];
+    }
 };
 ?>
 <!doctype html>

@@ -95,10 +95,10 @@
       }
     } catch (e) {}
 
-    // Initial greeting if no messages exist
+    // Initial greeting if no messages exist (never mutates existing user history)
     return [{
       role: 'ai',
-      text: 'Chào bạn, mình là Mây ☁️\nMình có thể cùng bạn tìm hiểu ngành nghề, hiểu kết quả đánh giá và tìm đúng mục trên JobSimu. Bạn muốn bắt đầu từ đâu?',
+      text: 'Chào bạn, mình là La Bàn. Bạn đang muốn hiểu bản thân hơn, tìm ngành học hay lên kế hoạch cho lựa chọn của mình?',
       actions: []
     }];
   }
@@ -118,7 +118,7 @@
     if (msg.role === 'ai') {
       const avatar = document.createElement('div');
       avatar.className = 'may-msg-avatar';
-      avatar.textContent = '☁️';
+      avatar.textContent = '🧭';
       avatar.setAttribute('aria-hidden', 'true');
       msgEl.appendChild(avatar);
     }
@@ -162,34 +162,25 @@
     messagesList.scrollTop = messagesList.scrollHeight;
   }
 
-  // Contextual Chips
+  // Starter & Contextual Chips
   function getContextualChips() {
     const ctx = getPageContext();
     const chips = [];
 
-    // Base starter chips
     const baseChips = [
-      { label: 'Tìm hiểu ngành nghề', query: 'Giới thiệu cho mình các nhóm ngành nghề phổ biến trên JobSimu' },
-      { label: 'Hiểu kết quả của mình', query: 'Cách đọc hiểu mã kết quả trắc nghiệm Holland RIASEC' },
-      { label: 'Tình huống công việc', query: 'Cho mình xem các tình huống thử thách của người trong nghề' },
-      { label: 'Hướng dẫn sử dụng website', query: 'JobSimu có những chức năng gì và nên bắt đầu từ đâu?' }
+      { label: 'Mình chưa biết mình thích ngành gì.', query: 'Mình chưa biết mình thích ngành gì.' },
+      { label: 'Mình thích môn này thì nên tìm hiểu ngành nào?', query: 'Mình thích môn này thì nên tìm hiểu ngành nào?' },
+      { label: 'Mình đang phân vân giữa hai ngành.', query: 'Mình đang phân vân giữa hai ngành.' },
+      { label: 'Giúp mình chia kế hoạch thành từng tháng.', query: 'Giúp mình chia kế hoạch thành từng tháng.' }
     ];
 
-    // Page-specific contextual additions
-    if (ctx.page_id === 'majors' || ctx.page_id === 'major-detail') {
-      chips.push({ label: '🎓 Ngành này làm nghề gì?', query: 'Ngành học này sau khi tốt nghiệp có thể làm những nghề gì?', contextual: true });
-      chips.push({ label: '🏫 Trường nào đào tạo?', query: 'Những trường đại học nào đào tạo ngành này?', contextual: true });
-    } else if (ctx.page_id === 'university-explorer' || ctx.page_id === 'university-compare') {
-      chips.push({ label: '📊 Tra cứu điểm chuẩn', query: 'Xem điểm chuẩn và phương thức xét tuyển các trường', contextual: true });
-      chips.push({ label: '💰 Mức học phí', query: 'Thông tin học phí của các trường đại học', contextual: true });
-    } else if (ctx.page_id === 'assessment-hub' || ctx.page_id === 'assessment-report') {
-      chips.push({ label: '🧭 Nên làm bài test nào trước?', query: 'Học sinh nên bắt đầu làm bài đánh giá nào trước trên JobSimu?', contextual: true });
-    } else if (ctx.page_id === 'career' || ctx.page_id === 'careers') {
-      chips.push({ label: '💼 Kỹ năng cần có?', query: 'Nghề này yêu cầu những kỹ năng và môn học nào?', contextual: true });
-      chips.push({ label: '📈 Mức lương & triển vọng?', query: 'Thu nhập tham khảo và triển vọng của nghề này', contextual: true });
+    if (ctx.page_id === 'lookup' || ctx.page_id === 'majors' || ctx.page_id === 'major-detail' || ctx.page_id === 'university-explorer') {
+      chips.push({ label: 'Tra cứu nguồn & điểm chuẩn', query: 'Cách xem điểm trúng tuyển theo năm, phương thức và nguồn xác minh trên JobSimu?', contextual: true });
+    } else if (ctx.page_id === 'compare') {
+      chips.push({ label: 'Cách đọc điểm ưu tiên', query: 'Điểm ưu tiên trong phần So sánh nên hiểu như thế nào?', contextual: true });
     }
 
-    return [...chips, ...baseChips];
+    return [...baseChips, ...chips];
   }
 
   function renderChips() {
@@ -218,8 +209,8 @@
     indicator.id = 'mayTypingIndicator';
     indicator.className = 'may-message is-ai';
     indicator.innerHTML = `
-      <div class="may-msg-avatar" aria-hidden="true">☁️</div>
-      <div class="may-typing-indicator" aria-label="Mây đang soạn câu trả lời">
+      <div class="may-msg-avatar" aria-hidden="true">🧭</div>
+      <div class="may-typing-indicator" aria-label="Trợ lý La Bàn đang soạn câu trả lời">
         <span></span><span></span><span></span>
       </div>
     `;
@@ -317,7 +308,7 @@
       const data = await response.json();
 
       if (!response.ok || !data.ok) {
-        const errorText = data.message || 'Không thể kết nối tới Mây. Vui lòng thử lại sau.';
+        const errorText = data.message || 'Không thể kết nối tới Trợ lý La Bàn. Vui lòng thử lại sau.';
         showErrorBanner(errorText, response.status !== 429);
         return;
       }
@@ -353,6 +344,7 @@
     if (!chatWindow) return;
     chatWindow.classList.add('is-open');
     chatWindow.setAttribute('aria-hidden', 'false');
+    if (triggerBtn) triggerBtn.setAttribute('aria-expanded', 'true');
     sessionStorage.setItem(STORAGE_KEY_OPEN, '1');
     renderChips();
     textarea.focus();
@@ -362,12 +354,13 @@
     if (!chatWindow) return;
     chatWindow.classList.remove('is-open');
     chatWindow.setAttribute('aria-hidden', 'true');
+    if (triggerBtn) triggerBtn.setAttribute('aria-expanded', 'false');
     sessionStorage.setItem(STORAGE_KEY_OPEN, '0');
     if (triggerBtn) triggerBtn.focus();
   }
 
   function resetChat() {
-    if (confirm('Bạn có muốn bắt đầu cuộc trò chuyện mới với Mây?')) {
+    if (confirm('Bạn có muốn bắt đầu cuộc trò chuyện mới với Trợ lý La Bàn?')) {
       sessionStorage.removeItem(STORAGE_KEY_MESSAGES);
       renderAllMessages();
       renderChips();

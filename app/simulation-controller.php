@@ -142,15 +142,33 @@ if ($page === 'career') {
 
           <!-- 5. Trải nghiệm liên quan -->
           <section class="card content-card" aria-labelledby="sec-experience">
+            <!-- 5. Trải nghiệm liên quan -->
+          <section class="card content-card" aria-labelledby="sec-experience">
             <h2 id="sec-experience" class="section-title flex items-center gap-2">
               <span>🎮</span> 5. Trải nghiệm thực tế & Thử thách
             </h2>
+
+            <?php if ($job['id'] == 5 || $job['slug'] === 'giao-vien'): ?>
+              <div class="simulation-feature-banner p-5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="badge badge-purple">Mô phỏng 3D Unity · Góc nhìn thứ nhất</span>
+                    <span class="text-xs text-slate-500">⏱ Tiết học 45 phút · THCS Bình Minh</span>
+                  </div>
+                  <h3 class="font-bold text-lg text-slate-900">Người thầy sau tiếng trống trường</h3>
+                  <p class="text-sm text-slate-600 mt-1">Trực tiếp bước vào lớp 8A, nhận nhiệm vụ từ Cô Mai, điều hành 4 nhóm học sinh điều tra hiện tượng đọng nước sân trường và thực hiện phản tư sư phạm.</p>
+                </div>
+                <a class="btn btn-primary whitespace-nowrap" href="<?=url('index.php?page=simulation-3d')?>">
+                  🎮 Khám phá mô phỏng 3D →
+                </a>
+              </div>
+            <?php endif; ?>
             
             <?php if ($game): ?>
               <div class="simulation-feature-banner p-5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
-                    <span class="badge badge-purple">Mô phỏng tương tác 2D</span>
+                    <span class="badge badge-purple">Mô phỏng tình huống 2D</span>
                     <span class="text-xs text-slate-500">⏱ 4–6 phút</span>
                   </div>
                   <h3 class="font-bold text-lg text-slate-900"><?=e($game['title'])?></h3>
@@ -158,7 +176,7 @@ if ($page === 'career') {
                   <p class="text-xs text-slate-500 mt-1">Vai trò: <strong><?=e($game['role'])?></strong></p>
                 </div>
                 <a class="btn btn-primary whitespace-nowrap" href="<?=url('index.php?page=simulation&id='.(int)$job['id'])?>">
-                  Bắt đầu thử thách →
+                  Bắt đầu thử thách 2D →
                 </a>
               </div>
             <?php endif; ?>
@@ -177,6 +195,36 @@ if ($page === 'career') {
 
             <div class="mt-4 p-4 rounded-xl bg-amber-50/60 border border-amber-200/80 text-xs text-amber-900">
               💡 <strong>Gợi ý trải nghiệm thực tế:</strong> Hãy thử phỏng vấn một người đang làm nghề này trong 15 phút, hoặc theo dõi một video "A Day in the Life" để đối chiếu hình dung của bạn với thực tế công việc.
+            </div>
+          </section>
+
+          <!-- 6. Phản tư khi tìm hiểu nghề này -->
+          <section class="card content-card" aria-labelledby="sec-career-reflection">
+            <h2 id="sec-career-reflection" class="section-title flex items-center gap-2">
+              <span>✍️</span> 6. Phản tư khi tìm hiểu nghề này
+            </h2>
+            <p class="text-xs text-slate-600 mb-3">
+              Sau khi đọc thông tin và yêu cầu công việc của nghề <strong><?=e($job['title'])?></strong>, hãy dành 1 phút để tự đối chiếu với bản thân:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs mb-4">
+              <div class="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl text-emerald-900">
+                <strong class="block mb-1">✨ Điều gì khiến bạn thấy hào hứng nhất?</strong>
+                <p class="text-[11px] text-emerald-800">Là hoạt động sáng tạo, giải quyết vấn đề kỹ thuật, cơ hội tương tác với con người hay mức thu nhập?</p>
+              </div>
+              <div class="p-3 bg-amber-50/70 border border-amber-100 rounded-xl text-amber-900">
+                <strong class="block mb-1">🤔 Điểm nào khiến bạn còn băn khoăn?</strong>
+                <p class="text-[11px] text-amber-800">Là áp lực môi trường, thời gian đào tạo, yêu cầu ngoại ngữ, hay các môn học THPT cần cải thiện?</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <a href="<?=url('index.php?page=ai-roadmap&career_id='.(int)$job['id'])?>" class="btn btn-primary btn-sm">
+                Đưa nghề này vào Kế hoạch năm học →
+              </a>
+              <?php if ($game): ?>
+                <a href="<?=url('index.php?page=simulation&id='.(int)$job['id'])?>" class="btn btn-outline btn-sm">
+                  Thử thách tình huống 2D →
+                </a>
+              <?php endif; ?>
             </div>
           </section>
 
@@ -206,11 +254,19 @@ if ($page === 'career') {
             </div>
 
             <div class="pt-4 space-y-3">
-              <?php if ($game): ?>
+              <?php if ($job['id'] == 5 || $job['slug'] === 'giao-vien'): ?>
+                <a class="btn btn-primary w-full" href="<?=url('index.php?page=simulation-3d')?>">
+                  🎮 Trải nghiệm mô phỏng 3D
+                </a>
+              <?php elseif ($game): ?>
                 <a class="btn btn-primary w-full" href="<?=url('index.php?page=simulation&id='.(int)$job['id'])?>">
-                  🎮 Chơi mô phỏng nghề
+                  🎮 Chơi mô phỏng 2D
                 </a>
               <?php endif; ?>
+
+              <a class="btn btn-outline w-full" href="<?=url('index.php?page=ai-roadmap&career_id='.(int)$job['id'])?>">
+                📅 Đưa vào Kế hoạch năm học
+              </a>
 
               <?php if (user()): ?>
                 <form method="post" action="<?=url('index.php?page=favorite')?>">

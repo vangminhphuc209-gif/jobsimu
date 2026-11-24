@@ -58,6 +58,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install Python Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install beautifulsoup4
+
       - name: Run HNV Data Extractor Tests
         run: |
           python3 -m unittest tests/test_hnv_extractor.py
