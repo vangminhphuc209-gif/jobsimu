@@ -34,6 +34,29 @@ function user_roadmap_ensure_tables(): void
         )");
         db()->exec('CREATE INDEX IF NOT EXISTS idx_roadmap_user ON user_roadmaps(user_id)');
 
+        try {
+            $existingRoadmapCols = [];
+            $rColsRes = db()->query("PRAGMA table_info(user_roadmaps)")->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($rColsRes as $rColRow) {
+                if (!empty($rColRow['name'])) {
+                    $existingRoadmapCols[] = $rColRow['name'];
+                }
+            }
+            $neededRoadmapCols = [
+                'start_month' => 'VARCHAR(7)',
+                'duration_months' => 'INTEGER NOT NULL DEFAULT 6',
+                'weekly_hours' => 'INTEGER',
+                'monthly_goals' => 'TEXT',
+                'reflections' => 'TEXT',
+                'notes' => 'TEXT',
+            ];
+            foreach ($neededRoadmapCols as $col => $typeDef) {
+                if (!in_array($col, $existingRoadmapCols, true)) {
+                    db()->exec("ALTER TABLE user_roadmaps ADD COLUMN $col $typeDef");
+                }
+            }
+        } catch (Throwable $e) {}
+
         db()->exec("CREATE TABLE IF NOT EXISTS user_roadmap_milestones (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             roadmap_id INTEGER NOT NULL,

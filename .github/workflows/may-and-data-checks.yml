@@ -52,6 +52,8 @@ jobs:
           php tests/chat-providers-test.php
           php tests/soka-and-constraint-test.php
           php tests/user-roadmap-test.php
+          php tests/compass-assistant-config-test.php
+          php tests/cumulative-assessment-feedback-test.php
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
@@ -61,7 +63,7 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install beautifulsoup4
+          python3 -m pip install beautifulsoup4 requests
 
       - name: Run HNV Data Extractor Tests
         run: |
