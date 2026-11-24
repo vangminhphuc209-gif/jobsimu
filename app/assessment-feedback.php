@@ -544,6 +544,11 @@ function assessment_get_pedagogical_limits(string $type, int $completedCount): a
     if ($completedCount === 1) {
         $notices[] = [
             'type' => 'mandatory_step1',
+            'title' => 'Thông báo quan trọng về giá trị kết quả',
+            'text' => 'Bạn đã hoàn thành 1/5 bài đánh giá. Đây mới là xu hướng sở thích ban đầu, chưa phản ánh đầy đủ năng lực hay cơ hội nghề nghiệp. Hãy hoàn thành các bài tiếp theo để hồ sơ được tích lũy chính xác hơn.',
+        ];
+        $notices[] = [
+            'type' => 'pedagogical_note',
             'title' => 'Góc nhìn khởi đầu · Cần thêm dữ liệu tích lũy',
             'text' => 'Đây là góc nhìn đầu tiên về bạn. Nếu kết quả chưa phản ánh hết những điều bạn cảm nhận về bản thân, cũng không sao. Chúng ta còn ' . $remaining . ' bài khám phá nữa để bổ sung những góc nhìn khác.',
         ];
